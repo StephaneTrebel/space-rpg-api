@@ -12,4 +12,6 @@ coverage
 # Dependency directories
 node_modules/
 
+# Artifacts
+dist/
 package-lock.json
