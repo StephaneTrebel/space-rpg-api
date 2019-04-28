@@ -4,9 +4,10 @@
     "description": "A Space RPG RESTful API",
     "main": "index.js",
     "scripts": {
-        "edit-spec": "docker pull swaggerapi/swagger-editor && docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
+        "spec-editor": "docker pull swaggerapi/swagger-editor && docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
         "test": "npm run test:all",
-        "test:all": "echo Test"
+        "test:all": "echo Test",
+        "validate-spec": "node scripts/validate-spec.js"
     },
     "repository": {
         "type": "git",
@@ -25,7 +26,9 @@
     },
     "homepage": "https://github.com/StephaneTrebel/space-rpg-api#readme",
     "devDependencies": {
+        "js-yaml": "3.13.1",
         "lint-staged": "8.1.5",
+        "openapi-enforcer": "1.2.3",
         "prettier": "1.16.4",
         "tape": "4.10.1",
         "tslint": "5.16.0",
