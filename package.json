@@ -1,0 +1,37 @@
+{
+    "name": "space-rpg-api",
+    "version": "1.0.0",
+    "description": "A Space RPG RESTful API",
+    "main": "index.js",
+    "scripts": {
+        "edit-spec": "docker pull swaggerapi/swagger-editor && docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
+        "test": "npm run test:all",
+        "test:all": "echo Test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
+    },
+    "keywords": [
+        "space",
+        "rpg",
+        "api",
+        "openapi"
+    ],
+    "author": "Stéphane TREBEL",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+        "url": "https://github.com/StephaneTrebel/space-rpg-api/issues"
+    },
+    "homepage": "https://github.com/StephaneTrebel/space-rpg-api#readme",
+    "devDependencies": {
+        "lint-staged": "8.1.5",
+        "prettier": "1.16.4",
+        "tape": "4.10.1",
+        "tslint": "5.16.0",
+        "typescript": "3.3.4000"
+    },
+    "dependencies": {
+        "openapi-backend": "2.2.0"
+    }
+}
