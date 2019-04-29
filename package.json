@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "spec-editor": "docker pull swaggerapi/swagger-editor && docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
+    "spec-editor": "docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
     "start:dist": "node dist/index.js",
     "start": "npm run build && npm run start:dist",
-    "start:watch": "chokidar e2e/**/*.ts src/**/*.ts --initial -c 'npm run start'",
+    "start:watch": "chokidar e2e/**/*.ts src/**/*.ts openapi.yaml --initial -c 'npm run start'",
     "test": "npm run test:all",
     "test:all": "echo Test",
     "validate-spec": "node scripts/validate-spec.js"
