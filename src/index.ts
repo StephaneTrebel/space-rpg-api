@@ -10,6 +10,9 @@ const specification = yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
 const api = new OpenAPIBackend({
   definition: specification,
   handlers: {
+    selfHealthPing: (_c: any, _req: any, res: any) => {
+      res.status(200).json({ message: 'pong' });
+    },
     validationFail: (c: any, _req: any, res: any) => {
       console.log(c.validation.errors);
       res.status(400).json({ err: c.validation.errors });
