@@ -1,11 +1,12 @@
 import fs from 'fs';
 
+import cors from 'cors';
 import express from 'express';
 import * as yaml from 'js-yaml';
 import OpenAPIBackend from 'openapi-backend';
 
 const specification = yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
-console.log(specification);
+
 const api = new OpenAPIBackend({
   definition: specification,
   handlers: {
@@ -30,6 +31,9 @@ const api = new OpenAPIBackend({
 api.init();
 
 const app = express();
+
 app.use(express.json());
+app.use(cors());
+
 app.use((req: any, res: any) => api.handleRequest(req, req, res));
 app.listen(9000);
