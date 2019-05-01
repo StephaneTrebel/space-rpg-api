@@ -1,29 +1,27 @@
 {
-    "include": [
-        "src/**/*"
-    ],
-    "compilerOptions": {
-        "target": "es2015",
-        "module": "commonjs",
-        "lib": ["es2015"],
-        "sourceMap": true,
-        "outDir": "./dist/",
-        "strict": true,
-        "noImplicitAny": true,
-        "strictNullChecks": true,
-        "strictFunctionTypes": true,
-        "strictPropertyInitialization": true,
-        "noImplicitThis": true,
-        "alwaysStrict": true,
+  "include": ["e2e/**/*", "src/**/*"],
+  "compilerOptions": {
+    "target": "es2015",
+    "module": "commonjs",
+    "lib": ["es2015"],
+    "sourceMap": true,
+    "outDir": "./dist/",
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
 
-        "noUnusedLocals": true,
-        "noUnusedParameters": true,
-        "noImplicitReturns": true,
-        "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
 
-        "esModuleInterop": true,
-        "typeRoots": ["node_modules/@types", "src/types"],
+    "esModuleInterop": true,
+    "typeRoots": ["node_modules/@types", "src/types"],
 
-        "experimentalDecorators": true
-    }
+    "experimentalDecorators": true
+  }
 }

@@ -1,0 +1,18 @@
+{
+  "include": [
+    "dist/**/*",
+    "src/**/*"
+  ],
+  "extension": [".ts", ".js"],
+  "check-coverage": true,
+  "per-file": false,
+  "lines": 80,
+  "statements": 80,
+  "functions": 70,
+  "branches": 100,
+  "reporter": [
+    "html",
+    "lcov",
+    "text-summary"
+  ]
+}

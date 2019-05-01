@@ -3,9 +3,9 @@ import { spawnWebServer } from './services/webserver/webserver';
 
 export const main = () => {
   console.debug('Main()');
-  spawnAPIBackend().then(spawnWebServer);
+  return spawnAPIBackend().then(spawnWebServer);
 };
 
-// if ((process.env.NODE_ENV === 'production')) {
-main();
-// }
+if (process.env.NODE_ENV === 'production') {
+  main();
+}
