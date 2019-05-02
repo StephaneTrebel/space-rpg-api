@@ -10,7 +10,7 @@
     "nyc:e2e": "nyc --nycrc-path .nycrc.e2e npm run tape:e2e",
     "spec-editor": "docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
     "start": "npm run build && npm run start:dist",
-    "start:dist": "NODE_ENV=production node dist/index.js",
+    "start:dist": "NODE_ENV=production node dist/src/index.js",
     "start:watch": "chokidar e2e/**/*.ts src/**/*.ts openapi.yaml --initial -c 'npm run lint && npm run start'",
     "tape:e2e": "tape dist/**/*.e2e.js | tap-spec",
     "test": "npm run test:all",
