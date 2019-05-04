@@ -1,15 +1,5 @@
 {
-  "include": [
-    "src/**/*",
-    "dist/**/*"
-  ],
-  "exclude": [
-    "**/*.d.ts"
-  ],
-  "extension": [".ts"],
-  "cache": false,
-  "all": true,
-  "sourceMap": true,
+  "extends": "@istanbuljs/nyc-config-typescript",
   "check-coverage": true,
   "per-file": false,
   "lines": 100,
