@@ -2,7 +2,7 @@ import tape from 'tape';
 
 import { runE2ETest, getPromisified } from '../../e2e-utils';
 
-tape('Self-health endpoint', (t: tape.Test) =>
+tape(`'/self-health/ping'`, (t: tape.Test) =>
   runE2ETest(t)(test =>
     getPromisified({ uri: 'http://127.0.0.1:9000/self-health/ping' }).then(
       response => {

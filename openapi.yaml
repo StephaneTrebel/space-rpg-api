@@ -3,6 +3,7 @@ openapi: '3.0.0'
 info:
   version: 1.0.0
   title: Space RPG API
+  description: A Space RPG that can be experienced through a REST API
   license:
     name: GPL v3.0
 
@@ -10,6 +11,34 @@ servers:
   - url: http://localhost:9000
 
 paths:
+  /:
+    get:
+      summary: The base endpoint everyone can go through
+      operationId: root
+      tags:
+        - Root
+      responses:
+        200:
+          description: Expected response to a valid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    $ref: '#/components/schemas/message'
+          links:
+            Ping:
+              operationRef: /self-health/ping
+              description: >
+                You can use this endpoint to test whether the server is online.
+        500:
+          description: Service error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServiceError'
+
   /self-health/ping:
     get:
       summary: Retrieve a short message to ensure service is running properly
@@ -32,6 +61,7 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ServiceError'
+                
 
 components:
   schemas:
@@ -50,4 +80,4 @@ components:
     message:
       type: string
       description: a short message
-      example: Hello World
+      example: This an example of a short message

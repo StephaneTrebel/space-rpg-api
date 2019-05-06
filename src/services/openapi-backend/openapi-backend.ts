@@ -8,6 +8,7 @@ import {
   notImplemented,
   validationFail,
 } from '../../handlers/miscellaneous/openapi-validators';
+import { root } from '../../handlers/root/root';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
@@ -22,6 +23,7 @@ const createBackend = (deps: { backendEngine: any }) => (
     handlers: {
       notFound,
       notImplemented,
+      root,
       selfHealthPing,
       validationFail,
     },
