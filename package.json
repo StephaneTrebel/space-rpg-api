@@ -13,7 +13,7 @@
     "start": "npm run build && npm run start:dist",
     "start:dist": "NODE_ENV=production node dist/src/index.js",
     "start:watch": "chokidar e2e/**/*.ts src/**/*.ts openapi.yaml --initial -c 'npm run lint && npm run start'",
-    "tape:e2e": "tape -r ts-node/register e2e/**/*.e2e.ts | tap-spec",
+    "tape:e2e": "tape -r ts-node/register src/**/*.e2e.ts | tap-spec",
     "tape:unit": "tape -r ts-node/register src/**/*.unit.ts | tap-spec",
     "test": "npm run test:all",
     "test:watch": "chokidar .nycrc.unit .nycrc.e2e e2e/**/*.ts src/**/*.ts openapi.yaml --initial -c 'npm run test:all'",
@@ -28,12 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": [
-    "space",
-    "rpg",
-    "api",
-    "openapi"
-  ],
+  "keywords": ["space", "rpg", "api", "openapi"],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {

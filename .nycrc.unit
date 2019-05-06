@@ -1,6 +1,10 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
-  "exclude": [ "coverage", "scripts/**/*", "e2e/**/*" ],
+  "exclude": [
+    "coverage",
+    "scripts/**/*",
+    "src/**/*e2e*"
+  ],
   "check-coverage": true,
   "per-file": false,
   "lines": 100,
