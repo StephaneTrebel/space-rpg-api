@@ -14,7 +14,6 @@ export const main = (deps: {
   }) => Promise<OpenAPIBackend>;
   spawnWebServer: SpawnWebServer;
 }) => {
-  console.debug('Main()');
   return deps
     .spawnAPIBackend({ backendEngine: OpenAPIBackend })
     .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));

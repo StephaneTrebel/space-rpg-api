@@ -23,7 +23,6 @@ export type SpawnWebServer = (deps: {
 }) => http.Server;
 
 export const spawnWebServer: SpawnWebServer = deps => api => {
-  console.debug('spawnWebServer()');
   return (
     deps
       .express()
@@ -33,6 +32,6 @@ export const spawnWebServer: SpawnWebServer = deps => api => {
       // OpenAPI-backend will use, the second one will be the first argument passed
       // on to handlers.
       .use((req, res) => api.handleRequest(req as any, req, res))
-      .listen(9000, () => console.log('Server started'))
+      .listen(9000)
   );
 };

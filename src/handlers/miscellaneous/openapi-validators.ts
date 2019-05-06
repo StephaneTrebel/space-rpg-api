@@ -1,5 +1,4 @@
 export const validationFail = (c: any, _req: any, res: any) => {
-  console.log(c.validation.errors);
   res.status(400).json({ err: c.validation.errors });
 };
 

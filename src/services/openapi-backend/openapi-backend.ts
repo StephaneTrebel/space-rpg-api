@@ -10,14 +10,12 @@ import {
 } from '../../handlers/miscellaneous/openapi-validators';
 
 const loadSpecification = () => {
-  console.debug('loadSpecification()');
   return yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
 };
 
 const createBackend = (deps: { backendEngine: any }) => (
   specification: string,
 ) => {
-  console.debug('createBackend()');
   return new deps.backendEngine({
     ajvOpts: { unknownFormats: ['int32', 'int64'] },
     definition: specification,
@@ -31,6 +29,5 @@ const createBackend = (deps: { backendEngine: any }) => (
 };
 
 export const spawnAPIBackend = (deps: { backendEngine: any }) => {
-  console.debug('spawnAPIBackend()');
   return createBackend(deps)(loadSpecification()).init();
 };

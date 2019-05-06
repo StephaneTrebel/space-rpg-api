@@ -19,9 +19,8 @@ export const runE2ETest = (test: tape.Test) => (
     spawnAPIBackend,
     spawnWebServer,
   }).then((server: any) => {
-    console.log('Server started');
     return testCase(test).finally(() =>
-      server.close(() => console.log('Server killed')),
+      server.close(),
     );
   });
 
@@ -41,7 +40,6 @@ interface GetRequest {
 export const getPromisified = (
   request: GetRequest,
 ): Promise<RequestResponse> => {
-  console.log('getPromisified()');
   return new Promise((resolve, reject) =>
     get(request, (error, response) =>
       error ? /* istanbul ignore next */ reject(error) : resolve(response),

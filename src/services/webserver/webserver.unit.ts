@@ -13,10 +13,9 @@ tape('Webserver', (test: tape.Test) => {
   express.json = () => () => {
     test.pass('spawnWebserver SHOULD use JSON Express module');
   };
-  express.listen = (_ignore: number, callback: () => void) => {
+  express.listen = (_ignore: number) => {
     test.pass('spawnWebserver SHOULD start a listening process');
     test.end();
-    return callback();
   };
   testedModule.spawnWebServer({
     cors: () => () => test.pass('spawnWebserver SHOULD use CORS middleware'),

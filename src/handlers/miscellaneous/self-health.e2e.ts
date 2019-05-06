@@ -6,7 +6,6 @@ tape('Self-health endpoint', (t: tape.Test) =>
   runE2ETest(t)(test =>
     getPromisified({ uri: 'http://127.0.0.1:9000/self-health/ping' }).then(
       response => {
-        console.log('SELF-HEALTH');
         const MESSAGE = 'pong';
         test.equals(response.statusCode, 200, 'status code SHOULD be 200');
         test.equals(
