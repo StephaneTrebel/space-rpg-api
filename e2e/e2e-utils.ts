@@ -3,10 +3,13 @@ import tape from 'tape';
 
 import { main } from '../src/index';
 
+import { spawnAPIBackend } from '../src/services/openapi-backend/openapi-backend';
+import { spawnWebServer } from '../src/services/webserver/webserver';
+
 export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
-  main().then(server => {
+  main({ spawnAPIBackend, spawnWebServer }).then(server => {
     console.log('Server started');
     return testCase(test).finally(() =>
       server.close(() => console.log('Server killed')),
