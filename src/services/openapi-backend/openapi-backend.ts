@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 import * as yaml from 'js-yaml';
-import OpenAPIBackend from 'openapi-backend';
 
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health';
 import {
@@ -15,9 +14,11 @@ const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
 };
 
-const createBackend = (specification: string) => {
+const createBackend = (deps: { backendEngine: any }) => (
+  specification: string,
+) => {
   console.debug('createBackend()');
-  return new OpenAPIBackend({
+  return new deps.backendEngine({
     ajvOpts: { unknownFormats: ['int32', 'int64'] },
     definition: specification,
     handlers: {
@@ -29,7 +30,7 @@ const createBackend = (specification: string) => {
   });
 };
 
-export const spawnAPIBackend = () => {
+export const spawnAPIBackend = (deps: { backendEngine: any }) => {
   console.debug('spawnAPIBackend()');
-  return createBackend(loadSpecification()).init();
+  return createBackend(deps)(loadSpecification()).init();
 };

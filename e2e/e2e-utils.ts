@@ -1,3 +1,4 @@
+import { OpenAPIBackend } from 'openapi-backend/backend';
 import { get, RequestResponse, post } from 'request';
 import tape from 'tape';
 
@@ -9,7 +10,10 @@ import { spawnWebServer } from '../src/services/webserver/webserver';
 export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
-  main({ spawnAPIBackend, spawnWebServer }).then(server => {
+  main({
+    spawnAPIBackend: spawnAPIBackend({ backendEngine: OpenAPIBackend }),
+    spawnWebServer,
+  }).then(server => {
     console.log('Server started');
     return testCase(test).finally(() =>
       server.close(() => console.log('Server killed')),
