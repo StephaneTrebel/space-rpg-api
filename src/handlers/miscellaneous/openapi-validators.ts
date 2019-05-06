@@ -11,6 +11,5 @@ export const notImplemented = (c: any, _req: any, res: any) => {
   const { status, mock } = c.api.mockResponseForOperation(
     c.operation.operationId,
   );
-  res.body = mock;
-  res.status = status;
+  res.status(status).json(mock);
 };
