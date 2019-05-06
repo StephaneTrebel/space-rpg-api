@@ -1,3 +1,5 @@
+import cors from 'cors';
+import express from 'express';
 import { OpenAPIBackend } from 'openapi-backend/backend';
 import { get, RequestResponse, post } from 'request';
 import tape from 'tape';
@@ -11,9 +13,12 @@ export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
   main({
-    spawnAPIBackend: spawnAPIBackend({ backendEngine: OpenAPIBackend }),
+    backendEngine: OpenAPIBackend,
+    cors,
+    express,
+    spawnAPIBackend,
     spawnWebServer,
-  }).then(server => {
+  }).then((server: any) => {
     console.log('Server started');
     return testCase(test).finally(() =>
       server.close(() => console.log('Server killed')),
