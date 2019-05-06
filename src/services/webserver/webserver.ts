@@ -1,17 +1,35 @@
-import cors from 'cors';
-import express from 'express';
-import { OpenAPIBackend, Request } from 'openapi-backend';
+import http from 'http';
 
-export const spawnWebServer = (api: OpenAPIBackend) => {
+import express from 'express';
+
+type Callable<T> = () => T;
+
+interface ExpressDep extends Callable<ExpressDep> {
+  json: () => ExpressDep;
+  listen: (port: number, callback?: () => void) => http.Server;
+  use: (handler: express.RequestHandler) => ExpressDep;
+}
+
+export const spawnWebServer = (deps: {
+  cors: () => any;
+  express: ExpressDep;
+}) => (api: {
+  handleRequest: (
+    baseReq: express.Request,
+    req: express.Request,
+    res: express.Response,
+  ) => void;
+}) => {
   console.debug('spawnWebServer()');
   return (
-    express()
-      .use(express.json())
-      .use(cors())
+    deps
+      .express()
+      .use(deps.express.json())
+      .use(deps.cors())
       // Both "req" arguments are justified: the first one is the Request that
       // OpenAPI-backend will use, the second one will be the first argument passed
       // on to handlers.
-      .use((req, res) => api.handleRequest(req as Request, req, res))
+      .use((req, res) => api.handleRequest(req, req, res))
       .listen(9000, () => console.log('Server started'))
   );
 };
