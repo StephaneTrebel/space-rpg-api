@@ -8,7 +8,7 @@ tape('Index script', (test: tape.Test) => {
       test.pass('main SHOULD spawn an OpenAPI back-end');
       return Promise.resolve();
     },
-    spawnWebServer: () => {
+    spawnWebServer: () => () => {
       test.pass('main SHOULD spawn a Web Server');
       test.end();
     },
