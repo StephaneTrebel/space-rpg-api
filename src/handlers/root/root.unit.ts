@@ -13,12 +13,12 @@ tape('Root handler', (t: tape.Test) => {
           test.equal(
             returnedStatus,
             200,
-            'root SHOULD sucessfully return a 200 response',
+            'SHOULD sucessfully return a 200 response',
           );
           test.equal(
             typeof returnedJSON.message,
             'string',
-            'root SHOULD sucessfully return a body having a message',
+            'SHOULD sucessfully return a body having a message',
           );
           test.deepEqual(
             returnedJSON.links,
@@ -28,7 +28,7 @@ tape('Root handler', (t: tape.Test) => {
                 rel: 'ping',
               },
             ],
-            'root SHOULD sucessfully return a body having a link to Self-Health Ping endpoint',
+            'SHOULD sucessfully return a body having a link to Self-Health Ping endpoint',
           );
           test.end();
         },

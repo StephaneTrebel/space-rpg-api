@@ -10,12 +10,12 @@ tape('Self-health handler', (t: tape.Test) => {
           test.equal(
             returnedStatus,
             200,
-            'selfHealthPing SHOULD sucessfully return a 200 response',
+            'SHOULD sucessfully return a 200 response',
           );
           test.deepEqual(
             returnedJSON,
             { message: 'pong' },
-            'selfHealthPing SHOULD sucessfully return a body having a message',
+            'SHOULD sucessfully return a body having a message',
           );
           test.end();
         },
