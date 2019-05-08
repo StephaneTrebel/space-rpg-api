@@ -1,7 +1,7 @@
 {
   "extends": "@istanbuljs/nyc-config-typescript",
   "exclude": [
-    "coverage",
+    "coverage*",
     "scripts/**/*",
     "src/**/*unit*"
   ],
@@ -13,6 +13,7 @@
   "statements": 80,
   "functions": 70,
   "branches": 100,
+  "report-dir": "./coverage-e2e",
   "reporter": [
     "html",
     "text-summary"
