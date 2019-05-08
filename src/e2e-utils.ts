@@ -19,9 +19,7 @@ export const runE2ETest = (test: tape.Test) => (
     spawnAPIBackend,
     spawnWebServer,
   }).then((server: any) => {
-    return testCase(test).finally(() =>
-      server.close(),
-    );
+    return testCase(test).finally(() => server.close());
   });
 
 // to avoid { '0': { Error: self signed certificate code: 'DEPTH_ZERO_SELF_SIGNED_CERT' } }
@@ -32,9 +30,9 @@ interface Headers {
 }
 
 interface GetRequest {
-  uri: string;
   headers?: Headers;
   qs?: { [key: string]: string };
+  uri: string;
 }
 
 export const getPromisified = (
@@ -47,18 +45,19 @@ export const getPromisified = (
   );
 };
 export interface PostOptions {
-  body: string;
-  headers: {};
+  body?: any;
+  json?: boolean;
+  headers?: Headers;
+  url: string;
 }
 
 export const POST_OPTIONS_STUB = { body: '', headers: {} };
 
 export const postPromisified = (
-  uri: string,
   options: PostOptions,
 ): Promise<RequestResponse> =>
   new Promise((resolve, reject) =>
-    post(uri, options, (error, response) =>
+    post(options, (error, response) =>
       error ? reject(error) : resolve(response),
     ),
   );
