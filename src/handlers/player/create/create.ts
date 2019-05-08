@@ -1,4 +1,7 @@
-export const createPlayer = (_c: any, _req: any, res: any) => {
+import { Response } from 'express';
+import { Context } from 'openapi-backend';
+
+export const createPlayer = (context: Context, _req: any, res: Response) => {
   res.status(201).json({
     links: [
       {
@@ -6,6 +9,6 @@ export const createPlayer = (_c: any, _req: any, res: any) => {
         rel: 'ping',
       },
     ],
-    username: 'toto',
+    username: context.request && context.request.requestBody.username,
   });
 };

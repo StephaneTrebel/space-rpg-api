@@ -22,7 +22,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
     ),
   );
   subTest.test('WHEN request has a valid body', (t: tape.Test) => {
-    const MOCK_USERNAME = 'toto';
+    const MOCK_USERNAME = 'mock_username';
     runE2ETest(t)(test =>
       postPromisified({
         body: { username: MOCK_USERNAME },
@@ -38,7 +38,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         test.equals(
           response.body.username,
           MOCK_USERNAME,
-          'SHOULD return a JSON body having a string username property',
+          'SHOULD return a JSON body having the expected username property',
         );
         test.deepEqual(
           response.body.links,
