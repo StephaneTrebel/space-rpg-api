@@ -11,7 +11,7 @@ import {
 import { root } from '../../handlers/root/root';
 
 const loadSpecification = () => {
-  return yaml.safeLoad(fs.readFileSync('openapi.yaml', 'utf8'));
+  return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
 };
 
 const createBackend = (deps: { backendEngine: any }) => (
