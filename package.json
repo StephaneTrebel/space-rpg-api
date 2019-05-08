@@ -16,12 +16,12 @@
     "tape:e2e": "tape -r ts-node/register src/**/*.e2e.ts | tap-spec",
     "tape:unit": "tape -r ts-node/register src/**/*.unit.ts | tap-spec",
     "test": "npm run test:all",
-    "test:watch": "chokidar .nycrc.unit .nycrc.e2e e2e/**/*.ts src/**/*.ts src/**/*.yaml --initial -c 'npm run test:all'",
-    "test:all": "npm run lint && npm run test:unit && npm run test:e2e",
+    "test:watch": "chokidar .nycrc.unit .nycrc.e2e src --initial -c 'npm run test:all'",
+    "test:all": "npm run validate-spec && npm run lint && npm run test:unit && npm run test:e2e",
     "test:unit": "npm run lint && npm run nyc:unit",
-    "test:unit:watch": "chokidar .nycrc.unit src/**/*.ts src/**/*.yaml --initial -c 'npm run test:unit'",
+    "test:unit:watch": "chokidar .nycrc.unit src/**/*.ts --initial -c 'npm run test:unit'",
     "test:e2e": "npm run lint && npm run nyc:e2e",
-    "test:e2e:watch": "chokidar .nycrc.e2e e2e/**/*.ts src/**/*.ts src/**/*.yaml --initial -c 'npm run test:e2e'",
+    "test:e2e:watch": "chokidar .nycrc.e2e src --initial -c 'npm run validate-spec && npm run test:e2e'",
     "validate-spec": "node scripts/validate-spec.js"
   },
   "repository": {

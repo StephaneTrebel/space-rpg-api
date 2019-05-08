@@ -1,0 +1,26 @@
+get:
+  summary: The base endpoint everyone can go through
+  operationId: root
+  tags:
+    - Root
+  responses:
+    200:
+      description: Expected response to a valid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                $ref: '../../specifications/components.yaml#/components/schemas/message'
+      links:
+        Ping:
+          operationRef: /self-health/ping
+          description: >
+            You can use this endpoint to test whether the server is online.
+    500:
+      description: Service error
+      content:
+        application/json:
+          schema:
+            $ref: '../../specifications/components.yaml#/components/schemas/ServiceError'

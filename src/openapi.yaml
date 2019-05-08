@@ -12,71 +12,13 @@ servers:
 
 paths:
   /:
-    get:
-      summary: The base endpoint everyone can go through
-      operationId: root
-      tags:
-        - Root
-      responses:
-        200:
-          description: Expected response to a valid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    $ref: '#/components/schemas/message'
-          links:
-            Ping:
-              operationRef: /self-health/ping
-              description: >
-                You can use this endpoint to test whether the server is online.
-        500:
-          description: Service error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServiceError'
-
+    $ref: 'src/handlers/root/root.yaml'
   /self-health/ping:
-    get:
-      summary: Retrieve a short message to ensure service is running properly
-      operationId: selfHealthPing
-      tags:
-        - self-health
-      responses:
-        200:
-          description: Expected response to a valid request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    $ref: '#/components/schemas/message'
-        500:
-          description: Service error
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ServiceError'
+    $ref: 'src/handlers/miscellaneous/self-health.yaml'
 
 components:
   schemas:
     ServiceError:
-      type: object
-      required:
-        - code
-        - message
-      properties:
-        code:
-          type: integer
-          format: int32
-        message:
-          type: string
-
+      $ref: './src/specifications/components.yaml#/components/schemas/ServiceError'
     message:
-      type: string
-      description: a short message
-      example: This an example of a short message
+      $ref: './src/specifications/components.yaml#/components/schemas/message'

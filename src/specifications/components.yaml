@@ -1,0 +1,18 @@
+components:
+  schemas:
+    ServiceError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+
+    message:
+      type: string
+      description: a short message
+      example: This an example of a short message
