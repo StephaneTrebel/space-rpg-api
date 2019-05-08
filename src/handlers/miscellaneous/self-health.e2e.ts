@@ -2,12 +2,18 @@ import tape from 'tape';
 
 import { runE2ETest, getPromisified } from '../../e2e-utils';
 
-tape(`'/self-health/ping'`, (t: tape.Test) =>
+const ENDPOINT = '/self-health/ping';
+tape(ENDPOINT, (t: tape.Test) =>
   runE2ETest(t)(test =>
     getPromisified({ uri: 'http://127.0.0.1:9000/self-health/ping' }).then(
       response => {
         const MESSAGE = 'pong';
-        test.equals(response.statusCode, 200, 'status code SHOULD be 200');
+        const EXPECTED_RETURN_CODE = 200;
+        test.equals(
+          response.statusCode,
+          EXPECTED_RETURN_CODE,
+          `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+        );
         test.equals(
           JSON.parse(response.body).message,
           MESSAGE,
