@@ -1,5 +1,21 @@
 components:
   schemas:
+    # Fields used in complex schemas
+    code:
+      description: A numeric code for abstracting an information
+      example: 123456
+      type: integer
+      format: int32
+    message:
+      description: A short message
+      example: This an example of a short message
+      type: string
+    username:
+      description: A user unique name identifier
+      example: warlordz123
+      type: string
+
+    # Complex schemas
     ServiceError:
       type: object
       required:
@@ -10,9 +26,4 @@ components:
           type: integer
           format: int32
         message:
-          type: string
-
-    message:
-      type: string
-      description: a short message
-      example: This an example of a short message
+          $ref: '#/components/schemas/message'
