@@ -1,7 +1,17 @@
 import { Response } from 'express';
 import { Context } from 'openapi-backend';
 
-export const createPlayer = (context: Context, _req: any, res: Response) => {
+import { StateService, StateMutation } from '../../../services/state/state';
+
+export const createPlayer = (deps: { stateService: StateService }) => (
+  context: Context,
+  _req: any,
+  res: Response,
+) => {
+  const username = context.request && context.request.requestBody.username;
+  deps.stateService.mutate(StateMutation.CREATE_PLAYER)({
+    username,
+  });
   res.status(201).json({
     links: [
       {
@@ -9,6 +19,6 @@ export const createPlayer = (context: Context, _req: any, res: Response) => {
         rel: 'ping',
       },
     ],
-    username: context.request && context.request.requestBody.username,
+    username,
   });
 };

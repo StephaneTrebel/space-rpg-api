@@ -4,6 +4,7 @@ import express from 'express';
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
 import { SpawnWebServer, spawnWebServer } from './services/webserver/webserver';
 import { OpenAPIBackend } from 'openapi-backend/backend';
+import { StateService, stateServiceFactory } from './services/state/state';
 
 export const main = (deps: {
   backendEngine: typeof OpenAPIBackend;
@@ -11,11 +12,16 @@ export const main = (deps: {
   express: typeof express;
   spawnAPIBackend: (deps: {
     backendEngine: typeof OpenAPIBackend;
+    stateService: StateService;
   }) => Promise<OpenAPIBackend>;
   spawnWebServer: SpawnWebServer;
+  stateService: StateService;
 }) => {
   return deps
-    .spawnAPIBackend({ backendEngine: OpenAPIBackend })
+    .spawnAPIBackend({
+      backendEngine: OpenAPIBackend,
+      stateService: deps.stateService,
+    })
     .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));
 };
 
@@ -27,5 +33,6 @@ if (process.env.NODE_ENV === 'production') {
     express,
     spawnAPIBackend,
     spawnWebServer,
+    stateService: stateServiceFactory(),
   });
 }

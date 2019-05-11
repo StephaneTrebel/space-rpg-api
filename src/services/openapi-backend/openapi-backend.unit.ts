@@ -1,5 +1,8 @@
 import tape from 'tape';
+
 import * as testedModule from './openapi-backend';
+
+import { stateServiceFactory } from '../state/state';
 
 tape('OpenAPI Backend', (test: tape.Test) => {
   test.plan(1);
@@ -16,5 +19,6 @@ tape('OpenAPI Backend', (test: tape.Test) => {
 
   testedModule.spawnAPIBackend({
     backendEngine: MockBackEndEngine,
+    stateService: stateServiceFactory(),
   });
 });

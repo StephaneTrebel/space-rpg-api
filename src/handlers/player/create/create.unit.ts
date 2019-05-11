@@ -1,10 +1,13 @@
 import tape from 'tape';
+
+import { stateServiceFactory } from "../../../services/state/state";
+
 import * as testedModule from './create';
 
 tape('Player creation handler', (t: tape.Test) => {
   t.test('createPlayer()', (test: tape.Test) => {
     const MOCK_USERNAME = Symbol('username');
-    testedModule.createPlayer(
+    testedModule.createPlayer({ stateService: stateServiceFactory() })(
       { request: { requestBody: { username: MOCK_USERNAME } } } as any,
       '' as any,
       {

@@ -7,6 +7,7 @@ import tape from 'tape';
 import { main } from '../src/index';
 
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
+import { stateServiceFactory } from './services/state/state';
 import { spawnWebServer } from './services/webserver/webserver';
 
 export const runE2ETest = (test: tape.Test) => (
@@ -18,6 +19,7 @@ export const runE2ETest = (test: tape.Test) => (
     express,
     spawnAPIBackend,
     spawnWebServer,
+    stateService: stateServiceFactory(),
   }).then((server: any) => {
     return testCase(test).finally(() => server.close());
   });

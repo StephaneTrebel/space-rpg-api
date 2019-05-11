@@ -2,6 +2,8 @@ import fs from 'fs';
 
 import * as yaml from 'js-yaml';
 
+import { StateService } from '../state/state';
+
 import {
   notFound,
   notImplemented,
@@ -16,14 +18,15 @@ const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
 };
 
-const createBackend = (deps: { backendEngine: any }) => (
-  specification: string,
-) => {
+const createBackend = (deps: {
+  backendEngine: any;
+  stateService: StateService;
+}) => (specification: string) => {
   return new deps.backendEngine({
     ajvOpts: { unknownFormats: ['int32', 'int64'] },
     definition: specification,
     handlers: {
-      createPlayer,
+      createPlayer: createPlayer(deps),
       notFound,
       notImplemented,
       root,
@@ -33,6 +36,9 @@ const createBackend = (deps: { backendEngine: any }) => (
   });
 };
 
-export const spawnAPIBackend = (deps: { backendEngine: any }) => {
+export const spawnAPIBackend = (deps: {
+  backendEngine: any;
+  stateService: StateService;
+}) => {
   return createBackend(deps)(loadSpecification()).init();
 };

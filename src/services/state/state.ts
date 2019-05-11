@@ -26,7 +26,15 @@ const get = (state: State) => (prop: StateProperties) => state[prop];
 const mutate = (state: State) => (mutation: StateMutation) => (payload: any) =>
   (state = mutations[mutation](state)(payload));
 
-export const stateServiceFactory = (initialState: State) => {
+export interface StateService {
+  get: (prop: StateProperties) => Array<Player>;
+  mutate: (mutation: StateMutation) => (payload: any) => State;
+}
+
+const EMPTY_STATE = { playerList: [] };
+export const stateServiceFactory = (
+  initialState: State = EMPTY_STATE,
+): StateService => {
   const state: State = { ...initialState };
   return {
     get: get(state),

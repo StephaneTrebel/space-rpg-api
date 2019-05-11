@@ -5,7 +5,6 @@ import { Player } from '../../handlers/player/player.types';
 import * as testedModule from './state';
 
 tape('State Service', (functionTest: tape.Test) => {
-  const EMPTY_STATE = { playerList: [] };
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
     const MOCK_PLAYER_LIST: Array<Player> = [{ username: 'foo' }];
@@ -25,7 +24,7 @@ tape('State Service', (functionTest: tape.Test) => {
         test.plan(1);
         test.deepEqual(
           testedModule
-            .stateServiceFactory(EMPTY_STATE)
+            .stateServiceFactory()
             .mutate(testedModule.StateMutation.CREATE_PLAYER)({
             username: 'foo',
           }),
