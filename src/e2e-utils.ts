@@ -7,6 +7,7 @@ import tape from 'tape';
 import { main } from '../src/index';
 
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
+import { loggerServiceFactory } from './services/logger/logger';
 import { stateServiceFactory } from './services/state/state';
 import { spawnWebServer } from './services/webserver/webserver';
 
@@ -17,6 +18,7 @@ export const runE2ETest = (test: tape.Test) => (
     backendEngine: OpenAPIBackend,
     cors,
     express,
+    loggerService: loggerServiceFactory()({} as any),
     spawnAPIBackend,
     spawnWebServer,
     stateService: stateServiceFactory(),
