@@ -1,9 +1,11 @@
 import tape from 'tape';
 
-import * as testedModule from './openapi-backend';
+import { EMPTY_UNIVERSE } from '../../assets/universe';
 
 import { loggerServiceFactory } from '../logger/logger';
 import { stateServiceFactory } from '../state/state';
+
+import * as testedModule from './openapi-backend';
 
 tape('OpenAPI Backend', (test: tape.Test) => {
   test.plan(1);
@@ -22,5 +24,6 @@ tape('OpenAPI Backend', (test: tape.Test) => {
     backendEngine: MockBackEndEngine,
     loggerService: loggerServiceFactory({ nolog: true }),
     stateService: stateServiceFactory(),
+    universe: EMPTY_UNIVERSE,
   });
 });

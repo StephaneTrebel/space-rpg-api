@@ -15,6 +15,7 @@ import { createPlayer } from '../../handlers/player/create/create';
 import { root } from '../../handlers/root/root';
 
 import { LoggerService } from '../logger/logger';
+import { Universe } from '../../assets/universe';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -24,6 +25,7 @@ const createBackend = (deps: {
   backendEngine: any;
   loggerService: LoggerService;
   stateService: StateService;
+  universe: Universe;
 }) => (specification: string) => {
   deps.loggerService.info('Creating backend');
   return new deps.backendEngine({
@@ -44,6 +46,7 @@ export const spawnAPIBackend = (deps: {
   backendEngine: any;
   loggerService: LoggerService;
   stateService: StateService;
+  universe: Universe;
 }) => {
   return createBackend(deps)(loadSpecification()).init();
 };

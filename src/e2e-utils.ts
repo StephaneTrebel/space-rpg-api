@@ -9,7 +9,7 @@ import { spawnWebServer } from './services/webserver/webserver';
 export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
-  main({ spawnAPIBackend, spawnWebServer })({ logger: { nolog: true } }).then(
+  main({ spawnAPIBackend, spawnWebServer })({ logger: { nolog: true } })().then(
     (server: any) => {
       return testCase(test).finally(() => server.close());
     },

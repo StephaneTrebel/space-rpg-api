@@ -1,4 +1,7 @@
 import tape from 'tape';
+
+import { EMPTY_UNIVERSE } from './assets/universe';
+
 import * as testedModule from './index';
 
 tape('Index script', (test: tape.Test) => {
@@ -12,5 +15,5 @@ tape('Index script', (test: tape.Test) => {
       test.pass('main SHOULD spawn a Web Server');
       test.end();
     },
-  } as any)({ logger: { nolog: true } });
+  } as any)({ logger: { nolog: true } })(EMPTY_UNIVERSE);
 });
