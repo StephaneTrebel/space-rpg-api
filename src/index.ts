@@ -2,27 +2,24 @@ import cors from 'cors';
 import express from 'express';
 import { OpenAPIBackend } from 'openapi-backend/backend';
 
-import { loggerServiceFactory, LoggerService } from './services/logger/logger';
+import { Config, configServiceFactory } from './services/config/config';
+import { loggerServiceFactory } from './services/logger/logger';
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
-import { StateService, stateServiceFactory } from './services/state/state';
-import { SpawnWebServer, spawnWebServer } from './services/webserver/webserver';
+import { stateServiceFactory } from './services/state/state';
+import { spawnWebServer } from './services/webserver/webserver';
 
 export const main = (deps: {
-  backendEngine: typeof OpenAPIBackend;
-  cors: typeof cors;
-  express: typeof express;
-  loggerService: LoggerService;
-  spawnAPIBackend: (deps: {
-    backendEngine: typeof OpenAPIBackend;
-    stateService: StateService;
-  }) => Promise<OpenAPIBackend>;
-  spawnWebServer: SpawnWebServer;
-  stateService: StateService;
-}) => {
+  spawnAPIBackend: typeof spawnAPIBackend;
+  spawnWebServer: typeof spawnWebServer;
+}) => (config: Config) => {
+  const configService = configServiceFactory(config);
+  const loggerService = loggerServiceFactory(configService.get('logger'));
+  const stateService = stateServiceFactory();
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,
-      stateService: deps.stateService,
+      loggerService,
+      stateService,
     })
     .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));
 };
@@ -30,12 +27,14 @@ export const main = (deps: {
 // istanbul ignore if
 if (process.env.NODE_ENV === 'production') {
   main({
-    backendEngine: OpenAPIBackend,
-    cors,
-    express,
-    loggerService: loggerServiceFactory()({}),
     spawnAPIBackend,
     spawnWebServer,
-    stateService: stateServiceFactory(),
+  })({
+    logger: {
+      combinedFile: true,
+      console: true,
+      errorFile: true,
+      format: true,
+    },
   });
 }

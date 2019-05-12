@@ -1,30 +1,19 @@
-import cors from 'cors';
-import express from 'express';
-import { OpenAPIBackend } from 'openapi-backend/backend';
 import { get, RequestResponse, post } from 'request';
 import tape from 'tape';
 
 import { main } from '../src/index';
 
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
-import { loggerServiceFactory } from './services/logger/logger';
-import { stateServiceFactory } from './services/state/state';
 import { spawnWebServer } from './services/webserver/webserver';
 
 export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
-  main({
-    backendEngine: OpenAPIBackend,
-    cors,
-    express,
-    loggerService: loggerServiceFactory()({}),
-    spawnAPIBackend,
-    spawnWebServer,
-    stateService: stateServiceFactory(),
-  }).then((server: any) => {
-    return testCase(test).finally(() => server.close());
-  });
+  main({ spawnAPIBackend, spawnWebServer })({ logger: { nolog: true } }).then(
+    (server: any) => {
+      return testCase(test).finally(() => server.close());
+    },
+  );
 
 // to avoid { '0': { Error: self signed certificate code: 'DEPTH_ZERO_SELF_SIGNED_CERT' } }
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';

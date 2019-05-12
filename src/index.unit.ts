@@ -12,5 +12,5 @@ tape('Index script', (test: tape.Test) => {
       test.pass('main SHOULD spawn a Web Server');
       test.end();
     },
-  } as any);
+  } as any)({ logger: { nolog: true } });
 });
