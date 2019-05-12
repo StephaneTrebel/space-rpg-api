@@ -1,21 +1,33 @@
 // istanbul ignore file
+import fs from 'fs';
 import { createLogger, format, transports } from 'winston';
 import { Format } from 'logform';
 
-interface LoggerConfig {
+export interface LoggerConfig {
   combinedFile?: boolean;
   console?: boolean;
   errorFile?: boolean;
   format?: boolean;
+  nolog?: boolean;
 }
 
 type CreateTransportList = (
   config: LoggerConfig,
 ) => Array<
-  transports.FileTransportInstance | transports.ConsoleTransportInstance
+  | transports.FileTransportInstance
+  | transports.ConsoleTransportInstance
+  | transports.StreamTransportInstance
 >;
 const createTransportList: CreateTransportList = config => {
   const transportList = [];
+  if (config.nolog) {
+    transportList.push(
+      new transports.Stream({
+        stream: fs.createWriteStream('/dev/null'),
+      }),
+    );
+    return transportList;
+  }
   if (config.errorFile) {
     transportList.push(
       new transports.File({
@@ -55,22 +67,19 @@ type Logger = (x: any) => void;
 export interface LoggerService {
   debug: Logger;
   error: Logger;
+  info: Logger;
   log: Logger;
   warn: Logger;
 }
 
-type LoggerServiceFactory = (
-  transportListFactory?: CreateTransportList,
-  formatFactory?: FormatFactory,
-) => (config: LoggerConfig) => LoggerService;
+type LoggerServiceFactory = (config: LoggerConfig) => LoggerService;
 
 export const loggerServiceFactory: LoggerServiceFactory = (
-  transportListFactory = createTransportList,
-  formatFactory = createFormat,
-) => (config: LoggerConfig) =>
+  config: LoggerConfig = {},
+) =>
   createLogger({
     defaultMeta: { service: 'space-rpg-api' },
-    format: formatFactory(config),
+    format: createFormat(config),
     level: 'info',
-    transports: transportListFactory(config),
+    transports: createTransportList(config),
   });
