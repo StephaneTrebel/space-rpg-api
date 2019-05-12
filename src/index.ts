@@ -33,7 +33,7 @@ if (process.env.NODE_ENV === 'production') {
     backendEngine: OpenAPIBackend,
     cors,
     express,
-    loggerService: loggerServiceFactory()({} as any),
+    loggerService: loggerServiceFactory()({}),
     spawnAPIBackend,
     spawnWebServer,
     stateService: stateServiceFactory(),

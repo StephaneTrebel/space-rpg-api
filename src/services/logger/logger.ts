@@ -1,14 +1,12 @@
 // istanbul ignore file
-import { Logger, createLogger, format, transports } from 'winston';
+import { createLogger, format, transports } from 'winston';
 import { Format } from 'logform';
 
-export type LoggerService = Logger;
-
 interface LoggerConfig {
-  combinedFile: boolean;
-  console: boolean;
-  errorFile: boolean;
-  format: boolean;
+  combinedFile?: boolean;
+  console?: boolean;
+  errorFile?: boolean;
+  format?: boolean;
 }
 
 type CreateTransportList = (
@@ -52,9 +50,23 @@ const createFormat: FormatFactory = config =>
       )
     : undefined;
 
-export const loggerServiceFactory = (
-  transportListFactory: CreateTransportList = createTransportList,
-  formatFactory: FormatFactory = createFormat,
+type Logger = (x: any) => void;
+
+export interface LoggerService {
+  debug: Logger;
+  error: Logger;
+  log: Logger;
+  warn: Logger;
+}
+
+type LoggerServiceFactory = (
+  transportListFactory?: CreateTransportList,
+  formatFactory?: FormatFactory,
+) => (config: LoggerConfig) => LoggerService;
+
+export const loggerServiceFactory: LoggerServiceFactory = (
+  transportListFactory = createTransportList,
+  formatFactory = createFormat,
 ) => (config: LoggerConfig) =>
   createLogger({
     defaultMeta: { service: 'space-rpg-api' },

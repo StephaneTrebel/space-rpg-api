@@ -18,7 +18,7 @@ export const runE2ETest = (test: tape.Test) => (
     backendEngine: OpenAPIBackend,
     cors,
     express,
-    loggerService: loggerServiceFactory()({} as any),
+    loggerService: loggerServiceFactory()({}),
     spawnAPIBackend,
     spawnWebServer,
     stateService: stateServiceFactory(),
