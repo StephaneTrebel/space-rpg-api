@@ -1,14 +1,16 @@
 import tape from 'tape';
 
 import { EMPTY_UNIVERSE } from '../../assets/universe';
+
 import { Player } from '../../handlers/player/player.types';
+import { createMockPlayer } from '../../handlers/player/create/create';
 
 import * as testedModule from './state';
 
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
-    const MOCK_PLAYER_LIST: Array<Player> = [{ username: 'foo' }];
+    const MOCK_PLAYER_LIST: Array<Player> = [createMockPlayer()];
     test.deepEqual(
       testedModule
         .stateServiceFactory({

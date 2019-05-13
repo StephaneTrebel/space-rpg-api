@@ -3,6 +3,8 @@ import { Context } from 'openapi-backend';
 
 import { StateService, StateMutation } from '../../../services/state/state';
 
+import { Player } from '../player.types';
+
 export const createPlayer = (deps: { stateService: StateService }) => (
   context: Context,
   _req: any,
@@ -22,3 +24,12 @@ export const createPlayer = (deps: { stateService: StateService }) => (
     username,
   });
 };
+
+export const createMockPlayer: () => Player = () => ({
+  currentPosition: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  username: 'foo',
+});

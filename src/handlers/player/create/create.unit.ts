@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import { stateServiceFactory } from "../../../services/state/state";
+import { stateServiceFactory } from '../../../services/state/state';
 
 import * as testedModule from './create';
 
@@ -42,5 +42,30 @@ tape('Player creation handler', (t: tape.Test) => {
         }),
       } as any,
     );
+  });
+
+  t.test('createMockPlayer()', (test: tape.Test) => {
+    test.plan(4);
+    test.equal(
+      typeof testedModule.createMockPlayer().username,
+      'string',
+      'createMockPlayer() SHOULD sucessfully return an object that has a username property',
+    );
+    test.equal(
+      typeof testedModule.createMockPlayer().currentPosition.x,
+      'number',
+      'createMockPlayer() SHOULD sucessfully return an object that has a currentPosition.x property',
+    );
+    test.equal(
+      typeof testedModule.createMockPlayer().currentPosition.y,
+      'number',
+      'createMockPlayer() SHOULD sucessfully return an object that has a currentPosition.y property',
+    );
+    test.equal(
+      typeof testedModule.createMockPlayer().currentPosition.z,
+      'number',
+      'createMockPlayer() SHOULD sucessfully return an object that has a currentPosition.z property',
+    );
+    test.end();
   });
 });
