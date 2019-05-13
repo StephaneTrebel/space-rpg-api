@@ -10,6 +10,7 @@ import { Config, configServiceFactory } from './services/config/config';
 import { loggerServiceFactory } from './services/logger/logger';
 import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
 import { stateServiceFactory } from './services/state/state';
+import { timeServiceFactory } from './services/time/time';
 import { spawnWebServer } from './services/webserver/webserver';
 
 export const main = (deps: {
@@ -19,11 +20,13 @@ export const main = (deps: {
   const configService = configServiceFactory(config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
   const stateService = stateServiceFactory({ playerList: [], universe });
+  const timeService = timeServiceFactory();
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,
       loggerService,
       stateService,
+      timeService,
     })
     .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));
 };

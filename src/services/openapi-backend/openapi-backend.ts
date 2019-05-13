@@ -15,6 +15,7 @@ import { createPlayer } from '../../handlers/player/create/create';
 import { root } from '../../handlers/root/root';
 
 import { LoggerService } from '../logger/logger';
+import { TimeService } from '../time/time';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -24,6 +25,7 @@ const createBackend = (deps: {
   backendEngine: any;
   loggerService: LoggerService;
   stateService: StateService;
+  timeService: TimeService;
 }) => (specification: string) => {
   deps.loggerService.info('Creating backend');
   return new deps.backendEngine({
@@ -44,6 +46,7 @@ export const spawnAPIBackend = (deps: {
   backendEngine: any;
   loggerService: LoggerService;
   stateService: StateService;
+  timeService: TimeService;
 }) => {
   return createBackend(deps)(loadSpecification()).init();
 };
