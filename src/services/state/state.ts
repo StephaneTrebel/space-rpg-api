@@ -6,7 +6,7 @@ export enum StateProperties {
   UNIVERSE = 'universe',
 }
 
-interface State {
+export interface State {
   [StateProperties.PLAYER_LIST]: Array<Player>;
   [StateProperties.UNIVERSE]: Universe;
 }
