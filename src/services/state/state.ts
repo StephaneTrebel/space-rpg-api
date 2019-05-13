@@ -1,11 +1,14 @@
+import { Universe, EMPTY_UNIVERSE } from '../../assets/universe';
 import { Player } from '../../handlers/player/player.types';
 
 export enum StateProperties {
   PLAYER_LIST = 'playerList',
+  UNIVERSE = 'universe',
 }
 
 interface State {
   [StateProperties.PLAYER_LIST]: Array<Player>;
+  [StateProperties.UNIVERSE]: Universe;
 }
 
 export enum StateMutation {
@@ -27,11 +30,11 @@ const mutate = (state: State) => (mutation: StateMutation) => (payload: any) =>
   (state = mutations[mutation](state)(payload));
 
 export interface StateService {
-  get: (prop: StateProperties) => Array<Player>;
+  get: (prop: StateProperties) => Array<Player> | Universe;
   mutate: (mutation: StateMutation) => (payload: any) => State;
 }
 
-const EMPTY_STATE = { playerList: [] };
+export const EMPTY_STATE = { playerList: [], universe: EMPTY_UNIVERSE };
 export const stateServiceFactory = (
   initialState: State = EMPTY_STATE,
 ): StateService => {

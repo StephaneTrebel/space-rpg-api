@@ -18,13 +18,12 @@ export const main = (deps: {
 }) => (config: Config) => (universe: Universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
-  const stateService = stateServiceFactory();
+  const stateService = stateServiceFactory({ playerList: [], universe });
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,
       loggerService,
       stateService,
-      universe,
     })
     .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));
 };
