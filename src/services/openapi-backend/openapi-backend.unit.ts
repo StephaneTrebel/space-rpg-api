@@ -2,7 +2,7 @@ import tape from 'tape';
 
 import { loggerServiceFactory } from '../logger/logger';
 import { stateServiceFactory, EMPTY_STATE } from '../state/state';
-import { timeServiceFactory } from "../time/time";
+import { timeServiceFactory } from '../time/time';
 
 import * as testedModule from './openapi-backend';
 
@@ -19,10 +19,11 @@ tape('OpenAPI Backend', (test: tape.Test) => {
     }
   }
 
+  const stateService = stateServiceFactory(EMPTY_STATE);
   testedModule.spawnAPIBackend({
     backendEngine: MockBackEndEngine,
     loggerService: loggerServiceFactory({ nolog: true }),
-    stateService: stateServiceFactory(EMPTY_STATE),
-    timeService: timeServiceFactory(),
+    stateService,
+    timeService: timeServiceFactory(stateService),
   });
 });
