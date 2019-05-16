@@ -17,19 +17,26 @@ tape('Time Service', (functionTest: tape.Test) => {
     );
     test.end();
   });
-  functionTest.test('executeActionList()', (test: tape.Test) => {
+  functionTest.test('GIVEN an action list AND a period', (test: tape.Test) => {
     test.plan(1);
-    const action: testedModule.Action = (_ignore: StateService) => {
-      test.pass(
-        'executeActionList() SHOULD execute every action in its internal queue',
+    const START_DELAY = 100;
+    const PERIOD = 100;
+    const action: testedModule.Action = (_ignore: StateService) =>
+      Promise.resolve(
+        test.pass(
+          'SHOULD execute the action list after the period has elapsed',
+        ),
       );
-      test.end();
-      return Promise.resolve();
-    };
     const timeService = testedModule.timeServiceFactory(
       stateServiceFactory(EMPTY_STATE),
+      PERIOD,
+      START_DELAY,
     );
     timeService.addAction(action);
-    timeService.executeActionList();
+    timeService.start();
+    setTimeout(() => {
+      timeService.stop();
+      test.end();
+    }, START_DELAY + PERIOD + 100);
   });
 });
