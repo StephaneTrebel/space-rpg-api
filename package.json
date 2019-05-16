@@ -13,8 +13,8 @@
     "start": "npm run build && npm run start:dist",
     "start:dist": "NODE_ENV=production node dist/index.js",
     "start:watch": "chokidar e2e/**/*.ts src/**/*.ts src/**/*.yaml --initial -c 'npm run lint && npm run start'",
-    "tape:e2e": "tape -r ts-node/register src/**/*.e2e.ts | tap-spec",
-    "tape:unit": "tape -r ts-node/register src/**/*.unit.ts | tap-spec",
+    "tape:e2e": "tape -r ts-node/register src/**/*.e2e.ts | tap-dot",
+    "tape:unit": "tape -r ts-node/register src/**/*.unit.ts | tap-dot",
     "test": "npm run test:all",
     "test:watch": "chokidar .nycrc.unit .nycrc.e2e src --initial -c 'time npm run test:all'",
     "test:all": "npm run validate-spec && npm run lint && npm run test:unit && npm run test:e2e",
@@ -28,12 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": [
-    "space",
-    "rpg",
-    "api",
-    "openapi"
-  ],
+  "keywords": ["space", "rpg", "api", "openapi"],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {
@@ -55,7 +50,7 @@
     "openapi-enforcer": "1.2.3",
     "prettier": "1.16.4",
     "request": "2.88.0",
-    "tap-spec": "5.0.0",
+    "tap-dot": "2.0.0",
     "tape": "4.10.1",
     "ts-node": "8.1.0",
     "tslint": "5.16.0",
