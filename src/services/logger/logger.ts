@@ -72,10 +72,10 @@ export interface LoggerService {
   warn: Logger;
 }
 
-type LoggerServiceFactory = (config: LoggerConfig) => LoggerService;
+type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;
 
 export const loggerServiceFactory: LoggerServiceFactory = (
-  config: LoggerConfig = {},
+  config: LoggerConfig = { nolog: true },
 ) =>
   createLogger({
     defaultMeta: { service: 'space-rpg-api' },

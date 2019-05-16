@@ -1,6 +1,7 @@
 import tape from 'tape';
 
 import { configServiceFactory } from '../config/config';
+import { loggerServiceFactory } from '../logger/logger';
 import { EMPTY_STATE, stateServiceFactory, StateService } from '../state/state';
 
 import * as testedModule from './time';
@@ -13,6 +14,7 @@ tape('Time Service', (functionTest: tape.Test) => {
       testedModule
         .timeServiceFactory({
           configService: configServiceFactory({}),
+          loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
         })
         .addAction(action),
@@ -38,6 +40,7 @@ tape('Time Service', (functionTest: tape.Test) => {
           startDelay: START_DELAY,
         },
       }),
+      loggerService: loggerServiceFactory(),
       stateService: stateServiceFactory(EMPTY_STATE),
     });
     timeService.addAction(action);

@@ -22,6 +22,7 @@ export const main = (deps: {
   const stateService = stateServiceFactory({ playerList: [], universe });
   const timeService = timeServiceFactory({
     configService,
+    loggerService,
     stateService,
   });
   return deps

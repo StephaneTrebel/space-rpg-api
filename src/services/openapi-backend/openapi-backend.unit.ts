@@ -23,10 +23,11 @@ tape('OpenAPI Backend', (test: tape.Test) => {
   const stateService = stateServiceFactory(EMPTY_STATE);
   testedModule.spawnAPIBackend({
     backendEngine: MockBackEndEngine,
-    loggerService: loggerServiceFactory({ nolog: true }),
+    loggerService: loggerServiceFactory(),
     stateService,
     timeService: timeServiceFactory({
       configService: configServiceFactory({}),
+      loggerService: loggerServiceFactory(),
       stateService,
     }),
   });

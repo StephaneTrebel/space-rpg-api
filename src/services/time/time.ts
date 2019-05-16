@@ -1,6 +1,8 @@
 import { Subscription, timer } from 'rxjs';
-import { StateService } from '../state/state';
+
 import { ConfigService } from '../config/config';
+import { LoggerService } from '../logger/logger';
+import { StateService } from '../state/state';
 
 export type Action = (s: StateService) => Promise<any>;
 export type ActionList = Array<Action>;
@@ -21,11 +23,13 @@ export const getTimeConfig = (configService: ConfigService): TimeConfig =>
 
 export type TimeServiceFactory = (deps: {
   configService: ConfigService;
+  loggerService: LoggerService;
   stateService: StateService;
 }) => TimeService;
 export const timeServiceFactory: TimeServiceFactory = ({
-  stateService,
   configService,
+  loggerService,
+  stateService,
 }): TimeService => {
   const internal: { actionQueue: ActionList; timer?: Subscription } = {
     actionQueue: [],
@@ -39,7 +43,7 @@ export const timeServiceFactory: TimeServiceFactory = ({
         timeConfig.startDelay,
         timeConfig.period,
       ).subscribe(() => {
-        console.log('TIC-TOC');
+        loggerService.debug('Tic-toc !');
         return Promise.all(
           internal.actionQueue.map(action => action(stateService)),
         ).then(() => (internal.actionQueue = []));
