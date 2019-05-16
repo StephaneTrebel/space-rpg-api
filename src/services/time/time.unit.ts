@@ -1,5 +1,6 @@
 import tape from 'tape';
 
+import { configServiceFactory } from '../config/config';
 import { EMPTY_STATE, stateServiceFactory, StateService } from '../state/state';
 
 import * as testedModule from './time';
@@ -10,7 +11,10 @@ tape('Time Service', (functionTest: tape.Test) => {
     const action: testedModule.Action = 'foo' as any;
     test.deepEqual(
       testedModule
-        .timeServiceFactory(stateServiceFactory(EMPTY_STATE))
+        .timeServiceFactory({
+          configService: configServiceFactory({}),
+          stateService: stateServiceFactory(EMPTY_STATE),
+        })
         .addAction(action),
       [action],
       'addAction() SHOULD add an Action to its action queue',
@@ -27,11 +31,15 @@ tape('Time Service', (functionTest: tape.Test) => {
           'SHOULD execute the action list after the period has elapsed',
         ),
       );
-    const timeService = testedModule.timeServiceFactory(
-      stateServiceFactory(EMPTY_STATE),
-      PERIOD,
-      START_DELAY,
-    );
+    const timeService = testedModule.timeServiceFactory({
+      configService: configServiceFactory({
+        time: {
+          period: PERIOD,
+          startDelay: START_DELAY,
+        },
+      }),
+      stateService: stateServiceFactory(EMPTY_STATE),
+    });
     timeService.addAction(action);
     timeService.start();
     setTimeout(() => {

@@ -1,9 +1,11 @@
 import get from 'lodash/fp/get';
 
 import { LoggerConfig } from '../logger/logger';
+import { TimeConfig } from '../time/time';
 
 export interface Config {
   logger?: LoggerConfig;
+  time?: TimeConfig;
 }
 
 export interface ConfigService {
@@ -13,5 +15,5 @@ export interface ConfigService {
 type ConfigServiceFactory = (config: Config) => ConfigService;
 
 export const configServiceFactory: ConfigServiceFactory = config => ({
-    get: (path: string) => get(path, config as any),
+  get: (path: string) => get(path, config as any),
 });

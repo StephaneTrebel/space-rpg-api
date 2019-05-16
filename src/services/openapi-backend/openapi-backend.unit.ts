@@ -1,5 +1,6 @@
 import tape from 'tape';
 
+import { configServiceFactory } from '../config/config';
 import { loggerServiceFactory } from '../logger/logger';
 import { stateServiceFactory, EMPTY_STATE } from '../state/state';
 import { timeServiceFactory } from '../time/time';
@@ -24,6 +25,9 @@ tape('OpenAPI Backend', (test: tape.Test) => {
     backendEngine: MockBackEndEngine,
     loggerService: loggerServiceFactory({ nolog: true }),
     stateService,
-    timeService: timeServiceFactory(stateService),
+    timeService: timeServiceFactory({
+      configService: configServiceFactory({}),
+      stateService,
+    }),
   });
 });

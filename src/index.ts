@@ -20,7 +20,10 @@ export const main = (deps: {
   const configService = configServiceFactory(config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
   const stateService = stateServiceFactory({ playerList: [], universe });
-  const timeService = timeServiceFactory(stateService);
+  const timeService = timeServiceFactory({
+    configService,
+    stateService,
+  });
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,
