@@ -12,8 +12,8 @@ export interface ConfigService {
   get: (path: string) => any;
 }
 
-type ConfigServiceFactory = (config: Config) => ConfigService;
+type ConfigServiceFactory = (config?: Config) => ConfigService;
 
-export const configServiceFactory: ConfigServiceFactory = config => ({
+export const configServiceFactory: ConfigServiceFactory = (config = {}) => ({
   get: (path: string) => get(path, config as any),
 });

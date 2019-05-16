@@ -26,7 +26,7 @@ tape('OpenAPI Backend', (test: tape.Test) => {
     loggerService: loggerServiceFactory(),
     stateService,
     timeService: timeServiceFactory({
-      configService: configServiceFactory({}),
+      configService: configServiceFactory(),
       loggerService: loggerServiceFactory(),
       stateService,
     }),

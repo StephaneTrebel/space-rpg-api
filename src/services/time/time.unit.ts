@@ -13,7 +13,7 @@ tape('Time Service', (functionTest: tape.Test) => {
     test.deepEqual(
       testedModule
         .timeServiceFactory({
-          configService: configServiceFactory({}),
+          configService: configServiceFactory(),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
         })
