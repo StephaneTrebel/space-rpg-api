@@ -1,0 +1,44 @@
+post:
+  summary: Start displacing an entity to designated coordinates
+  description: >
+    Given entity will start to move towards given coordinates. Entity can be anything that has a position in space (a player, a planet, a comet, and so on.)
+  operationId: startDisplacement
+  tags:
+    - Displace
+  requestBody:
+    required: true
+    description: Informations for entity displacement over time
+    content:
+      'application/json':
+        schema:
+          type: object
+          required:
+            - entityId
+            - targetCoordinates
+          properties:
+            entityId:
+              $ref: '../../../specifications/components.yaml#/components/schemas/id'
+            targetCoordinates:
+              $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+  responses:
+    201:
+      description: >
+        New displacement action started. Response includes and id that can be use to track this action until its completion, after which it will simply disappear.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              displacementId:
+                $ref: '../../../specifications/components.yaml#/components/schemas/id'
+      links:
+        Ping:
+          operationRef: /displace/:displacementId
+          description: >
+            Displacement action current status
+    500:
+      description: Service error
+      content:
+        application/json:
+          schema:
+            $ref: '../../../specifications/components.yaml#/components/schemas/ServiceError'

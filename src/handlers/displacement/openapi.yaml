@@ -1,0 +1,25 @@
+get:
+  summary: Retrieve current displacement status
+  operationId: getDisplacementStatus
+  tags:
+    - Displacement
+  responses:
+    200:
+      description: Current displacement status
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              currentPosition:
+                $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
+              displacementId:
+                $ref: '../../specifications/components.yaml#/components/schemas/id'
+              targetCoordinates:
+                $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
+    500:
+      description: Service error
+      content:
+        application/json:
+          schema:
+            $ref: '../../specifications/components.yaml#/components/schemas/ServiceError'

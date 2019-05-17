@@ -6,6 +6,14 @@ components:
       example: 123456
       type: integer
       format: int32
+    coordinate:
+      description: A position on an axis
+      example: 123456
+      type: number
+    id:
+      description: An entity unique identifier
+      example: 'igmq45ef3qz4f3q4z3ef4qz63ef45q63zef43q4zef3'
+      type: string
     message:
       description: A short message
       example: This an example of a short message
@@ -16,6 +24,8 @@ components:
       type: string
 
     # Complex schemas
+
+    ## Service schemas
     ServiceError:
       type: object
       required:
@@ -23,7 +33,21 @@ components:
         - message
       properties:
         code:
-          type: integer
-          format: int32
+          $ref: '#/components/schemas/code'
         message:
           $ref: '#/components/schemas/message'
+
+    ## Business schemas
+    coordinates:
+      type: object
+      required:
+        - x
+        - y
+        - z
+      properties:
+        x:
+          $ref: '#/components/schemas/coordinate'
+        y:
+          $ref: '#/components/schemas/coordinate'
+        z:
+          $ref: '#/components/schemas/coordinate'
