@@ -3,8 +3,8 @@ import tape from 'tape';
 
 import { main } from '../src/index';
 
-import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
-import { spawnWebServer } from './services/webserver/webserver';
+import { spawnAPIBackend } from './services/openapi-backend/service';
+import { spawnWebServer } from './services/webserver/service';
 
 export const runE2ETest = (test: tape.Test) => (
   testCase: (test: tape.Test) => any,

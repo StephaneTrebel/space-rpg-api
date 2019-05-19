@@ -1,5 +1,6 @@
 import tape from 'tape';
-import * as testedModule from './root';
+
+import * as testedModule from './handler';
 
 tape('Root handler', (t: tape.Test) => {
   t.test('root()', (test: tape.Test) =>

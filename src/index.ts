@@ -6,12 +6,13 @@ import { OpenAPIBackend } from 'openapi-backend/backend';
 
 import { EMPTY_UNIVERSE, Universe } from './assets/universe';
 
-import { Config, configServiceFactory } from './services/config/config';
-import { loggerServiceFactory } from './services/logger/logger';
-import { spawnAPIBackend } from './services/openapi-backend/openapi-backend';
-import { stateServiceFactory } from './services/state/state';
-import { timeServiceFactory } from './services/time/time';
-import { spawnWebServer } from './services/webserver/webserver';
+import { configServiceFactory } from './services/config/service';
+import { Config } from './services/config/types';
+import { loggerServiceFactory } from './services/logger/service';
+import { spawnAPIBackend } from './services/openapi-backend/service';
+import { stateServiceFactory } from './services/state/service';
+import { timeServiceFactory } from './services/time/service';
+import { spawnWebServer } from './services/webserver/service';
 
 export const main = (deps: {
   spawnAPIBackend: typeof spawnAPIBackend;

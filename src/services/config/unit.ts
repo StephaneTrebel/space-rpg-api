@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import * as testedModule from './config';
+import * as testedModule from './service';
 
 tape('Config service', (fnTest: tape.Test) => {
   fnTest.test('get()', (caseTest: tape.Test) => {

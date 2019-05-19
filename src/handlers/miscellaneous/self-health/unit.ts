@@ -1,5 +1,6 @@
 import tape from 'tape';
-import * as testedModule from './self-health';
+
+import * as testedModule from './handler';
 
 tape('Self-health handler', (t: tape.Test) => {
   t.test('selfHealthPing()', (test: tape.Test) =>

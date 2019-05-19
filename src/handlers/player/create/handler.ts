@@ -1,9 +1,9 @@
 import { Response } from 'express';
 import { Context } from 'openapi-backend';
 
-import { StateService, StateMutation } from '../../../services/state/state';
+import { StateService, StateMutation } from '../../../services/state/types';
 
-import { Player } from '../player.types';
+import { Player } from '../types';
 
 export const createPlayer = (deps: { stateService: StateService }) => (
   context: Context,

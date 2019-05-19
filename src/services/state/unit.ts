@@ -2,10 +2,12 @@ import tape from 'tape';
 
 import { EMPTY_UNIVERSE } from '../../assets/universe';
 
-import { Player } from '../../handlers/player/player.types';
-import { createMockPlayer } from '../../handlers/player/create/create';
+import { Player } from '../../handlers/player/types';
+import { createMockPlayer } from '../../handlers/player/create/handler';
 
-import * as testedModule from './state';
+import { StateProperties, StateMutation } from "./types";
+
+import * as testedModule from './service';
 
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
@@ -17,7 +19,7 @@ tape('State Service', (functionTest: tape.Test) => {
           playerList: MOCK_PLAYER_LIST,
           universe: EMPTY_UNIVERSE,
         })
-        .get(testedModule.StateProperties.PLAYER_LIST),
+        .get(StateProperties.PLAYER_LIST),
       MOCK_PLAYER_LIST,
       'get() SHOULD retrieve playerList from a State',
     );
@@ -31,7 +33,7 @@ tape('State Service', (functionTest: tape.Test) => {
         test.deepEqual(
           testedModule
             .stateServiceFactory(testedModule.EMPTY_STATE)
-            .mutate(testedModule.StateMutation.CREATE_PLAYER)({
+            .mutate(StateMutation.CREATE_PLAYER)({
             username: 'foo',
           }),
           { ...testedModule.EMPTY_STATE, playerList: [{ username: 'foo' }] },

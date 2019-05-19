@@ -1,8 +1,8 @@
 import tape from 'tape';
 
-import { stateServiceFactory } from '../../../services/state/state';
+import { stateServiceFactory } from '../../../services/state/service';
 
-import * as testedModule from './create';
+import * as testedModule from './handler';
 
 tape('Player creation handler', (t: tape.Test) => {
   t.test('createPlayer()', (test: tape.Test) => {

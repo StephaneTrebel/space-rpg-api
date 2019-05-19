@@ -1,5 +1,6 @@
 import tape from 'tape';
-import * as testedModule from './webserver';
+
+import * as testedModule from './service';
 
 tape('Webserver', (test: tape.Test) => {
   test.plan(3);

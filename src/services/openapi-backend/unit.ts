@@ -1,11 +1,11 @@
 import tape from 'tape';
 
-import { configServiceFactory } from '../config/config';
-import { loggerServiceFactory } from '../logger/logger';
-import { stateServiceFactory, EMPTY_STATE } from '../state/state';
-import { timeServiceFactory } from '../time/time';
+import { configServiceFactory } from '../config/service';
+import { loggerServiceFactory } from '../logger/service';
+import { stateServiceFactory, EMPTY_STATE } from '../state/service';
+import { timeServiceFactory } from '../time/service';
 
-import * as testedModule from './openapi-backend';
+import * as testedModule from './service';
 
 tape('OpenAPI Backend', (test: tape.Test) => {
   test.plan(1);

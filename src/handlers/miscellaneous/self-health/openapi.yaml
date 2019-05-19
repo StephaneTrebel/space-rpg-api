@@ -12,7 +12,7 @@ get:
             type: object
             properties:
               message:
-                $ref: '../../specifications/components.yaml#/components/schemas/message'
+                $ref: '../../../specifications/components.yaml#/components/schemas/message'
       links:
         Ping:
           operationRef: /self-health/ping
@@ -23,4 +23,4 @@ get:
       content:
         application/json:
           schema:
-            $ref: '../../specifications/components.yaml#/components/schemas/ServiceError'
+            $ref: '../../../specifications/components.yaml#/components/schemas/ServiceError'

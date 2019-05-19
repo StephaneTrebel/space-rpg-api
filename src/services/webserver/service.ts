@@ -3,14 +3,6 @@ import http from 'http';
 import express from 'express';
 import * as OpenAPIBackend from 'openapi-backend';
 
-type Callable<T> = () => T;
-
-export interface ExpressDep extends Callable<ExpressDep> {
-  json: () => ExpressDep;
-  listen: (port: number, callback?: () => void) => http.Server;
-  use: (handler: express.RequestHandler) => ExpressDep;
-}
-
 export type SpawnWebServer = (deps: {
   cors: () => any;
   express: typeof express;
@@ -21,7 +13,6 @@ export type SpawnWebServer = (deps: {
     res: express.Response,
   ) => void;
 }) => http.Server;
-
 export const spawnWebServer: SpawnWebServer = deps => api => {
   return (
     deps

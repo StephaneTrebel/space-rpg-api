@@ -1,22 +1,20 @@
 import { Subscription, timer } from 'rxjs';
 
-import { ConfigService } from '../config/config';
-import { LoggerService } from '../logger/logger';
-import { StateService } from '../state/state';
+import { Id } from '../../types/id';
 
-export type Action = (s: StateService) => Promise<any>;
-export type ActionList = Array<Action>;
+import { ConfigService } from '../config/types';
 
-export interface TimeService {
-  addAction: (b: Action) => void;
-  start: () => Subscription;
-  stop: () => void;
-}
+import {
+  Action,
+  ActionList,
+  ActionType,
+  BaseAction,
+  Executor,
+  TimeConfig,
+  TimeService,
+  TimeServiceFactory,
+} from './types';
 
-export interface TimeConfig {
-  startDelay?: number;
-  period?: number;
-}
 export const getTimeConfig = (configService: ConfigService): TimeConfig =>
   configService.get('time');
 
@@ -25,17 +23,19 @@ export const addAction = (actionQueue: ActionList) => (action: Action) => [
   action,
 ];
 
-type CreateTimer = (
+export const createTimer: (
   timeConfig?: TimeConfig,
-) => (fn: () => void) => Subscription;
-export const createTimer: CreateTimer = (timeConfig = {}) => fn =>
+) => (fn: () => void) => Subscription = (timeConfig = {}) => fn =>
   timer(timeConfig.startDelay, timeConfig.period).subscribe(fn);
 
-export type TimeServiceFactory = (deps: {
-  configService: ConfigService;
-  loggerService: LoggerService;
-  stateService: StateService;
-}) => TimeService;
+export const getAction = (actionList: ActionList) => (id: Id) => {
+  const maybeAction = actionList.find(action => action.id === id);
+  if (!!maybeAction) {
+    return maybeAction;
+  }
+  throw new Error(`Cannot find action with id ${id}`);
+};
+
 export const timeServiceFactory: TimeServiceFactory = ({
   configService,
   loggerService,
@@ -47,13 +47,26 @@ export const timeServiceFactory: TimeServiceFactory = ({
   return {
     addAction: (action: Action) =>
       (internal.actionQueue = addAction(internal.actionQueue)(action)),
+    getAction: getAction(internal.actionQueue),
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.debug('Tic-toc !');
         return Promise.all(
-          internal.actionQueue.map(action => action(stateService)),
+          internal.actionQueue.map(action => action.executor(stateService)),
         ).then(() => (internal.actionQueue = []));
       })),
     stop: () => internal.timer && internal.timer.unsubscribe(),
   };
 };
+
+export const createBaseActionMock = ({
+  id,
+  executor,
+}: {
+  id: string;
+  executor: Executor;
+}): BaseAction => ({
+  executor,
+  id,
+  type: ActionType.BASE,
+});

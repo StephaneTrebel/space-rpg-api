@@ -12,11 +12,11 @@ servers:
 
 paths:
   /:
-    $ref: 'src/handlers/root/root.yaml'
+    $ref: 'src/handlers/root/openapi.yaml'
   /self-health/ping:
-    $ref: 'src/handlers/miscellaneous/self-health.yaml'
+    $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /player/create:
-    $ref: 'src/handlers/player/create/create.yaml'
+    $ref: 'src/handlers/player/create/openapi.yaml'
   /displacement/start:
     $ref: 'src/handlers/displacement/start/openapi.yaml'
   /displacement/:displacement:

@@ -1,19 +1,9 @@
 import { Universe, EMPTY_UNIVERSE } from '../../assets/universe';
-import { Player } from '../../handlers/player/player.types';
 
-export enum StateProperties {
-  PLAYER_LIST = 'playerList',
-  UNIVERSE = 'universe',
-}
+import { Displacement } from '../../handlers/displacement/types';
+import { Player } from '../../handlers/player/types';
 
-export interface State {
-  [StateProperties.PLAYER_LIST]: Array<Player>;
-  [StateProperties.UNIVERSE]: Universe;
-}
-
-export enum StateMutation {
-  CREATE_PLAYER,
-}
+import { State, StateMutation, StateProperties } from './types';
 
 const mutations = {
   [StateMutation.CREATE_PLAYER]: (currentState: State) => (
@@ -21,6 +11,13 @@ const mutations = {
   ): State => ({
     ...currentState,
     playerList: [...currentState.playerList, payload],
+  }),
+  [StateMutation.DISPLACE_ENTITY]: (currentState: State) => (
+    // @TODO WIP
+    _payload: Displacement,
+  ): State => ({
+    ...currentState,
+    playerList: [...currentState.playerList],
   }),
 };
 

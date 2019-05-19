@@ -2,20 +2,21 @@ import fs from 'fs';
 
 import * as yaml from 'js-yaml';
 
-import { StateService } from '../state/state';
+import { StateService } from '../state/service';
 
+import { getDisplacement } from '../../handlers/displacement/handler';
+import { startDisplacement } from '../../handlers/displacement/start/handler';
+import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
 import {
   notFound,
   notImplemented,
   validationFail,
-} from '../../handlers/miscellaneous/openapi-validators';
+} from '../../handlers/miscellaneous/openapi-validators/handler';
+import { createPlayer } from '../../handlers/player/create/handler';
+import { root } from '../../handlers/root/handler';
 
-import { selfHealthPing } from '../../handlers/miscellaneous/self-health';
-import { createPlayer } from '../../handlers/player/create/create';
-import { root } from '../../handlers/root/root';
-
-import { LoggerService } from '../logger/logger';
-import { TimeService } from '../time/time';
+import { LoggerService } from '../logger/types';
+import { TimeService } from '../time/types';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -33,10 +34,12 @@ const createBackend = (deps: {
     definition: specification,
     handlers: {
       createPlayer: createPlayer(deps),
+      getDisplacement,
       notFound,
       notImplemented,
       root,
       selfHealthPing,
+      startDisplacement,
       validationFail,
     },
   });

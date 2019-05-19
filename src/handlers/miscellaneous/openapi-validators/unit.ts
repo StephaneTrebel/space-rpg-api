@@ -1,5 +1,6 @@
 import tape from 'tape';
-import * as testedModule from './openapi-validators';
+
+import * as testedModule from './handler';
 
 tape('OpenAPI Validators', (t: tape.Test) => {
   t.test('validationFail()', (test: tape.Test) =>

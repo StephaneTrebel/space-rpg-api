@@ -1,15 +1,10 @@
 // istanbul ignore file
 import fs from 'fs';
-import { createLogger, format, transports } from 'winston';
-import { Format } from 'logform';
 
-export interface LoggerConfig {
-  combinedFile?: boolean;
-  console?: boolean;
-  errorFile?: boolean;
-  format?: boolean;
-  nolog?: boolean;
-}
+import { Format } from 'logform';
+import { createLogger, format, transports } from 'winston';
+
+import { LoggerConfig, LoggerService } from './types';
 
 type CreateTransportList = (
   config: LoggerConfig,
@@ -61,16 +56,6 @@ const createFormat: FormatFactory = config =>
         format.json(),
       )
     : undefined;
-
-type Logger = (x: any) => void;
-
-export interface LoggerService {
-  debug: Logger;
-  error: Logger;
-  info: Logger;
-  log: Logger;
-  warn: Logger;
-}
 
 type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;
 

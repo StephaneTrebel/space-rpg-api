@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import { runE2ETest, getPromisified } from '../../e2e-utils';
+import { runE2ETest, getPromisified } from '../../../e2e-utils';
 
 const ENDPOINT = '/self-health/ping';
 tape(ENDPOINT, (t: tape.Test) =>
