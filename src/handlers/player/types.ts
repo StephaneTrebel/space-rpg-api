@@ -1,8 +1,10 @@
+import { Id } from '../../types/id';
 import { Position } from '../../types/position';
 
 export interface Player {
-  username: string;
   currentPosition: Position;
+  id: Id;
+  username: string;
 }
 
 export type PlayerList = Array<Player>;

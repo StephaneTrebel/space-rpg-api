@@ -31,12 +31,15 @@ export const MOCK_PLAYER: Player = {
     y: 0,
     z: 0,
   },
+  id: 'lolilol',
   username: 'foo',
 };
 export const createMockPlayer = ({
   currentPosition,
+  id,
   username,
 } = MOCK_PLAYER): Player => ({
   currentPosition,
+  id,
   username,
 });
