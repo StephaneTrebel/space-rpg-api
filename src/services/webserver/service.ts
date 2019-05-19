@@ -26,3 +26,22 @@ export const spawnWebServer: SpawnWebServer = deps => api => {
       .listen(9000)
   );
 };
+
+export interface Link {
+  href: string;
+  rel: string;
+}
+export type LinkList = Array<Link>;
+
+export interface HandlerResponse {
+  status: number;
+  payload: any;
+  links: LinkList;
+}
+export const sendResponse = (res: express.Response) => (
+  handlerResponse: HandlerResponse,
+) =>
+  res.status(handlerResponse.status).json({
+    ...handlerResponse.payload,
+    links: handlerResponse.links,
+  });

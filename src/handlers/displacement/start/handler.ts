@@ -6,20 +6,23 @@ import { Position } from '../../../types/position';
 
 import { StateProperties, StateService } from '../../../services/state/types';
 import { TimeService, ActionType } from '../../../services/time/types';
+import { sendResponse } from '../../../services/webserver/service';
 
 import { Displacement } from '../types';
 import { Player, PlayerList } from '../../player/types';
 
 export const createDisplacement = ({
   currentPosition,
+  id,
   targetCoordinates,
 }: {
   currentPosition: Position;
+  id?: Id;
   targetCoordinates: Position;
 }): Displacement => ({
   currentPosition,
   executor: () => Promise.resolve(),
-  id: 'foo',
+  id: id || 'foo',
   targetCoordinates,
   type: ActionType.DISPLACEMENT,
 });
@@ -30,12 +33,13 @@ export const getTargetCoordinatesFromContext = (context: Context): Position =>
 export const getEntityIdFromContext = (context: Context): string =>
   context.request && context.request.requestBody.entityId;
 
+// @TODO I should move this elsewhere, most likely the future Entity handler
 export const getEntityFromState = ({
-  stateService,
   entityId,
+  stateService,
 }: {
-  stateService: StateService;
   entityId: Id;
+  stateService: StateService;
 }): Player => {
   const entity = (stateService.get(
     StateProperties.PLAYER_LIST,
@@ -47,25 +51,15 @@ export const getEntityFromState = ({
 };
 
 export const getEntityCurrentPosition = ({
-  stateService,
   entityId,
+  stateService,
 }: {
-  stateService: StateService;
   entityId: Id;
+  stateService: StateService;
 }): Position => getEntityFromState({ stateService, entityId }).currentPosition;
 
-export const sendResponse = (res: Response) => (displacementId: string) =>
-  res.status(201).json({
-    displacementId,
-    links: [
-      {
-        href: `/target/${displacementId}/status`,
-        rel: 'status',
-      },
-    ],
-  });
-
 export const startDisplacement = (deps: {
+  id?: Id;
   stateService: StateService;
   timeService: TimeService;
 }) => (context: Context, _req: any, res: Response) => {
@@ -74,8 +68,18 @@ export const startDisplacement = (deps: {
       entityId: getEntityIdFromContext(context),
       stateService: deps.stateService,
     }),
+    id: deps.id,
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
   deps.timeService.addAction(displacement);
-  sendResponse(res)(displacement.id);
+  sendResponse(res)({
+    links: [
+      {
+        href: `/target/${displacement.id}`,
+        rel: 'status',
+      },
+    ],
+    payload: { displacementId: displacement.id },
+    status: 201,
+  });
 };

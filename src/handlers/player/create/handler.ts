@@ -25,11 +25,18 @@ export const createPlayer = (deps: { stateService: StateService }) => (
   });
 };
 
-export const createMockPlayer: () => Player = () => ({
+export const MOCK_PLAYER: Player = {
   currentPosition: {
     x: 0,
     y: 0,
     z: 0,
   },
   username: 'foo',
+};
+export const createMockPlayer = ({
+  currentPosition,
+  username,
+} = MOCK_PLAYER): Player => ({
+  currentPosition,
+  username,
 });
