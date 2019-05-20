@@ -2,7 +2,7 @@
 import fs from 'fs';
 
 import { Format } from 'logform';
-import { createLogger, format, transports } from 'winston';
+import { config, createLogger, format, transports } from 'winston';
 
 import { LoggerConfig, LoggerService } from './types';
 
@@ -13,9 +13,9 @@ type CreateTransportList = (
   | transports.ConsoleTransportInstance
   | transports.StreamTransportInstance
 >;
-const createTransportList: CreateTransportList = config => {
+const createTransportList: CreateTransportList = loggerConfig => {
   const transportList = [];
-  if (config.nolog) {
+  if (loggerConfig.nolog) {
     transportList.push(
       new transports.Stream({
         stream: fs.createWriteStream('/dev/null'),
@@ -23,7 +23,7 @@ const createTransportList: CreateTransportList = config => {
     );
     return transportList;
   }
-  if (config.errorFile) {
+  if (loggerConfig.errorFile) {
     transportList.push(
       new transports.File({
         filename: 'error.log',
@@ -31,10 +31,10 @@ const createTransportList: CreateTransportList = config => {
       }),
     );
   }
-  if (config.combinedFile) {
+  if (loggerConfig.combinedFile) {
     transportList.push(new transports.File({ filename: 'combined.log' }));
   }
-  if (config.console) {
+  if (loggerConfig.console) {
     transportList.push(
       new transports.Console({
         format: format.combine(format.colorize(), format.simple()),
@@ -45,8 +45,8 @@ const createTransportList: CreateTransportList = config => {
 };
 
 type FormatFactory = (config: LoggerConfig) => Format | undefined;
-const createFormat: FormatFactory = config =>
-  config.format
+const createFormat: FormatFactory = loggerConfig =>
+  loggerConfig.format
     ? format.combine(
         format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss',
@@ -60,11 +60,11 @@ const createFormat: FormatFactory = config =>
 type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;
 
 export const loggerServiceFactory: LoggerServiceFactory = (
-  config: LoggerConfig = { nolog: true },
+  loggerConfig: LoggerConfig = { nolog: true },
 ) =>
   createLogger({
-    defaultMeta: { service: 'space-rpg-api' },
-    format: createFormat(config),
-    level: 'info',
-    transports: createTransportList(config),
+    format: createFormat(loggerConfig),
+    level: 'debug',
+    levels: config.syslog.levels,
+    transports: createTransportList(loggerConfig),
   });
