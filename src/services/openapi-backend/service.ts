@@ -34,12 +34,12 @@ const createBackend = (deps: {
     definition: specification,
     handlers: {
       createPlayer: createPlayer(deps),
-      getDisplacement,
+      getDisplacement: getDisplacement(deps),
       notFound,
       notImplemented,
       root,
       selfHealthPing,
-      startDisplacement,
+      startDisplacement: startDisplacement(deps),
       validationFail,
     },
   });
