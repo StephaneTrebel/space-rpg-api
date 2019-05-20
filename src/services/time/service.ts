@@ -9,7 +9,6 @@ import {
   ActionList,
   ActionType,
   BaseAction,
-  Executor,
   TimeConfig,
   TimeService,
   TimeServiceFactory,
@@ -47,7 +46,7 @@ export const timeServiceFactory: TimeServiceFactory = ({
   return {
     addAction: (action: Action) =>
       (internal.actionQueue = addAction(internal.actionQueue)(action)),
-    getAction: getAction(internal.actionQueue),
+    getAction: (id: string) => getAction(internal.actionQueue)(id),
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.debug('Tic-toc !');
@@ -59,13 +58,15 @@ export const timeServiceFactory: TimeServiceFactory = ({
   };
 };
 
+export const MOCK_BASE_ACTION: BaseAction = {
+  executor: () => Promise.resolve(),
+  id: 'mock base action',
+  type: ActionType.BASE,
+};
 export const createBaseActionMock = ({
-  id,
   executor,
-}: {
-  id: string;
-  executor: Executor;
-}): BaseAction => ({
+  id,
+}: BaseAction = MOCK_BASE_ACTION): BaseAction => ({
   executor,
   id,
   type: ActionType.BASE,
