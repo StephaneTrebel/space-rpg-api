@@ -51,6 +51,15 @@ components:
           $ref: '#/components/schemas/coordinate'
         z:
           $ref: '#/components/schemas/coordinate'
+
+  # Reusable links
+  links:
+    Ping:
+      operationRef: /self-health/ping
+      description: >
+        You can use this endpoint to test whether the server is online.
+
+  # Reusable responses
   responses:
     500:
       description: Service error

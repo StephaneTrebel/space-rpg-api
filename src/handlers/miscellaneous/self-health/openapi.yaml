@@ -15,8 +15,6 @@ get:
                 $ref: '../../../specifications/components.yaml#/components/schemas/message'
       links:
         Ping:
-          operationRef: /self-health/ping
-          description: >
-            You can use this endpoint to test whether the server is online.
+          $ref: '../../../specifications/components.yaml#/components/links/Ping'
     500:
       $ref: '../../../specifications/components.yaml#/components/responses/500'
