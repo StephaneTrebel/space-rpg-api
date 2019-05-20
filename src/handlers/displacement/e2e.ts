@@ -6,7 +6,7 @@
 
 // tape(ENDPOINT, (subTest: tape.Test) => {
   // subTest.test('WHEN request has an invalid body', (t: tape.Test) =>
-    // runE2ETest(t)(test =>
+    // runE2ETest()(t)(test =>
       // postPromisified({
         // body: '',
         // url: `http://127.0.0.1:9000${ENDPOINT}`,
@@ -23,7 +23,7 @@
   // );
   // subTest.test('WHEN request has a valid body', (t: tape.Test) => {
     // const MOCK_USERNAME = 'mock_username';
-    // runE2ETest(t)(test =>
+    // runE2ETest()(t)(test =>
       // postPromisified({
         // body: { username: MOCK_USERNAME },
         // json: true,
