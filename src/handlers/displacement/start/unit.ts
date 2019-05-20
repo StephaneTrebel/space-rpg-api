@@ -68,13 +68,13 @@ tape('Displacement handler', (functions: tape.Test) => {
   functions.test('getEntityIdFromContext()', (cases: tape.Test) => {
     cases.test('WHEN given a Context object', (test: tape.Test) => {
       test.plan(1);
-      const entityId: Id = 'foo';
+      const id: Id = 'foo';
       const context: any = {
-        request: { requestBody: { entityId } },
+        request: { requestBody: { entityId: id } },
       };
       test.equal(
         testedModule.getEntityIdFromContext(context),
-        entityId,
+        id,
         'SHOULD return the Context entity id',
       );
       test.end();
@@ -86,15 +86,16 @@ tape('Displacement handler', (functions: tape.Test) => {
       'WHEN given an entity id and a State lacking this entity',
       (test: tape.Test) => {
         test.plan(1);
-        const entityId: Id = 'bar';
+        const id: Id = 'bar';
         const entity: Player = createMockPlayer({
           ...MOCK_PLAYER,
-          username: entityId,
+          id,
         });
         test.throws(
           () =>
             testedModule.getEntityFromState({
-              entityId: 'qux',
+              id: 'qux',
+              loggerService: loggerServiceFactory(),
               stateService: stateServiceFactory({
                 ...EMPTY_STATE,
                 playerList: [entity],
@@ -110,14 +111,15 @@ tape('Displacement handler', (functions: tape.Test) => {
       'WHEN given an entity id and a State having this entity',
       (test: tape.Test) => {
         test.plan(1);
-        const entityId: Id = 'bar';
+        const id: Id = 'bar';
         const entity: Player = createMockPlayer({
           ...MOCK_PLAYER,
-          username: entityId,
+          id,
         });
         test.equal(
           testedModule.getEntityFromState({
-            entityId,
+            id,
+            loggerService: loggerServiceFactory(),
             stateService: stateServiceFactory({
               ...EMPTY_STATE,
               playerList: [entity],
@@ -136,7 +138,7 @@ tape('Displacement handler', (functions: tape.Test) => {
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(1);
-        const entityId: Id = 'getEntityCurrentPosition';
+        const id: Id = 'getEntityCurrentPosition';
         const currentPosition: Position = {
           x: 124,
           y: 456,
@@ -145,11 +147,12 @@ tape('Displacement handler', (functions: tape.Test) => {
         const entity: Player = createMockPlayer({
           ...MOCK_PLAYER,
           currentPosition,
-          username: entityId,
+          id,
         });
         test.equal(
           testedModule.getEntityCurrentPosition({
-            entityId,
+            id,
+            loggerService: loggerServiceFactory(),
             stateService: stateServiceFactory({
               ...EMPTY_STATE,
               playerList: [entity],
@@ -168,7 +171,7 @@ tape('Displacement handler', (functions: tape.Test) => {
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(3);
-        const entityId: Id = 'startDisplacement';
+        const id: Id = 'startDisplacement';
         const currentPosition: Position = {
           x: 271,
           y: 923,
@@ -177,7 +180,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const entity: Player = createMockPlayer({
           ...MOCK_PLAYER,
           currentPosition,
-          username: entityId,
+          id,
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
@@ -191,11 +194,12 @@ tape('Displacement handler', (functions: tape.Test) => {
           stateService,
         });
         testedModule.startDisplacement({
-          id: entityId,
+          id,
+          loggerService,
           stateService,
           timeService,
         })(
-          { request: { requestBody: { entityId } } } as any,
+          { request: { requestBody: { entityId: id } } } as any,
           {} as any,
           {
             status: (returnedStatus: number) => ({
@@ -217,8 +221,8 @@ tape('Displacement handler', (functions: tape.Test) => {
                   returnedJSON.links,
                   [
                     {
-                      href: `/target/${entityId}`,
-                      rel: 'status',
+                      href: `/displacement/${id}`,
+                      rel: 'details',
                     },
                   ],
                   'SHOULD sucessfully return a body having a link to /displacement endpoint',

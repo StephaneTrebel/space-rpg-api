@@ -4,6 +4,7 @@ import { Context } from 'openapi-backend';
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
 
+import { LoggerService } from '../../../services/logger/types';
 import { StateProperties, StateService } from '../../../services/state/types';
 import { TimeService, ActionType } from '../../../services/time/types';
 import { sendResponse } from '../../../services/webserver/service';
@@ -35,48 +36,60 @@ export const getEntityIdFromContext = (context: Context): string =>
 
 // @TODO I should move this elsewhere, most likely the future Entity handler
 export const getEntityFromState = ({
-  entityId,
+  id,
+  loggerService,
   stateService,
 }: {
-  entityId: Id;
+  id: Id;
+  loggerService: LoggerService;
   stateService: StateService;
 }): Player => {
+  loggerService.debug('Entering getEntityFromState…');
   const entity = (stateService.get(
     StateProperties.PLAYER_LIST,
-  ) as PlayerList).find(player => player.username === entityId);
+  ) as PlayerList).find(player => player.id === id);
   if (!!entity) {
     return entity;
   }
-  throw new Error(`No entity with id "${entityId}"`);
+  throw new Error(`No entity with id "${id}"`);
 };
 
 export const getEntityCurrentPosition = ({
-  entityId,
+  id,
+  loggerService,
   stateService,
 }: {
-  entityId: Id;
+  id: Id;
+  loggerService: LoggerService;
   stateService: StateService;
-}): Position => getEntityFromState({ stateService, entityId }).currentPosition;
+}): Position => {
+  loggerService.debug('Entering getEntityCurrentPosition…');
+  return getEntityFromState({ id, loggerService, stateService })
+    .currentPosition;
+};
 
 export const startDisplacement = (deps: {
   id?: Id;
+  loggerService: LoggerService;
   stateService: StateService;
   timeService: TimeService;
 }) => (context: Context, _req: any, res: Response) => {
+  deps.loggerService.debug('Entering startDisplacement…');
   const displacement = createDisplacement({
     currentPosition: getEntityCurrentPosition({
-      entityId: getEntityIdFromContext(context),
+      id: getEntityIdFromContext(context),
+      loggerService: deps.loggerService,
       stateService: deps.stateService,
     }),
     id: deps.id,
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
   deps.timeService.addAction(displacement);
-  sendResponse(res)({
+  return sendResponse(res)({
     links: [
       {
-        href: `/target/${displacement.id}`,
-        rel: 'status',
+        href: `/displacement/${displacement.id}`,
+        rel: 'details',
       },
     ],
     payload: { displacementId: displacement.id },

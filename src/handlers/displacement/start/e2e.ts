@@ -1,62 +1,76 @@
-// import tape from 'tape';
+import tape from 'tape';
 
-// import { runE2ETest, postPromisified } from '../../../e2e-utils';
+import { Id } from '../../../types/id';
+import { Position } from '../../../types/position';
 
-// const ENDPOINT = '/displacement/start';
+import { EMPTY_STATE } from '../../../services/state/service';
 
-// tape(ENDPOINT, (subTest: tape.Test) => {
-  // subTest.test('WHEN request has an invalid body', (t: tape.Test) =>
-    // runE2ETest(t)(test =>
-      // postPromisified({
-        // body: '',
-        // url: `http://127.0.0.1:9000${ENDPOINT}`,
-      // }).then(response => {
-        // const EXPECTED_RETURN_CODE = 400;
-        // test.equals(
-          // response.statusCode,
-          // EXPECTED_RETURN_CODE,
-          // `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
-        // );
-        // test.end();
-      // }),
-    // ),
-  // );
-  // subTest.test('WHEN request has a valid body', (t: tape.Test) => {
-    // const MOCK_USERNAME = 'mock_username';
-    // runE2ETest(t)(test =>
-      // postPromisified({
-        // body: { targetCoordinates: { x: 0, y: 0, z: 0 } },
-        // json: true,
-        // url: `http://127.0.0.1:9000${ENDPOINT}`,
-      // }).then(response => {
-        // const EXPECTED_RETURN_CODE = 201;
-        // test.equals(
-          // response.statusCode,
-          // EXPECTED_RETURN_CODE,
-          // `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
-        // );
-        // test.equals(
-          // response.body.displacementId,
-          // MOCK_DISPLACEMENT_ID,
-          // 'SHOULD return a JSON body having the expected username property',
-        // );
-        // test.equals(
-          // response.body.targetCoordinates,
-          // MOCK_TARGET_,
-          // 'SHOULD return a JSON body having the expected username property',
-        // );
-        // test.deepEqual(
-          // response.body.links,
-          // [
-            // {
-              // href: '/self-health/ping',
-              // rel: 'ping',
-            // },
-          // ],
-          // 'SHOULD return a JSON body having a link to Self-Health Ping endpoint',
-        // );
-        // test.end();
-      // }),
-    // );
-  // });
-// });
+import { runE2ETest, postPromisified } from '../../../e2e-utils';
+
+import { createMockPlayer, MOCK_PLAYER } from '../../player/create/handler';
+
+const ENDPOINT = '/displacement/start';
+
+tape(ENDPOINT, (subTest: tape.Test) => {
+  subTest.test('WHEN request has an invalid body', (caseTest: tape.Test) => {
+    return runE2ETest()(caseTest)(test =>
+      postPromisified({
+        body: '',
+        url: `http://127.0.0.1:9000${ENDPOINT}`,
+      }).then(response => {
+        test.plan(1);
+        const EXPECTED_RETURN_CODE = 400;
+        test.equals(
+          response.statusCode,
+          EXPECTED_RETURN_CODE,
+          `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+        );
+        test.end();
+      }),
+    );
+  });
+
+  subTest.test('GIVEN an existing entity', (givenClause: tape.Test) => {
+    givenClause.test(
+      'WHEN request has a valid body referencing this entity',
+      (caseTest: tape.Test) => {
+        const entityId: Id = `${ENDPOINT} Success`;
+        const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
+        return runE2ETest({
+          ...EMPTY_STATE,
+          playerList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
+        })(caseTest)(test =>
+          postPromisified({
+            body: { entityId, targetCoordinates },
+            json: true,
+            url: `http://127.0.0.1:9000${ENDPOINT}`,
+          }).then(response => {
+            test.plan(3);
+            const EXPECTED_RETURN_CODE = 201;
+            test.equals(
+              response.statusCode,
+              EXPECTED_RETURN_CODE,
+              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+            );
+            test.equals(
+              response.body.displacementId,
+              'foo',
+              'SHOULD return a JSON body having a string id property',
+            );
+            test.deepEqual(
+              response.body.links,
+              [
+                {
+                  href: '/displacement/foo',
+                  rel: 'details',
+                },
+              ],
+              'SHOULD return a JSON body having a link to GET Displacement endpoint',
+            );
+            test.end();
+          }),
+        );
+      },
+    );
+  });
+});
