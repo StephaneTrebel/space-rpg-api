@@ -51,3 +51,10 @@ components:
           $ref: '#/components/schemas/coordinate'
         z:
           $ref: '#/components/schemas/coordinate'
+  responses:
+    500:
+      description: Service error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServiceError'

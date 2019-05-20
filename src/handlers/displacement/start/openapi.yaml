@@ -37,8 +37,4 @@ post:
           description: >
             Displacement action current status
     500:
-      description: Service error
-      content:
-        application/json:
-          schema:
-            $ref: '../../../specifications/components.yaml#/components/schemas/ServiceError'
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
