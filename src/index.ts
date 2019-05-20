@@ -11,16 +11,20 @@ import { Config } from './services/config/types';
 import { loggerServiceFactory } from './services/logger/service';
 import { spawnAPIBackend } from './services/openapi-backend/service';
 import { stateServiceFactory } from './services/state/service';
+import { State } from './services/state/types';
 import { timeServiceFactory } from './services/time/service';
 import { spawnWebServer } from './services/webserver/service';
 
 export const main = (deps: {
   spawnAPIBackend: typeof spawnAPIBackend;
   spawnWebServer: typeof spawnWebServer;
+  initialState?: State;
 }) => (config: Config) => (universe: Universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
-  const stateService = stateServiceFactory({ playerList: [], universe });
+  const stateService = stateServiceFactory(
+    deps.initialState || { playerList: [], universe },
+  );
   const timeService = timeServiceFactory({
     configService,
     loggerService,

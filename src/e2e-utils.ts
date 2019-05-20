@@ -4,19 +4,17 @@ import tape from 'tape';
 import { main } from '../src/index';
 
 import { spawnAPIBackend } from './services/openapi-backend/service';
+import { State } from './services/state/types';
 import { spawnWebServer } from './services/webserver/service';
 
-export const runE2ETest = (test: tape.Test) => (
+export const runE2ETest = (initialState?: State) => (test: tape.Test) => (
   testCase: (test: tape.Test) => any,
 ) =>
-  main({ spawnAPIBackend, spawnWebServer })({ logger: { nolog: true } })().then(
-    (server: any) => {
-      return testCase(test).finally(() => server.close());
-    },
-  );
-
-// to avoid { '0': { Error: self signed certificate code: 'DEPTH_ZERO_SELF_SIGNED_CERT' } }
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+  main({ initialState, spawnAPIBackend, spawnWebServer })({
+    logger: { nolog: true },
+  })().then((server: any) => {
+    return testCase(test).finally(() => server.close());
+  });
 
 interface Headers {
   authorization: string;
