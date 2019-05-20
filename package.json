@@ -6,7 +6,7 @@
   "scripts": {
     "build": "npm run clean:dist && tsc",
     "clean:dist": "rm -rf dist",
-    "lint": "tsc --pretty && tslint --project ./tsconfig.json",
+    "lint": "tsc --pretty && tslint --project ./tsconfig.json && echo Lint OK",
     "nyc:e2e": "nyc --nycrc-path .nycrc.e2e npm run tape:e2e",
     "nyc:unit": "nyc --nycrc-path .nycrc.unit npm run tape:unit",
     "spec-editor": "docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
