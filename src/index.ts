@@ -21,8 +21,10 @@ export const main = (deps: {
   initialState?: State;
   spawnAPIBackend: typeof spawnAPIBackend;
   spawnWebServer: typeof spawnWebServer;
-}) => (config: Config) => (universe: Universe = EMPTY_UNIVERSE) => {
-  const configService = configServiceFactory(config);
+}) => (params: { config: Config; startTime?: boolean }) => (
+  universe: Universe = EMPTY_UNIVERSE,
+) => {
+  const configService = configServiceFactory(params.config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
   const stateService = stateServiceFactory(
     deps.initialState || { playerList: [], universe },
@@ -32,6 +34,9 @@ export const main = (deps: {
     loggerService,
     stateService,
   })(deps.initialActionQueue || []);
+  if (params.startTime) {
+    timeService.start();
+  }
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,
@@ -48,11 +53,14 @@ if (process.env.NODE_ENV === 'production') {
     spawnAPIBackend,
     spawnWebServer,
   })({
-    logger: {
-      combinedFile: true,
-      console: true,
-      errorFile: true,
-      format: true,
+    config: {
+      logger: {
+        combinedFile: true,
+        console: true,
+        errorFile: true,
+        format: true,
+      },
     },
+    startTime: true,
   })(JSON.parse(fs.readFileSync('src/assets/universe.json', 'utf-8')));
 }

@@ -15,7 +15,10 @@ export const runE2ETest = ({
   test: tape.Test,
 ) => (testCase: (test: tape.Test) => any) =>
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
-    logger: { nolog: true },
+    config: {
+      logger: { nolog: true },
+    },
+    startTime: true,
   })().then((server: any) => {
     return testCase(test).finally(() => server.close());
   });
