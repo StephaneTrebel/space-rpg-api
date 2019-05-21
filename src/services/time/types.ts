@@ -38,4 +38,4 @@ export type TimeServiceFactory = (deps: {
   configService: ConfigService;
   loggerService: LoggerService;
   stateService: StateService;
-}) => TimeService;
+}) => (initialActionQueue?: ActionList | undefined) => TimeService;

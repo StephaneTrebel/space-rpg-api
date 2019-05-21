@@ -13,12 +13,14 @@ import { spawnAPIBackend } from './services/openapi-backend/service';
 import { stateServiceFactory } from './services/state/service';
 import { State } from './services/state/types';
 import { timeServiceFactory } from './services/time/service';
+import { ActionList } from './services/time/types';
 import { spawnWebServer } from './services/webserver/service';
 
 export const main = (deps: {
+  initialActionQueue?: ActionList;
+  initialState?: State;
   spawnAPIBackend: typeof spawnAPIBackend;
   spawnWebServer: typeof spawnWebServer;
-  initialState?: State;
 }) => (config: Config) => (universe: Universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
@@ -29,7 +31,7 @@ export const main = (deps: {
     configService,
     loggerService,
     stateService,
-  });
+  })(deps.initialActionQueue || []);
   return deps
     .spawnAPIBackend({
       backendEngine: OpenAPIBackend,

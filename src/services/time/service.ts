@@ -10,7 +10,6 @@ import {
   ActionType,
   BaseAction,
   TimeConfig,
-  TimeService,
   TimeServiceFactory,
 } from './types';
 
@@ -39,9 +38,9 @@ export const timeServiceFactory: TimeServiceFactory = ({
   configService,
   loggerService,
   stateService,
-}): TimeService => {
+}) => initialActionQueue => {
   const internal: { actionQueue: ActionList; timer?: Subscription } = {
-    actionQueue: [],
+    actionQueue: initialActionQueue || [],
   };
   return {
     addAction: (action: Action) =>

@@ -192,7 +192,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        });
+        })();
         testedModule.startDisplacement({
           id,
           loggerService,

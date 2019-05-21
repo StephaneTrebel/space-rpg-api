@@ -29,6 +29,6 @@ tape('OpenAPI Backend', (test: tape.Test) => {
       configService: configServiceFactory(),
       loggerService: loggerServiceFactory(),
       stateService,
-    }),
+    })(),
   });
 });

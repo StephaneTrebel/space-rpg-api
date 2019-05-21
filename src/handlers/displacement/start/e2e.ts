@@ -37,8 +37,10 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         const entityId: Id = `${ENDPOINT} Success`;
         const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
         return runE2ETest({
-          ...EMPTY_STATE,
-          playerList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
+          initialState: {
+            ...EMPTY_STATE,
+            playerList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
+          },
         })(caseTest)(test =>
           postPromisified({
             body: { entityId, targetCoordinates },

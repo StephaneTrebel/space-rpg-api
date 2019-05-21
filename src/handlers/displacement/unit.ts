@@ -70,7 +70,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        });
+        })();
         timeService.addAction(displacement);
         test.throws(
           () =>
@@ -99,7 +99,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        });
+        })();
         timeService.addAction(
           createBaseActionMock({
             ...MOCK_BASE_ACTION,
@@ -131,7 +131,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService: configServiceFactory(),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
-        });
+        })();
         timeService.addAction(displacement);
         test.equal(
           testedModule.getDisplacementFromTimeService({
@@ -163,7 +163,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        });
+        })();
         timeService.addAction(displacement);
         testedModule.getDisplacement({
           timeService,

@@ -6,11 +6,15 @@ import { main } from '../src/index';
 import { spawnAPIBackend } from './services/openapi-backend/service';
 import { State } from './services/state/types';
 import { spawnWebServer } from './services/webserver/service';
+import { ActionList } from './services/time/types';
 
-export const runE2ETest = (initialState?: State) => (test: tape.Test) => (
-  testCase: (test: tape.Test) => any,
-) =>
-  main({ initialState, spawnAPIBackend, spawnWebServer })({
+export const runE2ETest = ({
+  initialActionQueue,
+  initialState,
+}: { initialState?: State; initialActionQueue?: ActionList } = {}) => (
+  test: tape.Test,
+) => (testCase: (test: tape.Test) => any) =>
+  main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     logger: { nolog: true },
   })().then((server: any) => {
     return testCase(test).finally(() => server.close());

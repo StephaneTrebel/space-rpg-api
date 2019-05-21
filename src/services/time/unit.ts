@@ -121,7 +121,7 @@ tape('Time Service', (functions: tape.Test) => {
           }),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
-        });
+        })();
         timeService.addAction(
           testedModule.createBaseActionMock({
             ...testedModule.MOCK_BASE_ACTION,
@@ -165,7 +165,7 @@ tape('Time Service', (functions: tape.Test) => {
           }),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
-        });
+        })();
         timeService.addAction(
           testedModule.createBaseActionMock({
             ...testedModule.MOCK_BASE_ACTION,
