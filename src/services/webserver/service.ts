@@ -36,7 +36,7 @@ export type LinkList = Array<Link>;
 export interface HandlerResponse {
   status: number;
   payload: any;
-  links: LinkList;
+  links?: LinkList;
 }
 export const sendResponse = (res: express.Response) => (
   handlerResponse: HandlerResponse,

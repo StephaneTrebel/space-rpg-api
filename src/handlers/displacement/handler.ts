@@ -61,9 +61,19 @@ export const getDisplacement = (deps: { timeService: TimeService }) => (
   _req: any,
   res: Response,
 ) => {
-  const displacement = getDisplacementFromTimeService({
-    id: getDisplacementIdFromContext(context),
-    timeService: deps.timeService,
-  });
-  sendResponse(res)({ links: [], payload: displacement, status: 200 });
+  try {
+    const displacement = getDisplacementFromTimeService({
+      id: getDisplacementIdFromContext(context),
+      timeService: deps.timeService,
+    });
+    sendResponse(res)({ links: [], payload: displacement, status: 200 });
+  } catch (error) {
+    sendResponse(res)({
+      payload: {
+        code: 'getDisplacementError',
+        message: `Error encountered: ${error.message}`,
+      },
+      status: 400,
+    });
+  }
 };

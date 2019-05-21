@@ -70,8 +70,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        })();
-        timeService.addAction(displacement);
+        })([displacement]);
         test.throws(
           () =>
             testedModule.getDisplacementFromTimeService({
@@ -99,13 +98,12 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        })();
-        timeService.addAction(
+        })([
           createBaseActionMock({
             ...MOCK_BASE_ACTION,
             id,
           }),
-        );
+        ]);
         test.throws(
           () =>
             testedModule.getDisplacementFromTimeService({
@@ -131,8 +129,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService: configServiceFactory(),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory(EMPTY_STATE),
-        })();
-        timeService.addAction(displacement);
+        })([displacement]);
         test.equal(
           testedModule.getDisplacementFromTimeService({
             id,
@@ -148,7 +145,51 @@ tape('Displacement handler', (functions: tape.Test) => {
 
   functions.test('getDisplacement()', (cases: tape.Test) => {
     cases.test(
-      'WHEN given an entity and a TimeService having this entity',
+      'WHEN given an displacement and a TimeService lacking this displacement',
+      (test: tape.Test) => {
+        test.plan(3);
+        const id: Id = 'getDisplacement';
+        const configService = configServiceFactory();
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory(EMPTY_STATE);
+        const timeService = timeServiceFactory({
+          configService,
+          loggerService,
+          stateService,
+        })();
+        testedModule.getDisplacement({
+          timeService,
+        })(
+          { request: { params: { id } } } as any,
+          {} as any,
+          {
+            status: (returnedStatus: number) => ({
+              json: (returnedJSON: { code: string; message: string }) => {
+                test.equal(
+                  returnedStatus,
+                  400,
+                  'SHOULD sucessfully return a 400 response',
+                );
+                test.equal(
+                  typeof returnedJSON.code,
+                  'string',
+                  'SHOULD sucessfully return a body having a string code property',
+                );
+                test.equal(
+                  typeof returnedJSON.message,
+                  'string',
+                  'SHOULD sucessfully return a body having a string message property',
+                );
+                test.end();
+              },
+            }),
+          } as any,
+        );
+      },
+    );
+
+    cases.test(
+      'WHEN given an displacement and a TimeService having this displacement',
       (test: tape.Test) => {
         test.plan(3);
         const id: Id = 'getDisplacement';
@@ -163,8 +204,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           configService,
           loggerService,
           stateService,
-        })();
-        timeService.addAction(displacement);
+        })([displacement]);
         testedModule.getDisplacement({
           timeService,
         })(
@@ -172,10 +212,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           {} as any,
           {
             status: (returnedStatus: number) => ({
-              json: (returnedJSON: {
-                links: LinkList;
-                displacementId: string;
-              }) => {
+              json: (returnedJSON: { links: LinkList }) => {
                 test.equal(
                   returnedStatus,
                   200,
