@@ -17,7 +17,7 @@ paths:
     $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /player/create:
     $ref: 'src/handlers/player/create/openapi.yaml'
-  /displacement/:displacement:
+  /displacement/{id}:
     $ref: 'src/handlers/displacement/openapi.yaml'
   /displacement/start:
     $ref: 'src/handlers/displacement/start/openapi.yaml'

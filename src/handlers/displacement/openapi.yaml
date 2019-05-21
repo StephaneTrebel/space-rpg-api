@@ -3,9 +3,15 @@ get:
   operationId: getDisplacement
   tags:
     - Displacement
+  parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        $ref: '../../specifications/components.yaml#/components/schemas/id'
   responses:
     200:
-      description: Current displacement status
+      description: Displacement entity details
       content:
         application/json:
           schema:
@@ -13,7 +19,7 @@ get:
             properties:
               currentPosition:
                 $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
-              displacementId:
+              id:
                 $ref: '../../specifications/components.yaml#/components/schemas/id'
               targetCoordinates:
                 $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
