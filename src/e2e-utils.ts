@@ -7,17 +7,20 @@ import { spawnAPIBackend } from './services/openapi-backend/service';
 import { State } from './services/state/types';
 import { spawnWebServer } from './services/webserver/service';
 import { ActionList } from './services/time/types';
+import { Config } from './services/config/types';
+import { DEFAULT_CONFIG } from './services/config/service';
 
 export const runE2ETest = ({
+  config,
   initialActionQueue,
   initialState,
-}: { initialState?: State; initialActionQueue?: ActionList } = {}) => (
-  test: tape.Test,
-) => (testCase: (test: tape.Test) => any) =>
+}: {
+  config?: Config;
+  initialState?: State;
+  initialActionQueue?: ActionList;
+} = {}) => (test: tape.Test) => (testCase: (test: tape.Test) => any) =>
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
-    config: {
-      logger: { nolog: true },
-    },
+    config: config || DEFAULT_CONFIG,
     startTime: true,
   })().then((server: any) => {
     return testCase(test).finally(() => server.close());
