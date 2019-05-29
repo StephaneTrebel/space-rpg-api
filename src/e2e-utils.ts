@@ -62,3 +62,21 @@ export const postPromisified = (
       error ? reject(error) : resolve(response),
     ),
   );
+
+export const setTimeoutPromisifed = <T>(
+  fn: () => Promise<T>,
+  timeout: number,
+) =>
+  new Promise<T>((resolve, reject) => {
+    try {
+      setTimeout(() => {
+        try {
+          resolve(fn());
+        } catch (error) {
+          reject(error);
+        }
+      }, timeout);
+    } catch (error) {
+      reject(error);
+    }
+  });
