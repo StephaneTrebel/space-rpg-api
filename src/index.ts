@@ -1,4 +1,5 @@
 import fs from 'fs';
+import http from 'http';
 
 import cors from 'cors';
 import express from 'express';
@@ -14,16 +15,29 @@ import { stateServiceFactory } from './services/state/service';
 import { State } from './services/state/types';
 import { timeServiceFactory } from './services/time/service';
 import { ActionList } from './services/time/types';
-import { spawnWebServer } from './services/webserver/service';
+import { spawnWebServer, SpawnWebServer } from './services/webserver/service';
 
-export const main = (deps: {
+export interface MainDeps {
   initialActionQueue?: ActionList;
   initialState?: State;
   spawnAPIBackend: typeof spawnAPIBackend;
-  spawnWebServer: typeof spawnWebServer;
-}) => (params: { config: Config; startTime?: boolean }) => (
-  universe: Universe = EMPTY_UNIVERSE,
-) => {
+  spawnWebServer: SpawnWebServer;
+}
+
+export interface MainParams {
+  config: Config;
+  startTime?: boolean;
+}
+
+export interface MainAssets {
+  server: http.Server;
+  teardown: () => void;
+}
+
+export type Main = (
+  deps: MainDeps,
+) => (params: MainParams) => (universe?: Universe) => Promise<MainAssets>;
+export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(params.config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
   const stateService = stateServiceFactory(

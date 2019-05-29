@@ -22,10 +22,10 @@ export const runE2ETest = ({
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })().then((instance: any) =>
+  })().then((assets) =>
     testCase(test).finally(() => {
-      instance.teardown();
-      instance.server.close();
+      assets.teardown();
+      assets.server.close();
     }),
   );
 
