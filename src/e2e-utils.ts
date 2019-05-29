@@ -22,9 +22,12 @@ export const runE2ETest = ({
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })().then((server: any) => {
-    return testCase(test).finally(() => server.close());
-  });
+  })().then((instance: any) =>
+    testCase(test).finally(() => {
+      instance.teardown();
+      instance.server.close();
+    }),
+  );
 
 interface Headers {
   authorization: string;

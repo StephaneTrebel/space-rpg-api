@@ -44,7 +44,10 @@ export const main = (deps: {
       stateService,
       timeService,
     })
-    .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api));
+    .then((api: OpenAPIBackend) => ({
+      server: deps.spawnWebServer({ cors, express })(api),
+      teardown: () => timeService.stop(),
+    }));
 };
 
 // istanbul ignore if
