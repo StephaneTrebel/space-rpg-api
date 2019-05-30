@@ -49,24 +49,44 @@ export const movePosition = (
   z: moveTowards(targetPosition.z, currentPosition.z, speed),
 });
 
-export const createDisplacement = ({
-  currentPosition,
-  displacementId,
-  entityId,
-  targetCoordinates,
-}: {
+export type CreateDisplacement = (params: {
   currentPosition: Position;
   entityId: Id;
   displacementId?: Id;
   targetCoordinates: Position;
-}): Displacement => ({
+}) => Displacement;
+export const createDisplacement: CreateDisplacement = ({
   currentPosition,
-  executor: stateService => {
+  displacementId,
+  entityId,
+  targetCoordinates,
+}) => ({
+  currentPosition,
+  executor: ({ loggerService, stateService, timeService }) => {
+    const newPosition: Position = movePosition(
+      currentPosition,
+      targetCoordinates,
+      SPEED,
+    );
+    loggerService.debug(
+      `New position for entity "${entityId}": ${JSON.stringify(newPosition)}`,
+    );
+    // Returning a promise here because it's needed but stateService.mutate
+    // is not async yet.
     return Promise.resolve(
       stateService.mutate(StateMutation.DISPLACE_ENTITY)({
         entityId,
-        newPosition: movePosition(currentPosition, targetCoordinates, SPEED),
+        newPosition,
       }),
+    ).then(() =>
+      timeService.addAction(
+        createDisplacement({
+          currentPosition: newPosition,
+          displacementId,
+          entityId,
+          targetCoordinates,
+        }),
+      ),
     );
   },
   id: displacementId || 'foo',

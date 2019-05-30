@@ -116,12 +116,26 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         true,
         'SHOULD return a Displacement object',
       );
-      return maybeDisplacement.executor(stateServiceFactory()).then(() => {
-        test.pass(
-          `AND this object SHOULD have an executor method that returns a Promise`,
-        );
-        test.end();
-      });
+      const configService = configServiceFactory();
+      const loggerService = loggerServiceFactory();
+      const stateService = stateServiceFactory(EMPTY_STATE);
+      const timeService = timeServiceFactory({
+        configService,
+        loggerService,
+        stateService,
+      })();
+      return maybeDisplacement
+        .executor({
+          loggerService,
+          stateService,
+          timeService,
+        })
+        .then(() => {
+          test.pass(
+            `AND this object SHOULD have an executor method that returns a Promise`,
+          );
+          test.end();
+        });
     });
   });
 
