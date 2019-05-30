@@ -7,7 +7,13 @@ import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/service';
 
-export type Executor = (s: StateService) => Promise<any>;
+import { TimeService } from './types';
+
+export type Executor = (params: {
+  loggerService: LoggerService;
+  stateService: StateService;
+  timeService: TimeService;
+}) => Promise<any>;
 
 export enum ActionType {
   BASE = 'base',

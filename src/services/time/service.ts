@@ -11,6 +11,7 @@ import {
   BaseAction,
   TimeConfig,
   TimeServiceFactory,
+  TimeService,
 } from './types';
 
 export const getTimeConfig = (configService: ConfigService): TimeConfig =>
@@ -42,7 +43,7 @@ export const timeServiceFactory: TimeServiceFactory = ({
   const internal: { actionQueue: ActionList; timer?: Subscription } = {
     actionQueue: initialActionQueue || [],
   };
-  return {
+  const timeService: TimeService = {
     addAction: (action: Action) =>
       (internal.actionQueue = addAction(internal.actionQueue)(action)),
     getAction: (id: string) => getAction(internal.actionQueue)(id),
@@ -50,11 +51,14 @@ export const timeServiceFactory: TimeServiceFactory = ({
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.debug('Tic-toc !');
         return Promise.all(
-          internal.actionQueue.map(action => action.executor(stateService)),
+          internal.actionQueue.map(action =>
+            action.executor({ loggerService, stateService, timeService }),
+          ),
         ).then(() => (internal.actionQueue = []));
       })),
     stop: () => internal.timer && internal.timer.unsubscribe(),
   };
+  return timeService;
 };
 
 export const MOCK_BASE_ACTION: BaseAction = {
