@@ -19,15 +19,91 @@ import { Player } from '../../player/types';
 import { Displacement } from '../types';
 
 import * as testedModule from './handler';
+import { State } from '../../../services/state/types';
 
-tape('Displacement handler', (functions: tape.Test) => {
-  functions.test('createDisplacement()', (cases: tape.Test) => {
+tape('Displacement handler', (functionTest: tape.Test) => {
+  functionTest.test('moveTowards()', (cases: tape.Test) => {
+    cases.test(
+      `WHEN given a current coordinate,
+    AND a target coordinate that is farther forward
+    AND a speed`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const currentCoordinate: number = 0;
+        const targetCoordinate: number = 10;
+        const speed: number = 3;
+        test.equal(
+          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
+          3,
+          'SHOULD return an appropriately moved coordinate',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      `WHEN given a current coordinate,
+    AND a target coordinate that is farther behind
+    AND a speed`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const currentCoordinate: number = 0;
+        const targetCoordinate: number = -10;
+        const speed: number = 3;
+        test.equal(
+          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
+          -3,
+          'SHOULD return an appropriately moved coordinate',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      `WHEN given a current coordinate,
+    AND a forwardly placed target coordinate that can be reached in one tick
+    AND a speed`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const currentCoordinate: number = 0;
+        const targetCoordinate: number = 2;
+        const speed: number = 3;
+        test.equal(
+          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
+          2,
+          'SHOULD return an appropriately moved coordinate',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      `WHEN given a current coordinate,
+    AND a behindly placed target coordinate that can be reached in one tick
+    AND a speed`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const currentCoordinate: number = 0;
+        const targetCoordinate: number = -2;
+        const speed: number = 3;
+        test.equal(
+          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
+          -2,
+          'SHOULD return an appropriately moved coordinate',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functionTest.test('createDisplacement()', (cases: tape.Test) => {
     cases.test('WHEN given proper parameters', (test: tape.Test) => {
       test.plan(2);
       const currentPosition: Position = { x: 0, y: 0, z: 0 };
       const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
       const maybeDisplacement: Displacement = testedModule.createDisplacement({
         currentPosition,
+        entityId: 'foo',
         targetCoordinates,
       });
       test.equal(
@@ -40,7 +116,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         true,
         'SHOULD return a Displacement object',
       );
-      return maybeDisplacement.executor('ignore' as any).then(() => {
+      return maybeDisplacement.executor(stateServiceFactory()).then(() => {
         test.pass(
           `AND this object SHOULD have an executor method that returns a Promise`,
         );
@@ -49,7 +125,7 @@ tape('Displacement handler', (functions: tape.Test) => {
     });
   });
 
-  functions.test('getTargetCoordinatesFromContext()', (cases: tape.Test) => {
+  functionTest.test('getTargetCoordinatesFromContext()', (cases: tape.Test) => {
     cases.test('WHEN given a Context object', (test: tape.Test) => {
       test.plan(1);
       const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
@@ -65,7 +141,7 @@ tape('Displacement handler', (functions: tape.Test) => {
     });
   });
 
-  functions.test('getEntityIdFromContext()', (cases: tape.Test) => {
+  functionTest.test('getEntityIdFromContext()', (cases: tape.Test) => {
     cases.test('WHEN given a Context object', (test: tape.Test) => {
       test.plan(1);
       const id: Id = 'foo';
@@ -81,7 +157,7 @@ tape('Displacement handler', (functions: tape.Test) => {
     });
   });
 
-  functions.test('getEntityFromState()', (cases: tape.Test) => {
+  functionTest.test('getEntityFromState()', (cases: tape.Test) => {
     cases.test(
       'WHEN given an entity id and a State lacking this entity',
       (test: tape.Test) => {
@@ -133,7 +209,7 @@ tape('Displacement handler', (functions: tape.Test) => {
     );
   });
 
-  functions.test('getEntityCurrentPosition()', (cases: tape.Test) => {
+  functionTest.test('getEntityCurrentPosition()', (cases: tape.Test) => {
     cases.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
@@ -166,7 +242,41 @@ tape('Displacement handler', (functions: tape.Test) => {
     );
   });
 
-  functions.test('startDisplacement()', (cases: tape.Test) => {
+  functionTest.test('displaceEntityMutator()', (cases: tape.Test) => {
+    cases.test(
+      'WHEN called with a state AND a displacement payload',
+      (test: tape.Test) => {
+        test.plan(1);
+        const entityId: Id = 'foo';
+        const playerA: Player = { ...MOCK_PLAYER, id: entityId + 'A' };
+        const playerB: Player = { ...MOCK_PLAYER, id: entityId };
+        const playerC: Player = { ...MOCK_PLAYER, id: entityId + 'C' };
+        const initalState: State = {
+          ...EMPTY_STATE,
+          playerList: [playerA, playerB, playerC],
+        };
+        const newPosition: Position = { x: 1, y: 2, z: 3 };
+        test.deepEqual(
+          testedModule.displaceEntityMutator(initalState)({
+            entityId,
+            newPosition,
+          }),
+          {
+            ...initalState,
+            playerList: [
+              playerA,
+              { ...playerB, currentPosition: newPosition },
+              playerC,
+            ],
+          },
+          'SHOULD return an appropriately mutated state',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functionTest.test('startDisplacement()', (cases: tape.Test) => {
     cases.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {

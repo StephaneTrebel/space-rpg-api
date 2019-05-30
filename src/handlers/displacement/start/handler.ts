@@ -5,25 +5,71 @@ import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
 
 import { LoggerService } from '../../../services/logger/types';
-import { StateProperties, StateService } from '../../../services/state/types';
+import {
+  StateProperties,
+  StateService,
+  StateMutation,
+  State,
+} from '../../../services/state/types';
 import { TimeService, ActionType } from '../../../services/time/types';
 import { sendResponse } from '../../../services/webserver/service';
 
-import { Displacement } from '../types';
 import { Player, PlayerList } from '../../player/types';
+
+import { Displacement } from '../types';
+
+import { DisplaceEntityPayload } from './types';
+
+const SPEED = 1;
+
+export const moveTowards = (
+  currentCoordinate: number,
+  targetCoordinate: number,
+  speed: number,
+) => {
+  const direction = targetCoordinate < currentCoordinate;
+  const movedCoordinate = currentCoordinate + (direction ? -1 : 1) * speed;
+  const newCoordinate = direction
+    ? movedCoordinate < targetCoordinate
+      ? targetCoordinate
+      : movedCoordinate
+    : movedCoordinate > targetCoordinate
+    ? targetCoordinate
+    : movedCoordinate;
+  return newCoordinate;
+};
+
+export const movePosition = (
+  currentPosition: Position,
+  targetPosition: Position,
+  speed: number,
+): Position => ({
+  x: moveTowards(targetPosition.x, currentPosition.x, speed),
+  y: moveTowards(targetPosition.y, currentPosition.y, speed),
+  z: moveTowards(targetPosition.z, currentPosition.z, speed),
+});
 
 export const createDisplacement = ({
   currentPosition,
-  id,
+  displacementId,
+  entityId,
   targetCoordinates,
 }: {
   currentPosition: Position;
-  id?: Id;
+  entityId: Id;
+  displacementId?: Id;
   targetCoordinates: Position;
 }): Displacement => ({
   currentPosition,
-  executor: () => Promise.resolve(),
-  id: id || 'foo',
+  executor: stateService => {
+    return Promise.resolve(
+      stateService.mutate(StateMutation.DISPLACE_ENTITY)({
+        entityId,
+        newPosition: movePosition(currentPosition, targetCoordinates, SPEED),
+      }),
+    );
+  },
+  id: displacementId || 'foo',
   targetCoordinates,
   type: ActionType.DISPLACEMENT,
 });
@@ -34,7 +80,7 @@ export const getTargetCoordinatesFromContext = (context: Context): Position =>
 export const getEntityIdFromContext = (context: Context): string =>
   context.request && context.request.requestBody.entityId;
 
-// @TODO I should move this elsewhere, most likely the future Entity handler
+// @TODO Move this elsewhere, most likely to the future Entity handler
 export const getEntityFromState = ({
   id,
   loggerService,
@@ -68,6 +114,18 @@ export const getEntityCurrentPosition = ({
     .currentPosition;
 };
 
+export const displaceEntityMutator = (currentState: State) => ({
+  entityId,
+  newPosition,
+}: DisplaceEntityPayload): State => ({
+  ...currentState,
+  playerList: currentState.playerList.map(player =>
+    player.id === entityId
+      ? { ...player, currentPosition: newPosition }
+      : player,
+  ),
+});
+
 export const startDisplacement = (deps: {
   id?: Id;
   loggerService: LoggerService;
@@ -75,13 +133,15 @@ export const startDisplacement = (deps: {
   timeService: TimeService;
 }) => (context: Context, _req: any, res: Response) => {
   deps.loggerService.debug('Entering startDisplacement…');
+  const entityId = getEntityIdFromContext(context);
   const displacement = createDisplacement({
     currentPosition: getEntityCurrentPosition({
-      id: getEntityIdFromContext(context),
+      id: entityId,
       loggerService: deps.loggerService,
       stateService: deps.stateService,
     }),
-    id: deps.id,
+    displacementId: deps.id,
+    entityId,
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
   deps.timeService.addAction(displacement);
