@@ -1,24 +1,14 @@
 import { Universe, EMPTY_UNIVERSE } from '../../assets/universe';
 
-import { Displacement } from '../../handlers/displacement/types';
+import { displaceEntityMutator } from '../../handlers/displacement/start/handler';
 import { Player } from '../../handlers/player/types';
 
 import { State, StateMutation, StateProperties } from './types';
+import { createPlayerMutator } from "../../handlers/player/create/handler";
 
 const mutations = {
-  [StateMutation.CREATE_PLAYER]: (currentState: State) => (
-    payload: Player,
-  ): State => ({
-    ...currentState,
-    playerList: [...currentState.playerList, payload],
-  }),
-  [StateMutation.DISPLACE_ENTITY]: (currentState: State) => (
-    // @TODO WIP
-    _payload: Displacement,
-  ): State => ({
-    ...currentState,
-    playerList: [...currentState.playerList],
-  }),
+  [StateMutation.CREATE_PLAYER]: createPlayerMutator,
+  [StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
 };
 
 const get = (state: State) => (prop: StateProperties) => state[prop];

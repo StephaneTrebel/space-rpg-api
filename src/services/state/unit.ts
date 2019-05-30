@@ -5,7 +5,7 @@ import { EMPTY_UNIVERSE } from '../../assets/universe';
 import { Player } from '../../handlers/player/types';
 import { createMockPlayer } from '../../handlers/player/create/handler';
 
-import { StateProperties, StateMutation } from './types';
+import { StateProperties } from './types';
 
 import * as testedModule from './service';
 
@@ -24,41 +24,5 @@ tape('State Service', (functionTest: tape.Test) => {
       'SHOULD retrieve playerList from a State',
     );
     test.end();
-  });
-
-  functionTest.test('mutate()', (cases: tape.Test) => {
-    cases.test(
-      'WHEN called with a CREATE_PLAYER mutation',
-      (test: tape.Test) => {
-        test.plan(1);
-        test.deepEqual(
-          testedModule
-            .stateServiceFactory(testedModule.EMPTY_STATE)
-            .mutate(StateMutation.CREATE_PLAYER)({
-            username: 'foo',
-          }),
-          { ...testedModule.EMPTY_STATE, playerList: [{ username: 'foo' }] },
-          'SHOULD return a mutated state',
-        );
-        test.end();
-      },
-    );
-
-    cases.test(
-      'WHEN called with a DISPLACE_ENTITY mutation',
-      (test: tape.Test) => {
-        test.plan(1);
-        test.deepEqual(
-          testedModule
-            .stateServiceFactory(testedModule.EMPTY_STATE)
-            .mutate(StateMutation.DISPLACE_ENTITY)({
-            username: 'foo',
-          }),
-          { ...testedModule.EMPTY_STATE, playerList: [] },
-          'SHOULD return a mutated state',
-        );
-        test.end();
-      },
-    );
   });
 });
