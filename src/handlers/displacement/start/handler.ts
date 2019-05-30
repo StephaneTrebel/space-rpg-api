@@ -49,50 +49,81 @@ export const movePosition = (
   z: moveTowards(targetPosition.z, currentPosition.z, speed),
 });
 
-export type CreateDisplacement = (params: {
+// Higher Order Function, hence the dependencies are the second step (they will
+// be the first call in the generated function)
+type CreateExecutor = (params: {
   currentPosition: Position;
+  targetCoordinates: Position;
   entityId: Id;
-  displacementId?: Id;
+  displacementId: Id;
+}) => (injectedDeps: {
+  loggerService: LoggerService;
+  stateService: StateService;
+  timeService: TimeService;
+}) => Promise<void>;
+export const createExecutor: CreateExecutor = ({
+  currentPosition,
+  targetCoordinates,
+  entityId,
+  displacementId,
+}) => ({ loggerService, stateService, timeService }) => {
+  const newPosition: Position = movePosition(
+    currentPosition,
+    targetCoordinates,
+    SPEED,
+  );
+  loggerService.debug(
+    `New position for entity "${entityId}": ${JSON.stringify(newPosition)}`,
+  );
+  // Returning a promise here because it's needed but stateService.mutate
+  // is not async yet.
+  return Promise.resolve(
+    stateService.mutate(StateMutation.DISPLACE_ENTITY)({
+      entityId,
+      newPosition,
+    }),
+  ).then(() =>
+    timeService.addAction(
+      createDisplacement({ loggerService, stateService })({
+        entityId,
+        maybeId: displacementId,
+        targetCoordinates,
+      }),
+    ),
+  );
+};
+
+export type CreateDisplacement = (deps: {
+  loggerService: LoggerService;
+  stateService: StateService;
+}) => (params: {
+  entityId: Id;
+  maybeId?: Id;
   targetCoordinates: Position;
 }) => Displacement;
 export const createDisplacement: CreateDisplacement = ({
-  currentPosition,
-  displacementId,
-  entityId,
-  targetCoordinates,
-}) => ({
-  currentPosition,
-  executor: ({ loggerService, stateService, timeService }) => {
-    const newPosition: Position = movePosition(
+  loggerService,
+  stateService,
+}) => ({ maybeId, entityId, targetCoordinates }) => {
+  const currentPosition: Position = getEntityCurrentPosition({
+    id: entityId,
+    loggerService,
+    stateService,
+  });
+  const displacementId: Id = maybeId || 'foo';
+  return {
+    currentPosition,
+    executor: createExecutor({
       currentPosition,
+      displacementId,
+      entityId,
       targetCoordinates,
-      SPEED,
-    );
-    loggerService.debug(
-      `New position for entity "${entityId}": ${JSON.stringify(newPosition)}`,
-    );
-    // Returning a promise here because it's needed but stateService.mutate
-    // is not async yet.
-    return Promise.resolve(
-      stateService.mutate(StateMutation.DISPLACE_ENTITY)({
-        entityId,
-        newPosition,
-      }),
-    ).then(() =>
-      timeService.addAction(
-        createDisplacement({
-          currentPosition: newPosition,
-          displacementId,
-          entityId,
-          targetCoordinates,
-        }),
-      ),
-    );
-  },
-  id: displacementId || 'foo',
-  targetCoordinates,
-  type: ActionType.DISPLACEMENT,
-});
+    }),
+    id: displacementId,
+    targetCoordinates,
+    type: ActionType.DISPLACEMENT,
+  };
+};
 
 export const getTargetCoordinatesFromContext = (context: Context): Position =>
   context.request && context.request.requestBody.targetCoordinates;
@@ -146,25 +177,26 @@ export const displaceEntityMutator = (currentState: State) => ({
   ),
 });
 
-export const startDisplacement = (deps: {
-  id?: Id;
+type StartDisplacement = (deps: {
   loggerService: LoggerService;
   stateService: StateService;
+  testId?: Id;
   timeService: TimeService;
-}) => (context: Context, _req: any, res: Response) => {
-  deps.loggerService.debug('Entering startDisplacement…');
+}) => (context: Context, _req: any, res: Response) => Response;
+export const startDisplacement: StartDisplacement = ({
+  loggerService,
+  stateService,
+  testId,
+  timeService,
+}) => (context, _req, res) => {
+  loggerService.debug('Entering startDisplacement…');
   const entityId = getEntityIdFromContext(context);
-  const displacement = createDisplacement({
-    currentPosition: getEntityCurrentPosition({
-      id: entityId,
-      loggerService: deps.loggerService,
-      stateService: deps.stateService,
-    }),
-    displacementId: deps.id,
+  const displacement = createDisplacement({ loggerService, stateService })({
     entityId,
+    maybeId: testId,
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
-  deps.timeService.addAction(displacement);
+  timeService.addAction(displacement);
   return sendResponse(res)({
     links: [
       {

@@ -6,6 +6,7 @@ import {
   stateServiceFactory,
   EMPTY_STATE,
 } from '../../../services/state/service';
+import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
 import { LinkList } from '../../../services/webserver/service';
@@ -19,7 +20,6 @@ import { Player } from '../../player/types';
 import { Displacement } from '../types';
 
 import * as testedModule from './handler';
-import { State } from '../../../services/state/types';
 
 tape('Displacement handler', (functionTest: tape.Test) => {
   functionTest.test('moveTowards()', (cases: tape.Test) => {
@@ -99,11 +99,25 @@ tape('Displacement handler', (functionTest: tape.Test) => {
   functionTest.test('createDisplacement()', (cases: tape.Test) => {
     cases.test('WHEN given proper parameters', (test: tape.Test) => {
       test.plan(2);
+      const entityId: Id = 'foo';
       const currentPosition: Position = { x: 0, y: 0, z: 0 };
+      const configService = configServiceFactory();
+      const loggerService = loggerServiceFactory();
+      const stateService = stateServiceFactory({
+        ...EMPTY_STATE,
+        playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+      });
+      const timeService = timeServiceFactory({
+        configService,
+        loggerService,
+        stateService,
+      })();
       const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
       const maybeDisplacement: Displacement = testedModule.createDisplacement({
-        currentPosition,
-        entityId: 'foo',
+        loggerService,
+        stateService,
+      })({
+        entityId,
         targetCoordinates,
       });
       test.equal(
@@ -116,14 +130,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         true,
         'SHOULD return a Displacement object',
       );
-      const configService = configServiceFactory();
-      const loggerService = loggerServiceFactory();
-      const stateService = stateServiceFactory(EMPTY_STATE);
-      const timeService = timeServiceFactory({
-        configService,
-        loggerService,
-        stateService,
-      })();
       return maybeDisplacement
         .executor({
           loggerService,
@@ -295,7 +301,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(3);
-        const id: Id = 'startDisplacement';
+        const testId: Id = 'startDisplacement';
         const currentPosition: Position = {
           x: 271,
           y: 923,
@@ -304,7 +310,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         const entity: Player = createMockPlayer({
           ...MOCK_PLAYER,
           currentPosition,
-          id,
+          id: testId,
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
@@ -318,12 +324,12 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           stateService,
         })();
         testedModule.startDisplacement({
-          id,
           loggerService,
           stateService,
+          testId,
           timeService,
         })(
-          { request: { requestBody: { entityId: id } } } as any,
+          { request: { requestBody: { entityId: testId } } } as any,
           {} as any,
           {
             status: (returnedStatus: number) => ({
@@ -345,7 +351,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
                   returnedJSON.links,
                   [
                     {
-                      href: `/displacement/${id}`,
+                      href: `/displacement/${testId}`,
                       rel: 'details',
                     },
                   ],
