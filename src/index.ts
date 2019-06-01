@@ -42,7 +42,7 @@ export type Main = (
 export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(params.config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
-  const stateService = stateServiceFactory(
+  const stateService = stateServiceFactory({ loggerService })(
     deps.initialState || { playerList: [], universe },
   );
   const timeService = timeServiceFactory({

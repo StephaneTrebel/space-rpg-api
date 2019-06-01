@@ -72,9 +72,16 @@ export const timeServiceFactory: TimeServiceFactory = ({
         loggerService.debug('Tic-toc !');
         return Promise.all(
           internal.actionQueue.map(action =>
-            action.executor({ loggerService, stateService, timeService }),
+            action
+              .executor({ loggerService, stateService, timeService })
+              .then(
+                () =>
+                  (internal.actionQueue = internal.actionQueue.filter(
+                    a => a.id === action.id,
+                  )),
+              ),
           ),
-        ).then(() => (internal.actionQueue = []));
+        );
       })),
     stop: () => internal.timer && internal.timer.unsubscribe(),
   };

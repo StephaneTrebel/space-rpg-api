@@ -127,7 +127,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       const currentPosition: Position = { x: 0, y: 0, z: 0 };
       const configService = configServiceFactory();
       const loggerService = loggerServiceFactory();
-      const stateService = stateServiceFactory({
+      const stateService = stateServiceFactory({ loggerService })({
         ...EMPTY_STATE,
         playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
       });
@@ -209,12 +209,13 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           ...MOCK_PLAYER,
           id,
         });
+        const loggerService = loggerServiceFactory();
         test.throws(
           () =>
             testedModule.getEntityFromState({
               id: 'qux',
-              loggerService: loggerServiceFactory(),
-              stateService: stateServiceFactory({
+              loggerService,
+              stateService: stateServiceFactory({ loggerService })({
                 ...EMPTY_STATE,
                 playerList: [entity],
               }),
@@ -234,11 +235,12 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           ...MOCK_PLAYER,
           id,
         });
+        const loggerService = loggerServiceFactory();
         test.equal(
           testedModule.getEntityFromState({
             id,
-            loggerService: loggerServiceFactory(),
-            stateService: stateServiceFactory({
+            loggerService,
+            stateService: stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
               playerList: [entity],
             }),
@@ -267,11 +269,12 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           currentPosition,
           id,
         });
+        const loggerService = loggerServiceFactory();
         test.equal(
           testedModule.getEntityCurrentPosition({
             id,
-            loggerService: loggerServiceFactory(),
-            stateService: stateServiceFactory({
+            loggerService,
+            stateService: stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
               playerList: [entity],
             }),
@@ -336,7 +339,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({
+        const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
           playerList: [entity],
         });

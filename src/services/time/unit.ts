@@ -141,6 +141,7 @@ tape('Time Service', (functions: tape.Test) => {
         test.plan(2);
         const START_DELAY = 100;
         const PERIOD = 100;
+        const loggerService = loggerServiceFactory();
         const timeService = testedModule.timeServiceFactory({
           configService: configServiceFactory({
             time: {
@@ -148,8 +149,8 @@ tape('Time Service', (functions: tape.Test) => {
               startDelay: START_DELAY,
             },
           }),
-          loggerService: loggerServiceFactory(),
-          stateService: stateServiceFactory(EMPTY_STATE),
+          loggerService,
+          stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })();
         timeService.addAction(
           testedModule.createBaseActionMock({
@@ -185,6 +186,7 @@ tape('Time Service', (functions: tape.Test) => {
         test.plan(4);
         const START_DELAY = 100;
         const PERIOD = 100;
+        const loggerService = loggerServiceFactory();
         const timeService = testedModule.timeServiceFactory({
           configService: configServiceFactory({
             time: {
@@ -192,8 +194,8 @@ tape('Time Service', (functions: tape.Test) => {
               startDelay: START_DELAY,
             },
           }),
-          loggerService: loggerServiceFactory(),
-          stateService: stateServiceFactory(EMPTY_STATE),
+          loggerService,
+          stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })();
         timeService.addAction(
           testedModule.createBaseActionMock({

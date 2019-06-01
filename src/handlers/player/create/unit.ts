@@ -8,6 +8,7 @@ import {
 import { Player } from '../types';
 
 import * as testedModule from './handler';
+import { loggerServiceFactory } from '../../../services/logger/service';
 
 tape('Player creation handler', (functionTest: tape.Test) => {
   functionTest.test('createPlayerMutator()', (cases: tape.Test) => {
@@ -34,7 +35,10 @@ tape('Player creation handler', (functionTest: tape.Test) => {
 
   functionTest.test('createPlayer()', (test: tape.Test) => {
     const MOCK_USERNAME = Symbol('username');
-    testedModule.createPlayer({ stateService: stateServiceFactory() })(
+    const loggerService = loggerServiceFactory();
+    testedModule.createPlayer({
+      stateService: stateServiceFactory({ loggerService })({ ...EMPTY_STATE }),
+    })(
       { request: { requestBody: { username: MOCK_USERNAME } } } as any,
       '' as any,
       {

@@ -62,7 +62,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({
+        const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
           playerList: [],
         });
@@ -92,7 +92,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const id: Id = 'bar';
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({
+        const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
           playerList: [],
         });
@@ -131,7 +131,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const timeService = timeServiceFactory({
           configService: configServiceFactory(),
           loggerService: loggerServiceFactory(),
-          stateService: stateServiceFactory(EMPTY_STATE),
+          stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })([displacement]);
         test.equal(
           testedModule.getDisplacementFromTimeService({
@@ -154,7 +154,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const id: Id = 'getDisplacement';
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory(EMPTY_STATE);
+        const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
         const timeService = timeServiceFactory({
           configService,
           loggerService,
@@ -203,7 +203,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory(EMPTY_STATE);
+        const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
         const timeService = timeServiceFactory({
           configService,
           loggerService,

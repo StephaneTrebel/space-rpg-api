@@ -5,6 +5,8 @@ import { EMPTY_UNIVERSE } from '../../assets/universe';
 import { Player } from '../../handlers/player/types';
 import { createMockPlayer } from '../../handlers/player/create/handler';
 
+import { loggerServiceFactory } from '../logger/service';
+
 import { StateProperties } from './types';
 
 import * as testedModule from './service';
@@ -13,9 +15,10 @@ tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
     const MOCK_PLAYER_LIST: Array<Player> = [createMockPlayer()];
+    const loggerService = loggerServiceFactory();
     test.deepEqual(
       testedModule
-        .stateServiceFactory({
+        .stateServiceFactory({ loggerService })({
           playerList: MOCK_PLAYER_LIST,
           universe: EMPTY_UNIVERSE,
         })
