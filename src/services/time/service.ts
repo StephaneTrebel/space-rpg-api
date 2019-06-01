@@ -37,13 +37,13 @@ type GetAction = (
 export const getAction: GetAction = actionList => ({ id, type }) => {
   const maybeAction = actionList.find(action => action.id === id);
   if (!maybeAction) {
-    throw new Error(`Cannot find action with id ${id}`);
+    throw new Error(`Cannot find action with id '${id}' and type '${type}'`);
   }
   if (!!maybeAction && maybeAction.type !== type) {
     throw new Error(
-      `Action '${id}' found but its type ${
+      `Action '${id}' found but its type '${
         maybeAction.type
-      } is not the expected one ${type}`,
+      }' is not the expected one '${type}'`,
     );
   }
   return maybeAction;
