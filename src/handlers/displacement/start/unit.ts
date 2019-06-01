@@ -115,14 +115,12 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
       const maybeDisplacement: Displacement = testedModule.createDisplacement({
         loggerService,
-        stateService,
       })({
         entityId,
         targetCoordinates,
       });
       test.equal(
         !!maybeDisplacement &&
-          maybeDisplacement.currentPosition === currentPosition &&
           typeof maybeDisplacement.executor === 'function' &&
           typeof maybeDisplacement.id === 'string' &&
           maybeDisplacement.targetCoordinates === targetCoordinates &&
@@ -325,7 +323,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         })();
         testedModule.startDisplacement({
           loggerService,
-          stateService,
           testId,
           timeService,
         })(

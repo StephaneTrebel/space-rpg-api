@@ -10,13 +10,9 @@ import { Displacement } from './types';
 import { LoggerService } from '../../services/logger/types';
 
 export const MOCK_DISPLACEMENT: Displacement = {
-  currentPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
+  entityId: 'foo',
   executor: () => Promise.resolve(),
-  id: 'foo',
+  id: 'bar',
   targetCoordinates: {
     x: 0,
     y: 0,
@@ -25,13 +21,13 @@ export const MOCK_DISPLACEMENT: Displacement = {
   type: ActionType.DISPLACEMENT,
 };
 export const createDisplacementMock = ({
-  currentPosition,
+  entityId,
   executor,
   id,
   targetCoordinates,
   type,
 }: Displacement = MOCK_DISPLACEMENT): Displacement => ({
-  currentPosition,
+  entityId,
   executor,
   id,
   targetCoordinates,

@@ -52,7 +52,6 @@ export const movePosition = (
 // Higher Order Function, hence the dependencies are the second step (they will
 // be the first call in the generated function)
 type CreateExecutor = (params: {
-  currentPosition: Position;
   targetCoordinates: Position;
   entityId: Id;
   displacementId: Id;
@@ -62,18 +61,22 @@ type CreateExecutor = (params: {
   timeService: TimeService;
 }) => Promise<void>;
 export const createExecutor: CreateExecutor = ({
-  currentPosition,
   targetCoordinates,
   entityId,
   displacementId,
 }) => ({ loggerService, stateService, timeService }) => {
+  const currentPosition: Position = getEntityCurrentPosition({
+    id: entityId,
+    loggerService,
+    stateService,
+  });
   const newPosition: Position = movePosition(
     currentPosition,
     targetCoordinates,
     SPEED,
   );
   loggerService.debug(
-    `New position for entity "${entityId}": ${JSON.stringify(newPosition)}`,
+    `New position for entity '${entityId}': ${JSON.stringify(newPosition)}`,
   );
   // Returning a promise here because it's needed but stateService.mutate
   // is not async yet.
@@ -84,9 +87,9 @@ export const createExecutor: CreateExecutor = ({
     }),
   ).then(() =>
     timeService.addAction(
-      createDisplacement({ loggerService, stateService })({
+      createDisplacement({ loggerService })({
+        displacementId,
         entityId,
-        maybeId: displacementId,
         targetCoordinates,
       }),
     ),
@@ -95,34 +98,30 @@ export const createExecutor: CreateExecutor = ({
 
 export type CreateDisplacement = (deps: {
   loggerService: LoggerService;
-  stateService: StateService;
 }) => (params: {
   entityId: Id;
-  maybeId?: Id;
+  displacementId?: Id;
   targetCoordinates: Position;
 }) => Displacement;
-export const createDisplacement: CreateDisplacement = ({
-  loggerService,
-  stateService,
-}) => ({ maybeId, entityId, targetCoordinates }) => {
-  const currentPosition: Position = getEntityCurrentPosition({
-    id: entityId,
-    loggerService,
-    stateService,
-  });
-  const displacementId: Id = maybeId || 'foo';
-  return {
-    currentPosition,
+export const createDisplacement: CreateDisplacement = ({ loggerService }) => ({
+  entityId,
+  displacementId,
+  targetCoordinates,
+}) => {
+  loggerService.debug('Entering createDisplacement…');
+  const id: Id = displacementId || 'foo';
+  const newDisplacement: Displacement = {
+    entityId,
     executor: createExecutor({
-      currentPosition,
-      displacementId,
+      displacementId: id,
       entityId,
       targetCoordinates,
     }),
-    id: displacementId,
+    id,
     targetCoordinates,
     type: ActionType.DISPLACEMENT,
   };
+  return newDisplacement;
 };
 
 export const getTargetCoordinatesFromContext = (context: Context): Position =>
@@ -179,21 +178,19 @@ export const displaceEntityMutator = (currentState: State) => ({
 
 type StartDisplacement = (deps: {
   loggerService: LoggerService;
-  stateService: StateService;
   testId?: Id;
   timeService: TimeService;
 }) => (context: Context, _req: any, res: Response) => Response;
 export const startDisplacement: StartDisplacement = ({
   loggerService,
-  stateService,
   testId,
   timeService,
 }) => (context, _req, res) => {
   loggerService.debug('Entering startDisplacement…');
   const entityId = getEntityIdFromContext(context);
-  const displacement = createDisplacement({ loggerService, stateService })({
+  const displacement = createDisplacement({ loggerService })({
+    displacementId: testId,
     entityId,
-    maybeId: testId,
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
   timeService.addAction(displacement);

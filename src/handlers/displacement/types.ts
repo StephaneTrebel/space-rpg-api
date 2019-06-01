@@ -4,9 +4,9 @@ import { Id } from '../../types/id';
 import { Position } from '../../types/position';
 
 export interface Displacement {
-  type: ActionType.DISPLACEMENT;
-  id: Id;
-  currentPosition: Position;
+  entityId: Id;
   executor: Executor;
+  id: Id;
   targetCoordinates: Position;
+  type: ActionType.DISPLACEMENT;
 }
