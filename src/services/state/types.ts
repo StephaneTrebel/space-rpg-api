@@ -13,8 +13,8 @@ export interface State {
 }
 
 export enum StateMutation {
-  CREATE_PLAYER,
-  DISPLACE_ENTITY,
+  CREATE_PLAYER = 'CREATE_PLAYER',
+  DISPLACE_ENTITY = 'DISPLACE_ENTITY',
 }
 
 export interface StateService {

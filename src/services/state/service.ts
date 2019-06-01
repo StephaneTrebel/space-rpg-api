@@ -21,25 +21,18 @@ const get: Get = ({ loggerService }) => (state: State) => (
   loggerService.debug('Entering stateService.get…');
   loggerService.debug(`Retrieving prop '${prop}' from state`);
   const result = state[prop];
-  loggerService.debug(`Result is ${result}`);
+  loggerService.debug(`Result is ${JSON.stringify(result)}`);
   return result;
 };
 
-type Mutate = (deps: {
+type GetMutatedState = (deps: {
   loggerService: LoggerService;
 }) => (state: State) => (mutation: StateMutation) => (payload: any) => State;
-const mutate: Mutate = ({ loggerService }) => (state: State) => (
-  mutation: StateMutation,
-) => (payload: any) => {
-  loggerService.debug('Entering stateService.mutate…');
-  loggerService.debug(
-    `Mutating state with mutation '${mutation}' and payload '${JSON.stringify(
-      payload,
-    )}'`,
-  );
-  state = mutations[mutation](state)(payload);
-  loggerService.debug('Mutation complete');
-  return state;
+const getMutatedState: GetMutatedState = ({ loggerService }) => (
+  state: State,
+) => (mutation: StateMutation) => (payload: any) => {
+  loggerService.debug('Entering stateService.getMutatedState…');
+  return mutations[mutation](state)(payload);
 };
 
 export interface StateService {
@@ -55,9 +48,21 @@ type StateServiceFactory = (deps: {
 export const stateServiceFactory: StateServiceFactory = ({ loggerService }) => (
   initialState: State,
 ): StateService => {
-  const state: State = { ...initialState };
+  const internal: { state: State } = { state: { ...initialState } };
   return {
-    get: get({ loggerService })(state),
-    mutate: mutate({ loggerService })(state),
+    get: (prop: StateProperties) =>
+      get({ loggerService })(internal.state)(prop),
+    mutate: (mutation: StateMutation) => (payload: any) => {
+      loggerService.debug(
+        `Mutating state with mutation '${mutation}' and payload '${JSON.stringify(
+          payload,
+        )}'`,
+      );
+      internal.state = getMutatedState({ loggerService })(internal.state)(
+        mutation,
+      )(payload);
+      loggerService.debug('Mutation complete');
+      return internal.state;
+    },
   };
 };
