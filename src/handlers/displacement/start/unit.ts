@@ -77,7 +77,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         AND a distance per tick`,
       (test: tape.Test) => {
         test.plan(1);
-        const loggerService = loggerServiceFactory({ console: true });
+        const loggerService = loggerServiceFactory();
         test.deepEqual(
           testedModule.movePosition({ loggerService })({
             currentPosition: { x: 10, y: 10, z: 10 },
