@@ -13,7 +13,7 @@ const ENDPOINT = '/displacement/start';
 
 tape(ENDPOINT, (subTest: tape.Test) => {
   subTest.test('WHEN request has an invalid body', (caseTest: tape.Test) => {
-    return runE2ETest()(caseTest)(test =>
+    return runE2ETest({})(caseTest)(test =>
       postPromisified({
         body: '',
         url: `http://127.0.0.1:9000${ENDPOINT}`,

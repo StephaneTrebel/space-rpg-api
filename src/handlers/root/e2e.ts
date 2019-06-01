@@ -4,7 +4,7 @@ import { runE2ETest, getPromisified } from '../../e2e-utils';
 
 const ENDPOINT = '/';
 tape(ENDPOINT, (t: tape.Test) =>
-  runE2ETest()(t)(test =>
+  runE2ETest({})(t)(test =>
     getPromisified({ uri: `http://127.0.0.1:9000${ENDPOINT}` }).then(
       response => {
         const EXPECTED_RETURN_CODE = 200;

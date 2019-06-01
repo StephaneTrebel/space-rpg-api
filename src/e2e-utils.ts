@@ -10,19 +10,22 @@ import { ActionList } from './services/time/types';
 import { Config } from './services/config/types';
 import { DEFAULT_CONFIG } from './services/config/service';
 
-export const runE2ETest = ({
+type RunE2ETest = (params: {
+  config?: Config;
+  initialActionQueue?: ActionList;
+  initialState?: State;
+}) => (
+  test: tape.Test,
+) => (testCase: (test: tape.Test) => Promise<any>) => Promise<void>;
+export const runE2ETest: RunE2ETest = ({
   config,
   initialActionQueue,
   initialState,
-}: {
-  config?: Config;
-  initialState?: State;
-  initialActionQueue?: ActionList;
-} = {}) => (test: tape.Test) => (testCase: (test: tape.Test) => any) =>
+}) => test => testCase =>
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })().then((assets) =>
+  })().then(assets =>
     testCase(test).finally(() => {
       assets.teardown();
       assets.server.close();
