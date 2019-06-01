@@ -10,6 +10,7 @@ import { EMPTY_UNIVERSE, Universe } from './assets/universe';
 import { configServiceFactory } from './services/config/service';
 import { Config } from './services/config/types';
 import { loggerServiceFactory } from './services/logger/service';
+import { LoggerService } from './services/logger/types';
 import { spawnAPIBackend } from './services/openapi-backend/service';
 import { stateServiceFactory } from './services/state/service';
 import { State } from './services/state/types';
@@ -30,6 +31,7 @@ export interface MainParams {
 }
 
 export interface MainAssets {
+  loggerService: LoggerService;
   server: http.Server;
   teardown: () => void;
 }
@@ -59,6 +61,7 @@ export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
       timeService,
     })
     .then((api: OpenAPIBackend) => ({
+      loggerService,
       server: deps.spawnWebServer({ cors, express })(api),
       teardown: () => timeService.stop(),
     }));

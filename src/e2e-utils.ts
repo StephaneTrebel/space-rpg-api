@@ -25,12 +25,23 @@ export const runE2ETest: RunE2ETest = ({
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })().then(assets =>
-    testCase(test).finally(() => {
+  })().then(assets => {
+    const teardown = () => {
+      assets.loggerService.debug('Stopping the test…');
       assets.teardown();
       assets.server.close();
-    }),
-  );
+    };
+    return testCase(test)
+      .then(() => {
+        assets.loggerService.debug('Test finished successfully');
+        return teardown();
+      })
+      .catch(error => {
+        assets.loggerService.error(error.message);
+        assets.loggerService.debug('Test crashed :(');
+        return teardown();
+      });
+  });
 
 interface Headers {
   authorization: string;
