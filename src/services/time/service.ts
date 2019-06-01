@@ -27,12 +27,26 @@ export const createTimer: (
 ) => (fn: () => void) => Subscription = (timeConfig = {}) => fn =>
   timer(timeConfig.startDelay, timeConfig.period).subscribe(fn);
 
-export const getAction = (actionList: ActionList) => (id: Id) => {
+export interface GetActionParams {
+  id: Id;
+  type: ActionType;
+}
+type GetAction = (
+  actionList: ActionList,
+) => (params: GetActionParams) => Action;
+export const getAction: GetAction = actionList => ({ id, type }) => {
   const maybeAction = actionList.find(action => action.id === id);
-  if (!!maybeAction) {
-    return maybeAction;
+  if (!maybeAction) {
+    throw new Error(`Cannot find action with id ${id}`);
   }
-  throw new Error(`Cannot find action with id ${id}`);
+  if (!!maybeAction && maybeAction.type !== type) {
+    throw new Error(
+      `Action '${id}' found but its type ${
+        maybeAction.type
+      } is not the expected one ${type}`,
+    );
+  }
+  return maybeAction;
 };
 
 export const timeServiceFactory: TimeServiceFactory = ({
@@ -44,9 +58,15 @@ export const timeServiceFactory: TimeServiceFactory = ({
     actionQueue: initialActionQueue || [],
   };
   const timeService: TimeService = {
-    addAction: (action: Action) =>
-      (internal.actionQueue = addAction(internal.actionQueue)(action)),
-    getAction: (id: string) => getAction(internal.actionQueue)(id),
+    addAction: (action: Action) => {
+      loggerService.debug(
+        `Adding action to internal action queue: ${JSON.stringify(action)}`,
+      );
+      internal.actionQueue = addAction(internal.actionQueue)(action);
+      return internal.actionQueue;
+    },
+    getAction: (params: GetActionParams) =>
+      getAction(internal.actionQueue)(params),
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.debug('Tic-toc !');
@@ -64,7 +84,7 @@ export const timeServiceFactory: TimeServiceFactory = ({
 export const MOCK_BASE_ACTION: BaseAction = {
   executor: () => Promise.resolve(),
   id: 'mock base action',
-  type: ActionType.BASE,
+  type: ActionType.MOCK,
 };
 export const createBaseActionMock = ({
   executor,
@@ -72,5 +92,5 @@ export const createBaseActionMock = ({
 }: BaseAction = MOCK_BASE_ACTION): BaseAction => ({
   executor,
   id,
-  type: ActionType.BASE,
+  type: ActionType.MOCK,
 });

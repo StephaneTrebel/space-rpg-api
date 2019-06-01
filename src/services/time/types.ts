@@ -7,6 +7,7 @@ import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/service';
 
+import { GetActionParams } from './service';
 import { TimeService } from './types';
 
 export type Executor = (params: {
@@ -16,14 +17,15 @@ export type Executor = (params: {
 }) => Promise<any>;
 
 export enum ActionType {
-  BASE = 'base',
+  NONE = 'none', // No action should ever have this type. For tests only
+  MOCK = 'mock', // Mock actions only
   DISPLACEMENT = 'displacement',
 }
 
 export interface BaseAction {
   executor: Executor;
   id: Id;
-  type: ActionType.BASE;
+  type: ActionType.MOCK;
 }
 export type Action = BaseAction | Displacement;
 export type ActionList = Array<Action>;
@@ -35,7 +37,7 @@ export interface TimeConfig {
 
 export interface TimeService {
   addAction: (action: Action) => void;
-  getAction: (id: Id) => Action;
+  getAction: (params: GetActionParams) => Action;
   start: () => Subscription;
   stop: () => void;
 }

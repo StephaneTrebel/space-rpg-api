@@ -1,10 +1,13 @@
 import { Context } from 'openapi-backend/backend';
 import { Response } from 'express-serve-static-core';
 
+import { Id } from '../../types/id';
+
 import { TimeService, ActionType } from '../../services/time/types';
 import { sendResponse } from '../../services/webserver/service';
 
 import { Displacement } from './types';
+import { LoggerService } from '../../services/logger/types';
 
 export const MOCK_DISPLACEMENT: Displacement = {
   currentPosition: {
@@ -42,32 +45,41 @@ export const getDisplacementIdFromContext = (context: Context): string =>
   // accordingly, so no need for additionnal code here
   (context.request.params.id as any);
 
-export const getDisplacementFromTimeService = ({
-  id,
-  timeService,
-}: {
-  id: string;
+type GetDisplacementFromTimeService = (deps: {
+  loggerService: LoggerService;
   timeService: TimeService;
-}): Displacement => {
-  const action = timeService.getAction(id);
-  if (!!action && action.type === ActionType.DISPLACEMENT) {
-    return action;
-  }
-  throw new Error(`No displacement with id "${id}"`);
+}) => (params: { id: Id }) => Displacement;
+export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
+  loggerService,
+  timeService,
+}) => ({ id }) => {
+  loggerService.debug('Entering getDisplacementFromTimeService…');
+  const action = timeService.getAction({ id, type: ActionType.DISPLACEMENT });
+  loggerService.debug(
+    `Displacement retrieved for id '${id}': ${JSON.stringify(action)}`,
+  );
+  return action as Displacement;
 };
 
-export const getDisplacement = (deps: { timeService: TimeService }) => (
-  context: Context,
-  _req: any,
-  res: Response,
-) => {
+type GetDisplacement = (deps: {
+  loggerService: LoggerService;
+  timeService: TimeService;
+}) => (context: Context, _req: any, res: Response) => void;
+export const getDisplacement: GetDisplacement = ({
+  loggerService,
+  timeService,
+}) => (context, _req, res) => {
   try {
+    loggerService.debug('Entering getDisplacement handler…');
     const displacement = getDisplacementFromTimeService({
+      loggerService,
+      timeService,
+    })({
       id: getDisplacementIdFromContext(context),
-      timeService: deps.timeService,
     });
     sendResponse(res)({ links: [], payload: displacement, status: 200 });
   } catch (error) {
+    loggerService.error(`Error encountered: ${error.message}`);
     sendResponse(res)({
       payload: {
         code: 'getDisplacementError',

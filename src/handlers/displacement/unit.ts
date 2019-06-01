@@ -74,8 +74,10 @@ tape('Displacement handler', (functions: tape.Test) => {
         test.throws(
           () =>
             testedModule.getDisplacementFromTimeService({
-              id: 'qux',
+              loggerService,
               timeService,
+            })({
+              id: 'qux',
             }),
           'SHOULD throw an error',
         );
@@ -107,9 +109,9 @@ tape('Displacement handler', (functions: tape.Test) => {
         test.throws(
           () =>
             testedModule.getDisplacementFromTimeService({
-              id,
+              loggerService,
               timeService,
-            }),
+            })({ id }),
           'SHOULD throw an error',
         );
         test.end();
@@ -125,6 +127,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           ...testedModule.MOCK_DISPLACEMENT,
           id,
         });
+        const loggerService = loggerServiceFactory();
         const timeService = timeServiceFactory({
           configService: configServiceFactory(),
           loggerService: loggerServiceFactory(),
@@ -132,9 +135,9 @@ tape('Displacement handler', (functions: tape.Test) => {
         })([displacement]);
         test.equal(
           testedModule.getDisplacementFromTimeService({
-            id,
+            loggerService,
             timeService,
-          }),
+          })({ id }),
           displacement,
           'SHOULD return the displacement',
         );
@@ -158,6 +161,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           stateService,
         })();
         testedModule.getDisplacement({
+          loggerService,
           timeService,
         })(
           { request: { params: { id } } } as any,
@@ -206,6 +210,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           stateService,
         })([displacement]);
         testedModule.getDisplacement({
+          loggerService,
           timeService,
         })(
           { request: { params: { id } } } as any,

@@ -4,7 +4,7 @@ import { configServiceFactory } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
 
-import { TimeConfig, Action } from './types';
+import { Action, ActionType, TimeConfig } from './types';
 
 import * as testedModule from './service';
 
@@ -70,10 +70,9 @@ tape('Time Service', (functions: tape.Test) => {
     );
   });
 
-  functions.test('getAction()', (cases: tape.Test) => {
-    cases.test(
-      'WHEN given an action id that do not exists',
-      (test: tape.Test) => {
+  functions.test('getAction()', (given: tape.Test) => {
+    given.test('GIVEN an action that does not exist', (when: tape.Test) => {
+      when.test('WHEN called with its id', (test: tape.Test) => {
         test.plan(1);
         test.throws(
           () =>
@@ -83,25 +82,55 @@ tape('Time Service', (functions: tape.Test) => {
                 executor: undefined as any,
                 id: 'foo',
               }),
-            ])('bar'),
+            ])({ id: 'bar', type: testedModule.MOCK_BASE_ACTION.type }),
           'SHOULD throw an error',
         );
         test.end();
-      },
-    );
-    cases.test('WHEN given an action id that exists', (test: tape.Test) => {
-      test.plan(1);
-      const action = testedModule.createBaseActionMock({
-        ...testedModule.MOCK_BASE_ACTION,
-        executor: undefined as any,
-        id: 'foo',
       });
-      test.equal(
-        testedModule.getAction([action])('foo'),
-        action,
-        'SHOULD throw an error',
+    });
+
+    given.test('GIVEN an action that does exist', (when: tape.Test) => {
+      when.test(
+        'WHEN called with its id and another action type',
+        (test: tape.Test) => {
+          test.plan(1);
+          const action = testedModule.createBaseActionMock({
+            ...testedModule.MOCK_BASE_ACTION,
+            executor: undefined as any,
+            id: 'foo',
+          });
+          test.throws(
+            () =>
+              testedModule.getAction([action])({
+                id: 'foo',
+                type: ActionType.NONE,
+              }),
+            'SHOULD throw an error',
+          );
+          test.end();
+        },
       );
-      test.end();
+
+      when.test(
+        'WHEN called with its id and the same action type',
+        (test: tape.Test) => {
+          test.plan(1);
+          const action = testedModule.createBaseActionMock({
+            ...testedModule.MOCK_BASE_ACTION,
+            executor: undefined as any,
+            id: 'foo',
+          });
+          test.equal(
+            testedModule.getAction([action])({
+              id: 'foo',
+              type: action.type,
+            }),
+            action,
+            'SHOULD return the action',
+          );
+          test.end();
+        },
+      );
     });
   });
 
