@@ -60,11 +60,16 @@ export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
       stateService,
       timeService,
     })
-    .then((api: OpenAPIBackend) => ({
-      loggerService,
-      server: deps.spawnWebServer({ cors, express })(api),
-      teardown: () => timeService.stop(),
-    }));
+    .then((api: OpenAPIBackend) => deps.spawnWebServer({ cors, express })(api))
+    .then((server: http.Server) => {
+      loggerService.info('Service started');
+      const assets: MainAssets = {
+        loggerService,
+        server,
+        teardown: () => timeService.stop(),
+      };
+      return assets;
+    });
 };
 
 // istanbul ignore if
