@@ -22,82 +22,106 @@ import { Displacement } from '../types';
 import * as testedModule from './handler';
 
 tape('Displacement handler', (functionTest: tape.Test) => {
-  functionTest.test('moveTowards()', (cases: tape.Test) => {
-    cases.test(
-      `WHEN given a current coordinate,
-    AND a target coordinate that is farther forward
-    AND a speed`,
+  functionTest.test('movePosition()', (when: tape.Test) => {
+    when.test(
+      `WHEN given a point in space
+        AND a target
+        AND a distance per tick`,
       (test: tape.Test) => {
         test.plan(1);
-        const currentCoordinate: number = 0;
-        const targetCoordinate: number = 10;
-        const speed: number = 3;
-        test.equal(
-          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
-          3,
-          'SHOULD return an appropriately moved coordinate',
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.movePosition({ loggerService })({
+            currentPosition: { x: 0, y: 0, z: 0 },
+            distancePerTick: 3,
+            targetPosition: { x: 10, y: 10, z: 10 },
+          }),
+          {
+            x: 1.7320508075688772,
+            y: 1.7320508075688772,
+            z: 1.7320508075688772,
+          },
+          'SHOULD return the point displaced toward its target after one tick',
         );
         test.end();
       },
     );
 
-    cases.test(
-      `WHEN given a current coordinate,
-    AND a target coordinate that is farther behind
-    AND a speed`,
+    when.test(
+      `WHEN given a point in space
+        AND a target
+        AND a distance per tick that is WAAAAAAAY TOOOOO HIGH`,
       (test: tape.Test) => {
         test.plan(1);
-        const currentCoordinate: number = 0;
-        const targetCoordinate: number = -10;
-        const speed: number = 3;
-        test.equal(
-          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
-          -3,
-          'SHOULD return an appropriately moved coordinate',
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.movePosition({ loggerService })({
+            currentPosition: { x: 0, y: 0, z: 0 },
+            distancePerTick: 1000,
+            targetPosition: { x: 10, y: 10, z: 10 },
+          }),
+          {
+            x: 10,
+            y: 10,
+            z: 10,
+          },
+          'SHOULD return the point exactly at its target after one tick',
         );
         test.end();
       },
     );
 
-    cases.test(
-      `WHEN given a current coordinate,
-    AND a forwardly placed target coordinate that can be reached in one tick
-    AND a speed`,
+    when.test(
+      `WHEN given a point in space
+        AND a target that is "behind"
+        AND a distance per tick`,
       (test: tape.Test) => {
         test.plan(1);
-        const currentCoordinate: number = 0;
-        const targetCoordinate: number = 2;
-        const speed: number = 3;
-        test.equal(
-          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
-          2,
-          'SHOULD return an appropriately moved coordinate',
+        const loggerService = loggerServiceFactory({ console: true });
+        test.deepEqual(
+          testedModule.movePosition({ loggerService })({
+            currentPosition: { x: 10, y: 10, z: 10 },
+            distancePerTick: 3,
+            targetPosition: { x: 0, y: 0, z: 0 },
+          }),
+          {
+            x: 8.267949192431123,
+            y: 8.267949192431123,
+            z: 8.267949192431123,
+          },
+          'SHOULD return the point displaced toward its target after one tick',
         );
         test.end();
       },
     );
 
-    cases.test(
-      `WHEN given a current coordinate,
-    AND a behindly placed target coordinate that can be reached in one tick
-    AND a speed`,
+    when.test(
+      `WHEN given a point in space
+        AND a target that is "behind"
+        AND a distance per tick that is WAAAAAAAY TOOOOO HIGH`,
       (test: tape.Test) => {
         test.plan(1);
-        const currentCoordinate: number = 0;
-        const targetCoordinate: number = -2;
-        const speed: number = 3;
-        test.equal(
-          testedModule.moveTowards(currentCoordinate, targetCoordinate, speed),
-          -2,
-          'SHOULD return an appropriately moved coordinate',
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.movePosition({ loggerService })({
+            currentPosition: { x: 10, y: 10, z: 10 },
+            distancePerTick: 1000,
+            targetPosition: { x: 0, y: 0, z: 0 },
+          }),
+          {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          'SHOULD return the point exactly at its target after one tick',
         );
         test.end();
       },
     );
   });
 
-  functionTest.test('createDisplacement()', (cases: tape.Test) => {
-    cases.test('WHEN given proper parameters', (test: tape.Test) => {
+  functionTest.test('createDisplacement()', (when: tape.Test) => {
+    when.test('WHEN given proper parameters', (test: tape.Test) => {
       test.plan(2);
       const entityId: Id = 'foo';
       const currentPosition: Position = { x: 0, y: 0, z: 0 };
@@ -143,8 +167,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     });
   });
 
-  functionTest.test('getTargetCoordinatesFromContext()', (cases: tape.Test) => {
-    cases.test('WHEN given a Context object', (test: tape.Test) => {
+  functionTest.test('getTargetCoordinatesFromContext()', (when: tape.Test) => {
+    when.test('WHEN given a Context object', (test: tape.Test) => {
       test.plan(1);
       const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
       const context: any = {
@@ -159,8 +183,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     });
   });
 
-  functionTest.test('getEntityIdFromContext()', (cases: tape.Test) => {
-    cases.test('WHEN given a Context object', (test: tape.Test) => {
+  functionTest.test('getEntityIdFromContext()', (when: tape.Test) => {
+    when.test('WHEN given a Context object', (test: tape.Test) => {
       test.plan(1);
       const id: Id = 'foo';
       const context: any = {
@@ -175,8 +199,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     });
   });
 
-  functionTest.test('getEntityFromState()', (cases: tape.Test) => {
-    cases.test(
+  functionTest.test('getEntityFromState()', (when: tape.Test) => {
+    when.test(
       'WHEN given an entity id and a State lacking this entity',
       (test: tape.Test) => {
         test.plan(1);
@@ -201,7 +225,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       },
     );
 
-    cases.test(
+    when.test(
       'WHEN given an entity id and a State having this entity',
       (test: tape.Test) => {
         test.plan(1);
@@ -227,8 +251,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('getEntityCurrentPosition()', (cases: tape.Test) => {
-    cases.test(
+  functionTest.test('getEntityCurrentPosition()', (when: tape.Test) => {
+    when.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(1);
@@ -260,8 +284,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('displaceEntityMutator()', (cases: tape.Test) => {
-    cases.test(
+  functionTest.test('displaceEntityMutator()', (when: tape.Test) => {
+    when.test(
       'WHEN called with a state AND a displacement payload',
       (test: tape.Test) => {
         test.plan(1);
@@ -294,8 +318,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('startDisplacement()', (cases: tape.Test) => {
-    cases.test(
+  functionTest.test('startDisplacement()', (when: tape.Test) => {
+    when.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(3);

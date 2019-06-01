@@ -20,34 +20,76 @@ import { Displacement } from '../types';
 
 import { DisplaceEntityPayload } from './types';
 
-const SPEED = 1;
+const DISTANCE_PER_TICK = 1;
 
-export const moveTowards = (
-  currentCoordinate: number,
-  targetCoordinate: number,
-  speed: number,
-) => {
-  const direction = targetCoordinate < currentCoordinate;
-  const movedCoordinate = currentCoordinate + (direction ? -1 : 1) * speed;
-  const newCoordinate = direction
-    ? movedCoordinate < targetCoordinate
-      ? targetCoordinate
-      : movedCoordinate
-    : movedCoordinate > targetCoordinate
-    ? targetCoordinate
-    : movedCoordinate;
-  return newCoordinate;
+type MovePosition = (deps: {
+  loggerService: LoggerService;
+}) => (params: {
+  currentPosition: Position;
+  distancePerTick: number;
+  targetPosition: Position;
+}) => Position;
+export const movePosition: MovePosition = ({ loggerService }) => ({
+  currentPosition,
+  distancePerTick,
+  targetPosition,
+}): Position => {
+  const distanceX = targetPosition.x - currentPosition.x;
+  const distanceY = targetPosition.y - currentPosition.y;
+  const distanceZ = targetPosition.z - currentPosition.z;
+  loggerService.debug('Entering movePosition…');
+  loggerService.debug(
+    `Distances: X-axis=${distanceX}, Y-axis=${distanceY}, Z-axis=${distanceZ}`,
+  );
+  const distanceBetweenTargetAndCurrent = Math.sqrt(
+    distanceX ** 2 + distanceY ** 2 + distanceZ ** 2,
+  );
+  loggerService.debug(`Total distance ${distanceBetweenTargetAndCurrent}`);
+  if (distanceBetweenTargetAndCurrent === 0) {
+    return currentPosition;
+  }
+  const deltaX =
+    (distancePerTick * distanceX) / distanceBetweenTargetAndCurrent;
+  const deltaY =
+    (distancePerTick * distanceY) / distanceBetweenTargetAndCurrent;
+  const deltaZ =
+    (distancePerTick * distanceZ) / distanceBetweenTargetAndCurrent;
+  loggerService.debug(
+    `Delta per tick: X-axis=${deltaX}, Y-axis=${deltaY}, Z-axis=${deltaZ}`,
+  );
+  const newX = currentPosition.x + deltaX;
+  const newY = currentPosition.y + deltaY;
+  const newZ = currentPosition.z + deltaZ;
+  loggerService.debug(
+    `New coordinates (before cut-off): X-axis=${newX}, Y-axis=${newY}, Z-axis=${newZ}`,
+  );
+  return {
+    x:
+      deltaX > 0
+        ? newX > targetPosition.x
+          ? targetPosition.x
+          : newX
+        : newX < targetPosition.x
+        ? targetPosition.x
+        : newX,
+    y:
+      deltaY > 0
+        ? newY > targetPosition.y
+          ? targetPosition.y
+          : newY
+        : newY < targetPosition.y
+        ? targetPosition.y
+        : newY,
+    z:
+      deltaZ > 0
+        ? newZ > targetPosition.z
+          ? targetPosition.z
+          : newZ
+        : newZ < targetPosition.z
+        ? targetPosition.z
+        : newZ,
+  };
 };
-
-export const movePosition = (
-  currentPosition: Position,
-  targetPosition: Position,
-  speed: number,
-): Position => ({
-  x: moveTowards(targetPosition.x, currentPosition.x, speed),
-  y: moveTowards(targetPosition.y, currentPosition.y, speed),
-  z: moveTowards(targetPosition.z, currentPosition.z, speed),
-});
 
 // Higher Order Function, hence the dependencies are the second step (they will
 // be the first call in the generated function)
@@ -70,11 +112,11 @@ export const createExecutor: CreateExecutor = ({
     loggerService,
     stateService,
   });
-  const newPosition: Position = movePosition(
+  const newPosition: Position = movePosition({ loggerService })({
     currentPosition,
-    targetCoordinates,
-    SPEED,
-  );
+    distancePerTick: DISTANCE_PER_TICK,
+    targetPosition: targetCoordinates,
+  });
   loggerService.debug(
     `New position for entity '${entityId}': ${JSON.stringify(newPosition)}`,
   );
