@@ -28,7 +28,7 @@ const createBackend = (deps: {
   stateService: StateService;
   timeService: TimeService;
 }) => (specification: string) => {
-  deps.loggerService.info('Creating backend');
+  deps.loggerService.debug('Entering createBackend…');
   return new deps.backendEngine({
     ajvOpts: { unknownFormats: ['int32', 'int64'] },
     definition: specification,
