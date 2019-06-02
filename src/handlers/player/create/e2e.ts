@@ -6,8 +6,9 @@ const ENDPOINT = '/player/create';
 
 tape(ENDPOINT, (subTest: tape.Test) => {
   subTest.test('WHEN request has an invalid body', (t: tape.Test) =>
-    runE2ETest({})(t)(test =>
+    runE2ETest({})(t)((test, assets) =>
       postPromisified({
+        assets,
         body: '',
         url: `http://127.0.0.1:9000${ENDPOINT}`,
       }).then(response => {
@@ -23,8 +24,9 @@ tape(ENDPOINT, (subTest: tape.Test) => {
   );
   subTest.test('WHEN request has a valid body', (t: tape.Test) => {
     const MOCK_USERNAME = 'mock_username';
-    runE2ETest({})(t)(test =>
+    runE2ETest({})(t)((test, assets) =>
       postPromisified({
+        assets,
         body: { username: MOCK_USERNAME },
         json: true,
         url: `http://127.0.0.1:9000${ENDPOINT}`,

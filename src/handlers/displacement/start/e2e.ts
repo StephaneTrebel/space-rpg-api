@@ -13,8 +13,9 @@ const ENDPOINT = '/displacement/start';
 
 tape(ENDPOINT, (subTest: tape.Test) => {
   subTest.test('WHEN request has an invalid body', (caseTest: tape.Test) => {
-    return runE2ETest({})(caseTest)(test =>
+    return runE2ETest({})(caseTest)((test, assets) =>
       postPromisified({
+        assets,
         body: '',
         url: `http://127.0.0.1:9000${ENDPOINT}`,
       }).then(response => {
@@ -41,8 +42,9 @@ tape(ENDPOINT, (subTest: tape.Test) => {
             ...EMPTY_STATE,
             playerList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
           },
-        })(caseTest)(test =>
+        })(caseTest)((test, assets) =>
           postPromisified({
+            assets,
             body: { entityId, targetCoordinates },
             json: true,
             url: `http://127.0.0.1:9000${ENDPOINT}`,

@@ -69,7 +69,7 @@ export const timeServiceFactory: TimeServiceFactory = ({
       getAction(internal.actionQueue)(params),
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
-        loggerService.debug('Tic-toc !');
+        loggerService.info('Tic-toc !');
         return Promise.all(
           internal.actionQueue.map(action =>
             action

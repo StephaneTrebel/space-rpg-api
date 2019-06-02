@@ -9,6 +9,7 @@ import { spawnWebServer } from './services/webserver/service';
 import { ActionList } from './services/time/types';
 import { Config } from './services/config/types';
 import { DEFAULT_CONFIG } from './services/config/service';
+import { MainAssets } from '.';
 
 type RunE2ETest = (params: {
   config?: Config;
@@ -16,7 +17,9 @@ type RunE2ETest = (params: {
   initialState?: State;
 }) => (
   test: tape.Test,
-) => (testCase: (test: tape.Test) => Promise<any>) => Promise<void>;
+) => (
+  testCase: (test: tape.Test, assets: MainAssets) => Promise<any>,
+) => Promise<void>;
 export const runE2ETest: RunE2ETest = ({
   config,
   initialActionQueue,
@@ -31,7 +34,8 @@ export const runE2ETest: RunE2ETest = ({
       assets.teardown();
       assets.server.close();
     };
-    return testCase(test)
+    assets.loggerService.info('Test started…');
+    return testCase(test, assets)
       .then(() => {
         assets.loggerService.debug('Test finished successfully');
         return teardown();
@@ -47,38 +51,42 @@ interface Headers {
   authorization: string;
 }
 
-interface GetRequest {
-  headers?: Headers;
-  qs?: { [key: string]: string };
-  uri: string;
-}
-
-export const getPromisified = (
-  request: GetRequest,
-): Promise<RequestResponse> => {
+type GetPromisified = (params: {
+  assets: MainAssets;
+  request: {
+    headers?: Headers;
+    qs?: { [key: string]: string };
+    uri: string;
+  };
+}) => Promise<RequestResponse>;
+export const getPromisified: GetPromisified = ({ assets, request }) => {
+  assets.loggerService.info(`Emitting a GET request on '${request.uri}'`);
   return new Promise((resolve, reject) =>
     get(request, (error, response) =>
       error ? /* istanbul ignore next */ reject(error) : resolve(response),
     ),
   );
 };
-export interface PostOptions {
+
+export const POST_OPTIONS_STUB = { body: '', headers: {} };
+
+type PostPromisified = (options: {
+  assets: MainAssets;
   body?: any;
   json?: boolean;
   headers?: Headers;
   url: string;
-}
-
-export const POST_OPTIONS_STUB = { body: '', headers: {} };
-
-export const postPromisified = (
-  options: PostOptions,
-): Promise<RequestResponse> =>
-  new Promise((resolve, reject) =>
+}) => Promise<RequestResponse>;
+export const postPromisified: PostPromisified = options => {
+  options.assets.loggerService.info(
+    `Emitting a GET request on '${options.url}'`,
+  );
+  return new Promise((resolve, reject) =>
     post(options, (error, response) =>
       error ? reject(error) : resolve(response),
     ),
   );
+};
 
 export const setTimeoutPromisifed = <T>(
   fn: () => Promise<T>,
