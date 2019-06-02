@@ -54,8 +54,13 @@ export const timeServiceFactory: TimeServiceFactory = ({
   loggerService,
   stateService,
 }) => initialActionQueue => {
-  const internal: { actionQueue: ActionList; timer?: Subscription } = {
+  const internal: {
+    actionQueue: ActionList;
+    processQueue: ActionList;
+    timer?: Subscription;
+  } = {
     actionQueue: initialActionQueue || [],
+    processQueue: [],
   };
   const timeService: TimeService = {
     addAction: (action: Action) => {
@@ -70,16 +75,11 @@ export const timeServiceFactory: TimeServiceFactory = ({
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.info('Tic-toc !');
+        internal.processQueue = [...internal.actionQueue];
+        internal.actionQueue = [];
         return Promise.all(
-          internal.actionQueue.map(action =>
-            action
-              .executor({ loggerService, stateService, timeService })
-              .then(
-                () =>
-                  (internal.actionQueue = internal.actionQueue.filter(
-                    a => a.id === action.id,
-                  )),
-              ),
+          internal.processQueue.map(action =>
+            action.executor({ loggerService, stateService, timeService }),
           ),
         );
       })),
