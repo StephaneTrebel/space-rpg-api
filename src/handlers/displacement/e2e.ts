@@ -80,7 +80,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             test.equals(
               body.id,
               id,
-              'SHOULD return a JSON body having the exected id value',
+              'SHOULD return a JSON body having the displacement id',
             );
             test.deepEqual(
               body.links,
@@ -96,18 +96,15 @@ tape(ENDPOINT, (given: tape.Test) => {
 
   given.test(
     `GIVEN an existing displacement in a started TimeService
-    AND this displacement in not finished after three ticks`,
+    AND this displacement will not be done after three ticks`,
     (when: tape.Test) => {
       when.test(
         'WHEN requesting for this displacement existence',
         (cases: tape.Test) => {
           cases.plan(9);
-          const displacementId: Id = 'success_over_time';
+          const displacementId: Id = 'success_over_time_2';
           const PERIOD = 100;
           const START_DELAY = 0;
-          // The adjustment threshold with the server, to ensure we query it
-          // just before its next "tick". Warning: this may have to be
-          // maintained over time !
           const EPSILON = 50;
           const checkReponse = (test: tape.Test) => (response: Response) => {
             const EXPECTED_RETURN_CODE = 200;
@@ -139,7 +136,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             },
             initialActionQueue: [
               createDisplacement({
-                loggerService: loggerServiceFactory({ console: true }),
+                loggerService: loggerServiceFactory(),
               })({
                 displacementId,
                 entityId,
@@ -194,6 +191,125 @@ tape(ENDPOINT, (given: tape.Test) => {
                       },
                     }).then(checkReponse(test)),
                   PERIOD * 2 - EPSILON,
+                ),
+              )
+              .then(() => test.end()),
+          );
+        },
+      );
+    },
+  );
+
+  given.test(
+    `GIVEN an existing displacement in a started TimeService
+    AND this displacement will be done after two ticks`,
+    (when: tape.Test) => {
+      when.test(
+        'WHEN requesting for this displacement existence',
+        (cases: tape.Test) => {
+          cases.plan(8);
+          const displacementId: Id = 'success_over_time';
+          const PERIOD = 100;
+          const START_DELAY = 100;
+          const EPSILON = 50;
+          const checkReponse = (test: tape.Test) => (response: Response) => {
+            const EXPECTED_RETURN_CODE = 200;
+            const body = JSON.parse(response.body);
+            test.equals(
+              response.statusCode,
+              EXPECTED_RETURN_CODE,
+              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+            );
+            test.equals(
+              body.id,
+              displacementId,
+              'SHOULD return a JSON body having the displacement id',
+            );
+            test.deepEqual(
+              body.links,
+              [],
+              'SHOULD return a JSON body having an empty link list',
+            );
+          };
+          const entityId: Id = 'bar';
+          return runE2ETest({
+            config: {
+              ...DEFAULT_CONFIG,
+              time: {
+                period: PERIOD,
+                startDelay: START_DELAY,
+              },
+            },
+            initialActionQueue: [
+              createDisplacement({
+                loggerService: loggerServiceFactory(),
+              })({
+                displacementId,
+                entityId,
+                targetCoordinates: {
+                  x: 124,
+                  y: 457,
+                  z: 790,
+                },
+              }),
+            ],
+            initialState: {
+              ...EMPTY_STATE,
+              playerList: [
+                {
+                  ...MOCK_PLAYER,
+                  currentPosition: {
+                    x: 124,
+                    y: 455,
+                    z: 788,
+                  },
+                  id: entityId,
+                },
+              ],
+            },
+          })(cases)((test, assets) =>
+            getPromisified({
+              assets,
+              request: {
+                uri: `http://127.0.0.1:9000${ENDPOINT}/${displacementId}`,
+              },
+            })
+              .then(checkReponse(test))
+              .then(() =>
+                setTimeoutPromisifed(
+                  () =>
+                    getPromisified({
+                      assets,
+                      request: {
+                        uri: `http://127.0.0.1:9000${ENDPOINT}/${displacementId}`,
+                      },
+                    }).then(checkReponse(test)),
+                  START_DELAY + PERIOD - EPSILON,
+                ),
+              )
+              .then(() =>
+                setTimeoutPromisifed(
+                  () =>
+                    getPromisified({
+                      assets,
+                      request: {
+                        uri: `http://127.0.0.1:9000${ENDPOINT}/${displacementId}`,
+                      },
+                    }).then((response: Response) => {
+                      const EXPECTED_RETURN_CODE = 400;
+                      const body = JSON.parse(response.body);
+                      test.equals(
+                        response.statusCode,
+                        EXPECTED_RETURN_CODE,
+                        `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+                      );
+                      test.deepEqual(
+                        body.links,
+                          undefined,
+                        'SHOULD return a JSON body not having a link list',
+                      );
+                    }),
+                  START_DELAY + PERIOD * 2 - EPSILON,
                 ),
               )
               .then(() => test.end()),

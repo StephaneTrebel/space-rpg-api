@@ -120,51 +120,155 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('createDisplacement()', (when: tape.Test) => {
-    when.test('WHEN given proper parameters', (test: tape.Test) => {
-      test.plan(2);
-      const entityId: Id = 'foo';
-      const currentPosition: Position = { x: 0, y: 0, z: 0 };
-      const configService = configServiceFactory();
-      const loggerService = loggerServiceFactory();
-      const stateService = stateServiceFactory({ loggerService })({
-        ...EMPTY_STATE,
-        playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
-      });
-      const timeService = timeServiceFactory({
-        configService,
-        loggerService,
-        stateService,
-      })();
-      const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
-      const maybeDisplacement: Displacement = testedModule.createDisplacement({
-        loggerService,
-      })({
-        entityId,
-        targetCoordinates,
-      });
+  functionTest.test('isSamePosition()', (when: tape.Test) => {
+    when.test('WHEN given two different positions', (test: tape.Test) => {
+      test.plan(1);
       test.equal(
-        !!maybeDisplacement &&
-          typeof maybeDisplacement.executor === 'function' &&
-          typeof maybeDisplacement.id === 'string' &&
-          maybeDisplacement.targetCoordinates === targetCoordinates &&
-          maybeDisplacement.type === ActionType.DISPLACEMENT,
-        true,
-        'SHOULD return a Displacement object',
+        testedModule.isSamePosition({ x: 1, y: 2, z: 3 }, { x: 4, y: 5, z: 6 }),
+        false,
+        'SHOULD return false',
       );
-      return maybeDisplacement
-        .executor({
-          loggerService,
-          stateService,
-          timeService,
-        })
-        .then(() => {
-          test.pass(
-            `AND this object SHOULD have an executor method that returns a Promise`,
-          );
-          test.end();
-        });
+      test.end();
     });
+
+    when.test('WHEN given two identical positions', (test: tape.Test) => {
+      test.plan(1);
+      test.equal(
+        testedModule.isSamePosition({ x: 4, y: 5, z: 6 }, { x: 4, y: 5, z: 6 }),
+        true,
+        'SHOULD return true',
+      );
+      test.end();
+    });
+  });
+
+  functionTest.test('createDisplacement()', (given: tape.Test) => {
+    given.test(
+      'GIVEN an entity that is located at its target coordinates',
+      (when: tape.Test) => {
+        when.test(
+          'WHEN called with this entity id and target coordinates',
+          (test: tape.Test) => {
+            test.plan(3);
+            const entityId: Id = 'foo';
+            const currentPosition: Position = { x: 0, y: 0, z: 0 };
+            const configService = configServiceFactory();
+            const loggerService = loggerServiceFactory();
+            const stateService = stateServiceFactory({ loggerService })({
+              ...EMPTY_STATE,
+              playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+            });
+            const timeService = timeServiceFactory({
+              configService,
+              loggerService,
+              stateService,
+            })();
+            const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
+            const maybeDisplacement: Displacement = testedModule.createDisplacement(
+              {
+                loggerService,
+              },
+            )({
+              entityId,
+              targetCoordinates,
+            });
+            test.equal(
+              !!maybeDisplacement &&
+                typeof maybeDisplacement.executor === 'function' &&
+                typeof maybeDisplacement.id === 'string' &&
+                maybeDisplacement.targetCoordinates === targetCoordinates &&
+                maybeDisplacement.type === ActionType.DISPLACEMENT,
+              true,
+              'SHOULD return a Displacement object',
+            );
+            return maybeDisplacement
+              .executor({
+                loggerService,
+                stateService,
+                timeService,
+              })
+              .then(() => {
+                test.pass(
+                  `AND this object SHOULD have an executor method that returns a Promise`,
+                );
+                test.throws(
+                  () =>
+                    timeService.getAction({
+                      id: maybeDisplacement.id,
+                      type: maybeDisplacement.type,
+                    }),
+                  `AND there should be no additionnal displacement planned`,
+                );
+                test.end();
+              });
+          },
+        );
+      },
+    );
+
+    given.test(
+      'GIVEN an entity that is not located at its target coordinates',
+      (when: tape.Test) => {
+        when.test(
+          'WHEN called with this entity id and target coordinates',
+          (test: tape.Test) => {
+            test.plan(3);
+            const entityId: Id = 'foo';
+            const currentPosition: Position = { x: 0, y: 0, z: 0 };
+            const configService = configServiceFactory();
+            const loggerService = loggerServiceFactory();
+            const stateService = stateServiceFactory({ loggerService })({
+              ...EMPTY_STATE,
+              playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+            });
+            const timeService = timeServiceFactory({
+              configService,
+              loggerService,
+              stateService,
+            })();
+            const targetCoordinates: Position = { x: 10, y: 10, z: 10 };
+            const maybeDisplacement: Displacement = testedModule.createDisplacement(
+              {
+                loggerService,
+              },
+            )({
+              entityId,
+              targetCoordinates,
+            });
+            test.equal(
+              !!maybeDisplacement &&
+                typeof maybeDisplacement.executor === 'function' &&
+                typeof maybeDisplacement.id === 'string' &&
+                maybeDisplacement.targetCoordinates === targetCoordinates &&
+                maybeDisplacement.type === ActionType.DISPLACEMENT,
+              true,
+              'SHOULD return a Displacement object',
+            );
+            return maybeDisplacement
+              .executor({
+                loggerService,
+                stateService,
+                timeService,
+              })
+              .then(() => {
+                test.pass(
+                  `AND this object SHOULD have an executor method that returns a Promise`,
+                );
+                const action = timeService.getAction({
+                  id: maybeDisplacement.id,
+                  type: maybeDisplacement.type,
+                });
+                test.equal(
+                  action.id,
+                  maybeDisplacement.id,
+                  `AND there should be an additionnal displacement planned`,
+                );
+                test.end();
+              });
+          },
+        );
+      },
+    );
   });
 
   functionTest.test('getTargetCoordinatesFromContext()', (when: tape.Test) => {

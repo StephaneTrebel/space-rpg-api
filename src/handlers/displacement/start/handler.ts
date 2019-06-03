@@ -91,6 +91,11 @@ export const movePosition: MovePosition = ({ loggerService }) => ({
   };
 };
 
+export const isSamePosition = (positionA: Position, positionB: Position) =>
+  positionA.x === positionB.x &&
+  positionA.y === positionB.y &&
+  positionA.z === positionB.z;
+
 // Higher Order Function, hence the dependencies are the second step (they will
 // be the first call in the generated function)
 type CreateExecutor = (params: {
@@ -127,15 +132,17 @@ export const createExecutor: CreateExecutor = ({
       entityId,
       newPosition,
     }),
-  ).then(() =>
-    timeService.addAction(
-      createDisplacement({ loggerService })({
-        displacementId,
-        entityId,
-        targetCoordinates,
-      }),
-    ),
-  );
+  ).then(() => {
+    if (!isSamePosition(currentPosition, targetCoordinates)) {
+      return timeService.addAction(
+        createDisplacement({ loggerService })({
+          displacementId,
+          entityId,
+          targetCoordinates,
+        }),
+      );
+    }
+  });
 };
 
 export type CreateDisplacement = (deps: {
