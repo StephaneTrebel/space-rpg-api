@@ -6,7 +6,7 @@ import {
   stateServiceFactory,
   EMPTY_STATE,
 } from '../../../services/state/service';
-import { State } from '../../../services/state/types';
+import { State } from "../../../services/state/types";
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
 import { LinkList } from '../../../services/webserver/service';
@@ -156,7 +156,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
-              playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+              entityList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
             });
             const timeService = timeServiceFactory({
               configService,
@@ -219,7 +219,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
-              playerList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+              entityList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
             });
             const timeService = timeServiceFactory({
               configService,
@@ -303,60 +303,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     });
   });
 
-  functionTest.test('getEntityFromState()', (when: tape.Test) => {
-    when.test(
-      'WHEN given an entity id and a State lacking this entity',
-      (test: tape.Test) => {
-        test.plan(1);
-        const id: Id = 'bar';
-        const entity: Player = createMockPlayer({
-          ...MOCK_PLAYER,
-          id,
-        });
-        const loggerService = loggerServiceFactory();
-        test.throws(
-          () =>
-            testedModule.getEntityFromState({
-              id: 'qux',
-              loggerService,
-              stateService: stateServiceFactory({ loggerService })({
-                ...EMPTY_STATE,
-                playerList: [entity],
-              }),
-            }),
-          'SHOULD throw an error',
-        );
-        test.end();
-      },
-    );
-
-    when.test(
-      'WHEN given an entity id and a State having this entity',
-      (test: tape.Test) => {
-        test.plan(1);
-        const id: Id = 'bar';
-        const entity: Player = createMockPlayer({
-          ...MOCK_PLAYER,
-          id,
-        });
-        const loggerService = loggerServiceFactory();
-        test.equal(
-          testedModule.getEntityFromState({
-            id,
-            loggerService,
-            stateService: stateServiceFactory({ loggerService })({
-              ...EMPTY_STATE,
-              playerList: [entity],
-            }),
-          }),
-          entity,
-          'SHOULD return the entity',
-        );
-        test.end();
-      },
-    );
-  });
-
   functionTest.test('getEntityCurrentPosition()', (when: tape.Test) => {
     when.test(
       'WHEN given an entity and a State having this entity',
@@ -380,7 +326,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             loggerService,
             stateService: stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
-              playerList: [entity],
+              entityList: [entity],
             }),
           }),
           currentPosition,
@@ -402,7 +348,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         const playerC: Player = { ...MOCK_PLAYER, id: entityId + 'C' };
         const initalState: State = {
           ...EMPTY_STATE,
-          playerList: [playerA, playerB, playerC],
+          entityList: [playerA, playerB, playerC],
         };
         const newPosition: Position = { x: 1, y: 2, z: 3 };
         test.deepEqual(
@@ -412,7 +358,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           }),
           {
             ...initalState,
-            playerList: [
+            entityList: [
               playerA,
               { ...playerB, currentPosition: newPosition },
               playerC,
@@ -445,7 +391,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
-          playerList: [entity],
+          entityList: [entity],
         });
         const timeService = timeServiceFactory({
           configService,

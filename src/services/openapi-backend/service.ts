@@ -2,8 +2,6 @@ import fs from 'fs';
 
 import * as yaml from 'js-yaml';
 
-import { StateService } from '../state/service';
-
 import { getDisplacement } from '../../handlers/displacement/handler';
 import { startDisplacement } from '../../handlers/displacement/start/handler';
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
@@ -16,6 +14,7 @@ import { createPlayer } from '../../handlers/player/create/handler';
 import { root } from '../../handlers/root/handler';
 
 import { LoggerService } from '../logger/types';
+import { StateService } from '../state/types';
 import { TimeService } from '../time/types';
 
 const loadSpecification = () => {

@@ -149,7 +149,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             ],
             initialState: {
               ...EMPTY_STATE,
-              playerList: [
+              entityList: [
                 {
                   ...MOCK_PLAYER,
                   currentPosition: {
@@ -255,7 +255,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             ],
             initialState: {
               ...EMPTY_STATE,
-              playerList: [
+              entityList: [
                 {
                   ...MOCK_PLAYER,
                   currentPosition: {

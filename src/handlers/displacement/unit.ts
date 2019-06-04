@@ -64,7 +64,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
-          playerList: [],
+          entityList: [],
         });
         const timeService = timeServiceFactory({
           configService,
@@ -94,7 +94,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
-          playerList: [],
+          entityList: [],
         });
         const timeService = timeServiceFactory({
           configService,

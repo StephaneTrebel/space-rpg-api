@@ -6,13 +6,15 @@ import {
   StateMutation,
   StateService,
 } from '../../../services/state/types';
+import { EntityType } from '../../../types/entity';
+
 import { Player } from '../types';
 
 export const createPlayerMutator = (currentState: State) => (
   newPlayer: Player,
 ): State => ({
   ...currentState,
-  playerList: [...currentState.playerList, newPlayer],
+  entityList: [...currentState.entityList, newPlayer],
 });
 
 export const createPlayer = (deps: { stateService: StateService }) => (
@@ -42,14 +44,17 @@ export const MOCK_PLAYER: Player = {
     z: 0,
   },
   id: 'lolilol',
+  type: EntityType.PLAYER,
   username: 'foo',
 };
 export const createMockPlayer = ({
   currentPosition,
   id,
+  type,
   username,
 } = MOCK_PLAYER): Player => ({
   currentPosition,
   id,
+  type,
   username,
 });

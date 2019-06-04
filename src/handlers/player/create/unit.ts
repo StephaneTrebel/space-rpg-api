@@ -1,5 +1,6 @@
 import tape from 'tape';
 
+import { loggerServiceFactory } from '../../../services/logger/service';
 import {
   stateServiceFactory,
   EMPTY_STATE,
@@ -8,7 +9,6 @@ import {
 import { Player } from '../types';
 
 import * as testedModule from './handler';
-import { loggerServiceFactory } from '../../../services/logger/service';
 
 tape('Player creation handler', (functionTest: tape.Test) => {
   functionTest.test('createPlayerMutator()', (cases: tape.Test) => {
@@ -24,7 +24,7 @@ tape('Player creation handler', (functionTest: tape.Test) => {
           testedModule.createPlayerMutator(EMPTY_STATE)(newPlayer),
           {
             ...EMPTY_STATE,
-            playerList: [{ ...testedModule.MOCK_PLAYER, username: 'foo' }],
+            entityList: [{ ...testedModule.MOCK_PLAYER, username: 'foo' }],
           },
           'SHOULD return a state having this new player',
         );

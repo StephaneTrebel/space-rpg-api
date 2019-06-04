@@ -40,7 +40,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         return runE2ETest({
           initialState: {
             ...EMPTY_STATE,
-            playerList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
+            entityList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
           },
         })(caseTest)((test, assets) =>
           postPromisified({

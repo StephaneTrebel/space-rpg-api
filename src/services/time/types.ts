@@ -5,7 +5,7 @@ import { Id } from '../../types/id';
 
 import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
-import { StateService } from '../state/service';
+import { StateService } from '../state/types';
 
 import { GetActionParams } from './service';
 import { TimeService } from './types';

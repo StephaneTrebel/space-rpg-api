@@ -6,7 +6,6 @@ import { Position } from '../../../types/position';
 
 import { LoggerService } from '../../../services/logger/types';
 import {
-  StateProperties,
   StateService,
   StateMutation,
   State,
@@ -14,11 +13,10 @@ import {
 import { TimeService, ActionType } from '../../../services/time/types';
 import { sendResponse } from '../../../services/webserver/service';
 
-import { Player, PlayerList } from '../../player/types';
-
 import { Displacement } from '../types';
 
 import { DisplaceEntityPayload } from './types';
+import { EntityType } from '../../../types/entity';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -179,26 +177,6 @@ export const getTargetCoordinatesFromContext = (context: Context): Position =>
 export const getEntityIdFromContext = (context: Context): string =>
   context.request && context.request.requestBody.entityId;
 
-// @TODO Move this elsewhere, most likely to the future Entity handler
-export const getEntityFromState = ({
-  id,
-  loggerService,
-  stateService,
-}: {
-  id: Id;
-  loggerService: LoggerService;
-  stateService: StateService;
-}): Player => {
-  loggerService.debug('Entering getEntityFromState…');
-  const entity = (stateService.get(
-    StateProperties.PLAYER_LIST,
-  ) as PlayerList).find(player => player.id === id);
-  if (!!entity) {
-    return entity;
-  }
-  throw new Error(`No entity with id "${id}"`);
-};
-
 export const getEntityCurrentPosition = ({
   id,
   loggerService,
@@ -209,7 +187,7 @@ export const getEntityCurrentPosition = ({
   stateService: StateService;
 }): Position => {
   loggerService.debug('Entering getEntityCurrentPosition…');
-  return getEntityFromState({ id, loggerService, stateService })
+  return stateService.findEntity({ id, type: EntityType.PLAYER })
     .currentPosition;
 };
 
@@ -218,10 +196,10 @@ export const displaceEntityMutator = (currentState: State) => ({
   newPosition,
 }: DisplaceEntityPayload): State => ({
   ...currentState,
-  playerList: currentState.playerList.map(player =>
-    player.id === entityId
-      ? { ...player, currentPosition: newPosition }
-      : player,
+  entityList: currentState.entityList.map(entity =>
+    entity.id === entityId
+      ? { ...entity, currentPosition: newPosition }
+      : entity,
   ),
 });
 

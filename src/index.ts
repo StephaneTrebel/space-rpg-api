@@ -43,7 +43,7 @@ export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
   const configService = configServiceFactory(params.config);
   const loggerService = loggerServiceFactory(configService.get('logger'));
   const stateService = stateServiceFactory({ loggerService })(
-    deps.initialState || { playerList: [], universe },
+    deps.initialState || { entityList: [], universe },
   );
   const timeService = timeServiceFactory({
     configService,

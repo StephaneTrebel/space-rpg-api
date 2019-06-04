@@ -1,14 +1,15 @@
 import { Universe } from '../../assets/universe';
 
-import { Player } from '../../handlers/player/types';
+import { EntityType, EntityList, Entity } from '../../types/entity';
+import { Id } from '../../types/id';
 
 export enum StateProperties {
-  PLAYER_LIST = 'playerList',
+  ENTITY_LIST = 'entityList',
   UNIVERSE = 'universe',
 }
 
 export interface State {
-  [StateProperties.PLAYER_LIST]: Array<Player>;
+  [StateProperties.ENTITY_LIST]: EntityList;
   [StateProperties.UNIVERSE]: Universe;
 }
 
@@ -18,6 +19,7 @@ export enum StateMutation {
 }
 
 export interface StateService {
-  get: (prop: StateProperties) => Array<Player> | Universe;
+  findEntity: (params: { id: Id; type: EntityType }) => Entity;
+  get: (prop: StateProperties) => EntityList | Universe;
   mutate: (mutation: StateMutation) => (payload: any) => State;
 }
