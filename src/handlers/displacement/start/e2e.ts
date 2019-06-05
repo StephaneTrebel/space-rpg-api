@@ -7,7 +7,7 @@ import { EMPTY_STATE } from '../../../services/state/service';
 
 import { runE2ETest, postPromisified } from '../../../e2e-utils';
 
-import { createMockPlayer, MOCK_PLAYER } from '../../player/create/handler';
+import { createPlayer, MOCK_PLAYER } from '../../player/create/handler';
 
 const ENDPOINT = '/displacement/start';
 
@@ -40,7 +40,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         return runE2ETest({
           initialState: {
             ...EMPTY_STATE,
-            entityList: [createMockPlayer({ ...MOCK_PLAYER, id: entityId })],
+            entityList: [createPlayer({ ...MOCK_PLAYER, id: entityId })],
           },
         })(caseTest)((test, assets) =>
           postPromisified({

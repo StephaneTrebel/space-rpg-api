@@ -14,7 +14,7 @@ import { LinkList } from '../../../services/webserver/service';
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
 
-import { createMockPlayer, MOCK_PLAYER } from '../../player/create/handler';
+import { createPlayer, MOCK_PLAYER } from '../../player/create/handler';
 import { Player } from '../../player/types';
 
 import { Displacement } from '../types';
@@ -312,7 +312,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           y: 456,
           z: 789,
         };
-        const entity: Player = createMockPlayer({
+        const entity: Player = createPlayer({
           ...MOCK_PLAYER,
           currentPosition,
           id,
@@ -380,7 +380,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           y: 923,
           z: 391,
         };
-        const entity: Player = createMockPlayer({
+        const entity: Player = createPlayer({
           ...MOCK_PLAYER,
           currentPosition,
           id: testId,

@@ -1,6 +1,6 @@
 post:
   summary: Spawn a new player with given username
-  operationId: createPlayer
+  operationId: addNewPlayer
   tags:
     - Player
   requestBody:

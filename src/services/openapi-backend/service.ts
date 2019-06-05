@@ -10,7 +10,7 @@ import {
   notImplemented,
   validationFail,
 } from '../../handlers/miscellaneous/openapi-validators/handler';
-import { createPlayer } from '../../handlers/player/create/handler';
+import { addNewPlayer } from '../../handlers/player/create/handler';
 import { root } from '../../handlers/root/handler';
 
 import { LoggerService } from '../logger/types';
@@ -32,7 +32,7 @@ const createBackend = (deps: {
     ajvOpts: { unknownFormats: ['int32', 'int64'] },
     definition: specification,
     handlers: {
-      createPlayer: createPlayer(deps),
+      addNewPlayer: addNewPlayer(deps),
       getDisplacement: getDisplacement(deps),
       notFound,
       notImplemented,

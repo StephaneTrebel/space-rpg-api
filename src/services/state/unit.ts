@@ -3,7 +3,7 @@ import tape from 'tape';
 import { EMPTY_UNIVERSE } from '../../assets/universe';
 import { Player } from '../../handlers/player/types';
 import {
-  createMockPlayer,
+  createPlayer,
   MOCK_PLAYER,
 } from '../../handlers/player/create/handler';
 import { Id } from '../../types/id';
@@ -17,7 +17,7 @@ import * as testedModule from './service';
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
-    const MOCK_PLAYER_LIST: Array<Player> = [createMockPlayer()];
+    const MOCK_PLAYER_LIST: Array<Player> = [createPlayer({ ...MOCK_PLAYER })];
     const loggerService = loggerServiceFactory();
     test.deepEqual(
       testedModule
@@ -39,7 +39,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createMockPlayer({
+          const entity: Player = createPlayer({
             ...MOCK_PLAYER,
             id,
           });
@@ -65,7 +65,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createMockPlayer({
+          const entity: Player = createPlayer({
             ...MOCK_PLAYER,
             currentPosition: { x: 0, y: 0, z: 0 },
             id,
@@ -91,7 +91,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createMockPlayer({
+          const entity: Player = createPlayer({
             ...MOCK_PLAYER,
             id,
           });
