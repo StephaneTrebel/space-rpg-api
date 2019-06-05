@@ -50,7 +50,7 @@ export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
   timeService,
 }) => ({ id }) => {
   loggerService.debug('Entering getDisplacementFromTimeService…');
-  const action = timeService.getAction({ id, type: ActionType.DISPLACEMENT });
+  const action = timeService.findAction({ id });
   loggerService.debug(
     `Displacement retrieved for id '${id}': ${JSON.stringify(action)}`,
   );

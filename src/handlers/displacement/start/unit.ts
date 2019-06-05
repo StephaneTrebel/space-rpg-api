@@ -6,7 +6,7 @@ import {
   stateServiceFactory,
   EMPTY_STATE,
 } from '../../../services/state/service';
-import { State } from "../../../services/state/types";
+import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
 import { LinkList } from '../../../services/webserver/service';
@@ -193,9 +193,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
                 );
                 test.throws(
                   () =>
-                    timeService.getAction({
+                    timeService.findAction({
                       id: maybeDisplacement.id,
-                      type: maybeDisplacement.type,
                     }),
                   `AND there should be no additionnal displacement planned`,
                 );
@@ -254,9 +253,8 @@ tape('Displacement handler', (functionTest: tape.Test) => {
                 test.pass(
                   `AND this object SHOULD have an executor method that returns a Promise`,
                 );
-                const action = timeService.getAction({
+                const action = timeService.findAction({
                   id: maybeDisplacement.id,
-                  type: maybeDisplacement.type,
                 });
                 test.equal(
                   action.id,

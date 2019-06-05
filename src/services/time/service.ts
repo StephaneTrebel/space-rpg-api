@@ -27,24 +27,16 @@ export const createTimer: (
 ) => (fn: () => void) => Subscription = (timeConfig = {}) => fn =>
   timer(timeConfig.startDelay, timeConfig.period).subscribe(fn);
 
-export interface GetActionParams {
+export interface FindActionParams {
   id: Id;
-  type: ActionType;
 }
-type GetAction = (
+type FindAction = (
   actionList: ActionList,
-) => (params: GetActionParams) => Action;
-export const getAction: GetAction = actionList => ({ id, type }) => {
+) => (params: FindActionParams) => Action;
+export const findAction: FindAction = actionList => ({ id }) => {
   const maybeAction = actionList.find(action => action.id === id);
   if (!maybeAction) {
-    throw new Error(`Cannot find action with id '${id}' and type '${type}'`);
-  }
-  if (!!maybeAction && maybeAction.type !== type) {
-    throw new Error(
-      `Action '${id}' found but its type '${
-        maybeAction.type
-      }' is not the expected one '${type}'`,
-    );
+    throw new Error(`Cannot find action with id '${id}'`);
   }
   return maybeAction;
 };
@@ -70,8 +62,8 @@ export const timeServiceFactory: TimeServiceFactory = ({
       internal.actionQueue = addAction(internal.actionQueue)(action);
       return internal.actionQueue;
     },
-    getAction: (params: GetActionParams) =>
-      getAction(internal.actionQueue)(params),
+    findAction: (params: FindActionParams) =>
+      findAction(internal.actionQueue)(params),
     start: () =>
       (internal.timer = createTimer(getTimeConfig(configService))(() => {
         loggerService.info('Tic-toc !');

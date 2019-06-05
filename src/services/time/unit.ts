@@ -4,7 +4,7 @@ import { configServiceFactory } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
 
-import { Action, ActionType, TimeConfig } from './types';
+import { Action,  TimeConfig } from './types';
 
 import * as testedModule from './service';
 
@@ -76,13 +76,13 @@ tape('Time Service', (functions: tape.Test) => {
         test.plan(1);
         test.throws(
           () =>
-            testedModule.getAction([
+            testedModule.findAction([
               testedModule.createBaseActionMock({
                 ...testedModule.MOCK_BASE_ACTION,
                 executor: undefined as any,
                 id: 'foo',
               }),
-            ])({ id: 'bar', type: testedModule.MOCK_BASE_ACTION.type }),
+            ])({ id: 'bar'}),
           'SHOULD throw an error',
         );
         test.end();
@@ -91,28 +91,7 @@ tape('Time Service', (functions: tape.Test) => {
 
     given.test('GIVEN an action that does exist', (when: tape.Test) => {
       when.test(
-        'WHEN called with its id and another action type',
-        (test: tape.Test) => {
-          test.plan(1);
-          const action = testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
-            executor: undefined as any,
-            id: 'foo',
-          });
-          test.throws(
-            () =>
-              testedModule.getAction([action])({
-                id: 'foo',
-                type: ActionType.NONE,
-              }),
-            'SHOULD throw an error',
-          );
-          test.end();
-        },
-      );
-
-      when.test(
-        'WHEN called with its id and the same action type',
+        'WHEN called with its id',
         (test: tape.Test) => {
           test.plan(1);
           const action = testedModule.createBaseActionMock({
@@ -121,9 +100,8 @@ tape('Time Service', (functions: tape.Test) => {
             id: 'foo',
           });
           test.equal(
-            testedModule.getAction([action])({
+            testedModule.findAction([action])({
               id: 'foo',
-              type: action.type,
             }),
             action,
             'SHOULD return the action',

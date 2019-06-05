@@ -13,7 +13,6 @@ import { loggerServiceFactory } from '../logger/service';
 import { StateProperties } from './types';
 
 import * as testedModule from './service';
-import { EntityType, BaseEntity } from '../../types/entity';
 
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
@@ -34,7 +33,7 @@ tape('State Service', (functionTest: tape.Test) => {
   });
 
   functionTest.test('findEntity()', (given: tape.Test) => {
-    given.test('GIVEN a State that has entities', (when: tape.Test) => {
+    given.test('GIVEN a State that has an entity', (when: tape.Test) => {
       when.test(
         'WHEN called with an entity id that does not exist in State',
         (test: tape.Test) => {
@@ -54,7 +53,6 @@ tape('State Service', (functionTest: tape.Test) => {
                 entityList: [entity],
               })({
                 id: 'qux',
-                type: EntityType.PLAYER,
               }),
             'SHOULD throw an error',
           );
@@ -63,32 +61,7 @@ tape('State Service', (functionTest: tape.Test) => {
       );
 
       when.test(
-        'WHEN called with an id and a type that does not match to the entity',
-        (test: tape.Test) => {
-          test.plan(1);
-          const id: Id = 'bar';
-          const entity: BaseEntity = {
-            currentPosition: { x: 0, y: 0, z: 0 },
-            id,
-            type: EntityType.MOCK,
-          };
-          const loggerService = loggerServiceFactory();
-          test.throws(
-            () =>
-              testedModule.findEntity({
-                loggerService,
-              })({ ...testedModule.EMPTY_STATE, entityList: [entity as any] })({
-                id,
-                type: EntityType.PLAYER,
-              }),
-            'SHOULD throw an error',
-          );
-          test.end();
-        },
-      );
-
-      when.test(
-        'WHEN called with an id and a type that does match to the entity',
+        'WHEN called with an entity id that exists in State',
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
@@ -103,7 +76,6 @@ tape('State Service', (functionTest: tape.Test) => {
               loggerService,
             })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
               id,
-              type: EntityType.PLAYER,
             }),
             entity,
             'SHOULD return the entity',
@@ -129,7 +101,6 @@ tape('State Service', (functionTest: tape.Test) => {
               loggerService,
             })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
               id,
-              type: EntityType.PLAYER,
             }),
             entity,
             'SHOULD return the entity',

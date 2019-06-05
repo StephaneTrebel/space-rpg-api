@@ -7,7 +7,7 @@ import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 
-import { GetActionParams } from './service';
+import { FindActionParams } from './service';
 import { TimeService } from './types';
 
 export type Executor = (params: {
@@ -37,7 +37,7 @@ export interface TimeConfig {
 
 export interface TimeService {
   addAction: (action: Action) => void;
-  getAction: (params: GetActionParams) => Action;
+  findAction: (params: FindActionParams) => Action;
   start: () => Subscription;
   stop: () => void;
 }

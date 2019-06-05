@@ -5,11 +5,7 @@ import { Id } from '../../types/id';
 import { configServiceFactory } from '../../services/config/service';
 import { loggerServiceFactory } from '../../services/logger/service';
 import { stateServiceFactory, EMPTY_STATE } from '../../services/state/service';
-import {
-  timeServiceFactory,
-  createBaseActionMock,
-  MOCK_BASE_ACTION,
-} from '../../services/time/service';
+import { timeServiceFactory } from '../../services/time/service';
 
 import * as testedModule from './handler';
 import { Displacement } from './types';
@@ -86,39 +82,6 @@ tape('Displacement handler', (functions: tape.Test) => {
     );
 
     cases.test(
-      'WHEN given an displacement id and a TimeService having a non-displacement action with the same id',
-      (test: tape.Test) => {
-        test.plan(1);
-        const id: Id = 'bar';
-        const configService = configServiceFactory();
-        const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({ loggerService })({
-          ...EMPTY_STATE,
-          entityList: [],
-        });
-        const timeService = timeServiceFactory({
-          configService,
-          loggerService,
-          stateService,
-        })([
-          createBaseActionMock({
-            ...MOCK_BASE_ACTION,
-            id,
-          }),
-        ]);
-        test.throws(
-          () =>
-            testedModule.getDisplacementFromTimeService({
-              loggerService,
-              timeService,
-            })({ id }),
-          'SHOULD throw an error',
-        );
-        test.end();
-      },
-    );
-
-    cases.test(
       'WHEN given an displacement id and a TimeService having this displacement',
       (test: tape.Test) => {
         test.plan(1);
@@ -154,7 +117,9 @@ tape('Displacement handler', (functions: tape.Test) => {
         const id: Id = 'getDisplacement';
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
         const timeService = timeServiceFactory({
           configService,
           loggerService,
@@ -203,7 +168,9 @@ tape('Displacement handler', (functions: tape.Test) => {
         });
         const configService = configServiceFactory();
         const loggerService = loggerServiceFactory();
-        const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
         const timeService = timeServiceFactory({
           configService,
           loggerService,
