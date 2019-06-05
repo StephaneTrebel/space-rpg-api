@@ -1,5 +1,6 @@
 import { Response } from 'express';
 import { Context } from 'openapi-backend';
+import * as uuid from 'uuid';
 
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
@@ -156,7 +157,7 @@ export const createDisplacement: CreateDisplacement = ({ loggerService }) => ({
   targetCoordinates,
 }) => {
   loggerService.debug('Entering createDisplacement…');
-  const id: Id = displacementId || 'foo';
+  const id: Id = displacementId || uuid.v4();
   const newDisplacement: Displacement = {
     entityId,
     executor: createExecutor({

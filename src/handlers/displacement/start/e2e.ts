@@ -57,15 +57,15 @@ tape(ENDPOINT, (subTest: tape.Test) => {
               `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
             );
             test.equals(
-              response.body.displacementId,
-              'foo',
+              typeof response.body.displacementId,
+              'string',
               'SHOULD return a JSON body having a string id property',
             );
             test.deepEqual(
               response.body.links,
               [
                 {
-                  href: '/displacement/foo',
+                  href: `/displacement/${response.body.displacementId}`,
                   rel: 'details',
                 },
               ],
