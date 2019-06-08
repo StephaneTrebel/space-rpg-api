@@ -1,13 +1,17 @@
 import tape from 'tape';
 
+import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
+
 import { runE2ETest, getPromisified } from '../../e2e-utils';
 
 const ENDPOINT = '/';
+const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
+
 tape(ENDPOINT, (t: tape.Test) =>
   runE2ETest({})(t)((test, assets) =>
     getPromisified({
       assets,
-      request: { uri: `http://127.0.0.1:9000${ENDPOINT}` },
+      request: { uri: URL },
     }).then(response => {
       const EXPECTED_RETURN_CODE = 200;
       test.equals(

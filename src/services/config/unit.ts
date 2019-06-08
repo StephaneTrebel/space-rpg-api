@@ -9,6 +9,7 @@ tape('Config service', (fnTest: tape.Test) => {
       test.equal(
         testedModule
           .configServiceFactory({
+            ...testedModule.DEFAULT_CONFIG,
             logger: {
               console: true,
             },

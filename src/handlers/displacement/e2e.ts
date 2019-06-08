@@ -7,7 +7,7 @@ import {
   setTimeoutPromisifed,
 } from '../../e2e-utils';
 
-import { DEFAULT_CONFIG } from '../../services/config/service';
+import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
 import { loggerServiceFactory } from '../../services/logger/service';
 import { EMPTY_STATE } from '../../services/state/service';
 
@@ -19,8 +19,9 @@ import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
 import { createDisplacement } from './start/handler';
 
 const ENDPOINT = '/displacement';
+const URL = (id: Id) => getURL(DEFAULT_CONFIG)(`${ENDPOINT}/${id}`);
 
-tape(ENDPOINT, (given: tape.Test) => {
+tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
   given.test('GIVEN any configuration', (when: tape.Test) => {
     when.test(
       'WHEN request has an unknown displacement id',
@@ -30,7 +31,7 @@ tape(ENDPOINT, (given: tape.Test) => {
           getPromisified({
             assets,
             request: {
-              uri: `http://127.0.0.1:9000${ENDPOINT}/${id}`,
+              uri: URL(id),
             },
           }).then(response => {
             test.plan(1);
@@ -66,7 +67,7 @@ tape(ENDPOINT, (given: tape.Test) => {
           getPromisified({
             assets,
             request: {
-              uri: `http://127.0.0.1:9000${ENDPOINT}/${id}`,
+              uri: URL(id),
             },
           }).then(response => {
             test.plan(3);
@@ -305,7 +306,7 @@ tape(ENDPOINT, (given: tape.Test) => {
                       );
                       test.deepEqual(
                         body.links,
-                          undefined,
+                        undefined,
                         'SHOULD return a JSON body not having a link list',
                       );
                     }),

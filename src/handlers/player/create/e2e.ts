@@ -1,8 +1,10 @@
 import tape from 'tape';
 
 import { runE2ETest, postPromisified } from '../../../e2e-utils';
+import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 
 const ENDPOINT = '/player/create';
+const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
 tape(ENDPOINT, (subTest: tape.Test) => {
   subTest.test('WHEN request has an invalid body', (t: tape.Test) =>
@@ -10,7 +12,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
       postPromisified({
         assets,
         body: '',
-        url: `http://127.0.0.1:9000${ENDPOINT}`,
+        url: URL,
       }).then(response => {
         const EXPECTED_RETURN_CODE = 400;
         test.equals(
@@ -29,7 +31,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         assets,
         body: { username: MOCK_USERNAME },
         json: true,
-        url: `http://127.0.0.1:9000${ENDPOINT}`,
+        url: URL,
       }).then(response => {
         const EXPECTED_RETURN_CODE = 201;
         test.equals(

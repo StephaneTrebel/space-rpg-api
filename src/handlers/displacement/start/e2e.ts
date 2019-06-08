@@ -8,8 +8,10 @@ import { EMPTY_STATE } from '../../../services/state/service';
 import { runE2ETest, postPromisified } from '../../../e2e-utils';
 
 import { createPlayer, MOCK_PLAYER } from '../../player/create/handler';
+import { getURL, DEFAULT_CONFIG } from "../../../services/config/service";
 
 const ENDPOINT = '/displacement/start';
+const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
 tape(ENDPOINT, (subTest: tape.Test) => {
   subTest.test('WHEN request has an invalid body', (caseTest: tape.Test) => {
@@ -17,7 +19,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
       postPromisified({
         assets,
         body: '',
-        url: `http://127.0.0.1:9000${ENDPOINT}`,
+        url: URL,
       }).then(response => {
         test.plan(1);
         const EXPECTED_RETURN_CODE = 400;
@@ -47,7 +49,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
             assets,
             body: { entityId, targetCoordinates },
             json: true,
-            url: `http://127.0.0.1:9000${ENDPOINT}`,
+            url: URL,
           }).then(response => {
             test.plan(3);
             const EXPECTED_RETURN_CODE = 201;

@@ -1,10 +1,10 @@
 import tape from 'tape';
 
-import { configServiceFactory } from '../config/service';
+import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
 
-import { Action,  TimeConfig } from './types';
+import { Action, TimeConfig } from './types';
 
 import * as testedModule from './service';
 
@@ -35,7 +35,9 @@ tape('Time Service', (functions: tape.Test) => {
         startDelay: 123,
       };
       test.deepEqual(
-        testedModule.getTimeConfig(configServiceFactory({ time: TIME_CONFIG })),
+        testedModule.getTimeConfig(
+          configServiceFactory({ ...DEFAULT_CONFIG, time: TIME_CONFIG }),
+        ),
         TIME_CONFIG,
         'SHOULD retrieve its time configuration',
       );
@@ -82,7 +84,7 @@ tape('Time Service', (functions: tape.Test) => {
                 executor: undefined as any,
                 id: 'foo',
               }),
-            ])({ id: 'bar'}),
+            ])({ id: 'bar' }),
           'SHOULD throw an error',
         );
         test.end();
@@ -90,25 +92,22 @@ tape('Time Service', (functions: tape.Test) => {
     });
 
     given.test('GIVEN an action that does exist', (when: tape.Test) => {
-      when.test(
-        'WHEN called with its id',
-        (test: tape.Test) => {
-          test.plan(1);
-          const action = testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
-            executor: undefined as any,
+      when.test('WHEN called with its id', (test: tape.Test) => {
+        test.plan(1);
+        const action = testedModule.createBaseActionMock({
+          ...testedModule.MOCK_BASE_ACTION,
+          executor: undefined as any,
+          id: 'foo',
+        });
+        test.equal(
+          testedModule.findAction([action])({
             id: 'foo',
-          });
-          test.equal(
-            testedModule.findAction([action])({
-              id: 'foo',
-            }),
-            action,
-            'SHOULD return the action',
-          );
-          test.end();
-        },
-      );
+          }),
+          action,
+          'SHOULD return the action',
+        );
+        test.end();
+      });
     });
   });
 
@@ -122,6 +121,7 @@ tape('Time Service', (functions: tape.Test) => {
         const loggerService = loggerServiceFactory();
         const timeService = testedModule.timeServiceFactory({
           configService: configServiceFactory({
+            ...DEFAULT_CONFIG,
             time: {
               period: PERIOD,
               startDelay: START_DELAY,
@@ -167,6 +167,7 @@ tape('Time Service', (functions: tape.Test) => {
         const loggerService = loggerServiceFactory();
         const timeService = testedModule.timeServiceFactory({
           configService: configServiceFactory({
+            ...DEFAULT_CONFIG,
             time: {
               period: PERIOD,
               startDelay: START_DELAY,

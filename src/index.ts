@@ -17,6 +17,7 @@ import { State } from './services/state/types';
 import { timeServiceFactory } from './services/time/service';
 import { ActionList } from './services/time/types';
 import { spawnWebServer, SpawnWebServer } from './services/webserver/service';
+import { Protocol } from './services/webserver/types';
 
 export interface MainDeps {
   initialActionQueue?: ActionList;
@@ -84,6 +85,15 @@ if (process.env.NODE_ENV === 'production') {
         console: true,
         errorFile: true,
         format: true,
+      },
+      server: {
+        host: '127.0.0.1',
+        port: 9000,
+        protocol: Protocol.HTTP,
+      },
+      time: {
+        period: 66,
+        startDelay: 1000,
       },
     },
     startTime: true,

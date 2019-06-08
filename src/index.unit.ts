@@ -1,6 +1,7 @@
 import tape from 'tape';
 
 import { EMPTY_UNIVERSE } from './assets/universe';
+import { DEFAULT_CONFIG } from './services/config/service';
 
 import * as testedModule from './index';
 
@@ -17,7 +18,7 @@ tape('Index script', (subTest: tape.Test) => {
           test.pass('main SHOULD spawn a Web Server');
           test.end();
         },
-      } as any)({ config: {} })(EMPTY_UNIVERSE)
+      } as any)({ config: DEFAULT_CONFIG })(EMPTY_UNIVERSE)
       .then(assets => assets.teardown());
   });
 
@@ -34,7 +35,7 @@ tape('Index script', (subTest: tape.Test) => {
           test.pass('main SHOULD spawn a Web Server');
           test.end();
         },
-      } as any)({ config: {}, startTime: true })(EMPTY_UNIVERSE);
+      } as any)({ config: DEFAULT_CONFIG, startTime: true })(EMPTY_UNIVERSE);
     },
   );
 });
