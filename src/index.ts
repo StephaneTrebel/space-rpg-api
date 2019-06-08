@@ -67,7 +67,10 @@ export const main: Main = deps => params => (universe = EMPTY_UNIVERSE) => {
       const assets: MainAssets = {
         loggerService,
         server,
-        teardown: () => timeService.stop(),
+        teardown: () => {
+          timeService.stop();
+          server.close();
+        },
       };
       return assets;
     });

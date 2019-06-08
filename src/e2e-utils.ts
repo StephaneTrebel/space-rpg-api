@@ -32,7 +32,6 @@ export const runE2ETest: RunE2ETest = ({
     const teardown = () => {
       assets.loggerService.debug('Stopping the test…');
       assets.teardown();
-      assets.server.close();
     };
     assets.loggerService.info('Test started…');
     return testCase(test, assets)

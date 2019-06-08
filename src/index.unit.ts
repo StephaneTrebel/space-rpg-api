@@ -26,16 +26,18 @@ tape('Index script', (subTest: tape.Test) => {
     'WHEN main function is called with startTime to true',
     (test: tape.Test) => {
       test.plan(2);
-      testedModule.main({
-        spawnAPIBackend: () => {
-          test.pass('SHOULD spawn an OpenAPI back-end');
-          return Promise.resolve();
-        },
-        spawnWebServer: () => () => {
-          test.pass('main SHOULD spawn a Web Server');
-          test.end();
-        },
-      } as any)({ config: DEFAULT_CONFIG, startTime: true })(EMPTY_UNIVERSE);
+      testedModule
+        .main({
+          spawnAPIBackend: () => {
+            test.pass('SHOULD spawn an OpenAPI back-end');
+            return Promise.resolve();
+          },
+          spawnWebServer: () => () => {
+            test.pass('main SHOULD spawn a Web Server');
+            test.end();
+          },
+        } as any)({ config: DEFAULT_CONFIG, startTime: true })(EMPTY_UNIVERSE)
+        .then(assets => assets.teardown());
     },
   );
 });
