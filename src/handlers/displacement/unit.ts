@@ -9,7 +9,7 @@ import { timeServiceFactory } from '../../services/time/service';
 
 import * as testedModule from './handler';
 import { Displacement } from './types';
-import { LinkList } from '../../services/webserver/service';
+import { LinkList } from '../../services/webserver/types';
 
 tape('Displacement handler', (functions: tape.Test) => {
   functions.test('getDisplacementIdFromContext()', (cases: tape.Test) => {

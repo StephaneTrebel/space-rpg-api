@@ -9,7 +9,7 @@ import {
 import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
-import { LinkList } from '../../../services/webserver/service';
+import { LinkList } from '../../../services/webserver/types';
 
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
