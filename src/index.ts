@@ -3,7 +3,7 @@ import http from 'http';
 
 import cors from 'cors';
 import express from 'express';
-import { OpenAPIBackend } from 'openapi-backend/backend';
+import OpenAPIBackend from 'openapi-backend';
 
 import { EMPTY_UNIVERSE, Universe } from './assets/universe';
 
@@ -11,7 +11,10 @@ import { configServiceFactory } from './services/config/service';
 import { Config } from './services/config/types';
 import { loggerServiceFactory } from './services/logger/service';
 import { LoggerService } from './services/logger/types';
-import { spawnAPIBackend } from './services/openapi-backend/service';
+import {
+  SpawnAPIBackend,
+  spawnAPIBackend,
+} from './services/openapi-backend/service';
 import { stateServiceFactory } from './services/state/service';
 import { State } from './services/state/types';
 import { timeServiceFactory } from './services/time/service';
@@ -22,7 +25,7 @@ import { Protocol } from './services/webserver/types';
 export interface MainDeps {
   initialActionQueue?: ActionList;
   initialState?: State;
-  spawnAPIBackend: typeof spawnAPIBackend;
+  spawnAPIBackend: SpawnAPIBackend;
   spawnWebServer: SpawnWebServer;
 }
 

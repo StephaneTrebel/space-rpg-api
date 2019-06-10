@@ -8,28 +8,35 @@ import { timeServiceFactory } from '../time/service';
 import * as testedModule from './service';
 
 tape('OpenAPI Backend', (test: tape.Test) => {
-  test.plan(1);
+  test.plan(2);
   class MockBackEndEngine {
     constructor() {
       return this;
     }
 
+    public register() {
+      test.pass('SHOULD register handlers');
+    }
+
     public init() {
-      test.pass('spawnAPIBackend SHOULD initialize the OpenAPI Backend');
-      test.end();
+      return Promise.resolve(
+        test.pass('SHOULD initialize the OpenAPI Backend'),
+      );
     }
   }
 
   const loggerService = loggerServiceFactory();
   const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
-  testedModule.spawnAPIBackend({
-    backendEngine: MockBackEndEngine,
-    loggerService,
-    stateService,
-    timeService: timeServiceFactory({
-      configService: configServiceFactory(),
-      loggerService: loggerServiceFactory(),
+  testedModule
+    .spawnAPIBackend({
+      backendEngine: MockBackEndEngine as any,
+      loggerService,
       stateService,
-    })(),
-  });
+      timeService: timeServiceFactory({
+        configService: configServiceFactory(),
+        loggerService: loggerServiceFactory(),
+        stateService,
+      })(),
+    })
+    .then(() => test.end());
 });
