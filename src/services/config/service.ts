@@ -1,7 +1,9 @@
 import get from 'lodash/fp/get';
 
-import { Config, ConfigService } from './types';
+import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
 import { Protocol } from '../webserver/types';
+
+import { Config, ConfigService } from './types';
 
 type ConfigServiceFactory = (config?: Config) => ConfigService;
 export const configServiceFactory: ConfigServiceFactory = config => ({
@@ -9,7 +11,7 @@ export const configServiceFactory: ConfigServiceFactory = config => ({
 });
 
 export const DEFAULT_CONFIG: Config = {
-  logger: { nolog: true },
+  logger: { ...DEFAULT_LOGGER_CONFIG, nolog: true },
   server: {
     host: '127.0.0.1',
     port: 9000,

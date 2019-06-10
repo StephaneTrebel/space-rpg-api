@@ -1,7 +1,9 @@
 import tape from 'tape';
 
-import * as testedModule from './service';
 import { Protocol } from '../webserver/types';
+import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
+
+import * as testedModule from './service';
 
 tape('Config service', (functions: tape.Test) => {
   functions.test('configService.get()', (given: tape.Test) => {
@@ -13,6 +15,7 @@ tape('Config service', (functions: tape.Test) => {
             .configServiceFactory({
               ...testedModule.DEFAULT_CONFIG,
               logger: {
+                ...DEFAULT_LOGGER_CONFIG,
                 console: true,
               },
             })

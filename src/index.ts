@@ -10,7 +10,7 @@ import { EMPTY_UNIVERSE, Universe } from './assets/universe';
 import { configServiceFactory } from './services/config/service';
 import { Config } from './services/config/types';
 import { loggerServiceFactory } from './services/logger/service';
-import { LoggerService } from './services/logger/types';
+import { LoggerService, LogLevel } from './services/logger/types';
 import {
   SpawnAPIBackend,
   spawnAPIBackend,
@@ -91,6 +91,7 @@ if (process.env.NODE_ENV === 'production') {
         console: true,
         errorFile: true,
         format: true,
+        level: LogLevel.INFO,
       },
       server: {
         host: '127.0.0.1',

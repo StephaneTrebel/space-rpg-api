@@ -4,7 +4,7 @@ import fs from 'fs';
 import { Format } from 'logform';
 import { config, createLogger, format, transports } from 'winston';
 
-import { LoggerConfig, LoggerService } from './types';
+import { LogLevel, LoggerConfig, LoggerService } from './types';
 
 type CreateTransportList = (
   config: LoggerConfig,
@@ -13,6 +13,7 @@ type CreateTransportList = (
   | transports.ConsoleTransportInstance
   | transports.StreamTransportInstance
 >;
+
 const createTransportList: CreateTransportList = loggerConfig => {
   const transportList = [];
   if (loggerConfig.nolog) {
@@ -57,14 +58,22 @@ const createFormat: FormatFactory = loggerConfig =>
       )
     : undefined;
 
-type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;
+export const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
+  combinedFile: false,
+  console: false,
+  errorFile: false,
+  format: false,
+  level: LogLevel.INFO,
+  nolog: true,
+};
 
+type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;
 export const loggerServiceFactory: LoggerServiceFactory = (
-  loggerConfig: LoggerConfig = { nolog: true },
+  loggerConfig: LoggerConfig = DEFAULT_LOGGER_CONFIG,
 ) =>
   createLogger({
     format: createFormat(loggerConfig),
-    level: 'debug',
+    level: loggerConfig.level,
     levels: config.syslog.levels,
     transports: createTransportList(loggerConfig),
   });
