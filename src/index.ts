@@ -89,6 +89,7 @@ if (process.env.NODE_ENV === 'production') {
       logger: {
         combinedFile: true,
         console: true,
+        disabled: false,
         errorFile: true,
         format: true,
         level: LogLevel.INFO,

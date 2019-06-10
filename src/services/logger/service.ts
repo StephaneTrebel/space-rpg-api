@@ -16,7 +16,7 @@ type CreateTransportList = (
 
 const createTransportList: CreateTransportList = loggerConfig => {
   const transportList = [];
-  if (loggerConfig.nolog) {
+  if (loggerConfig.disabled) {
     transportList.push(
       new transports.Stream({
         stream: fs.createWriteStream('/dev/null'),
@@ -61,10 +61,10 @@ const createFormat: FormatFactory = loggerConfig =>
 export const DEFAULT_LOGGER_CONFIG: LoggerConfig = {
   combinedFile: false,
   console: false,
+  disabled: true,
   errorFile: false,
   format: false,
   level: LogLevel.INFO,
-  nolog: true,
 };
 
 type LoggerServiceFactory = (config?: LoggerConfig) => LoggerService;

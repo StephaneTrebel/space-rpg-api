@@ -1,20 +1,20 @@
 export enum LogLevel {
-  EMERG = 'EMERG',
-  ALERT = 'ALERT',
-  CRIT = 'CRIT',
-  ERROR = 'ERROR',
-  WARNING = 'WARNING',
-  NOTICE = 'NOTICE',
-  INFO = 'INFO',
-  DEBUG = 'DEBUG',
+  EMERG = 'emerg',
+  ALERT = 'alert',
+  CRIT = 'crit',
+  ERROR = 'error',
+  WARNING = 'warning',
+  NOTICE = 'notice',
+  INFO = 'info',
+  DEBUG = 'debug',
 }
 export interface LoggerConfig {
-  combinedFile?: boolean;
-  console?: boolean;
-  errorFile?: boolean;
-  format?: boolean;
+  combinedFile: boolean;
+  console: boolean;
+  disabled: boolean;
+  errorFile: boolean;
+  format: boolean;
   level: LogLevel;
-  nolog?: boolean;
 }
 
 type Logger = (x: any) => void;

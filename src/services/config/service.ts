@@ -11,7 +11,7 @@ export const configServiceFactory: ConfigServiceFactory = config => ({
 });
 
 export const DEFAULT_CONFIG: Config = {
-  logger: { ...DEFAULT_LOGGER_CONFIG, nolog: true },
+  logger: { ...DEFAULT_LOGGER_CONFIG, disabled: true },
   server: {
     host: '127.0.0.1',
     port: 9000,
