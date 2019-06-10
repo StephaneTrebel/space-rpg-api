@@ -16,6 +16,6 @@ export const getSpecification = (backendEngine: OpenAPIBackend) => (
         rel: 'ping',
       },
     ],
-    specification: backendEngine.document,
+    specification: backendEngine.definition,
   });
 };
