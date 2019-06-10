@@ -1,4 +1,3 @@
-import { Context } from 'openapi-backend/backend';
 import { Response } from 'express-serve-static-core';
 
 import { Id } from '../../types/id';
@@ -34,7 +33,7 @@ export const createDisplacementMock = ({
   type,
 });
 
-export const getDisplacementIdFromContext = (context: Context): string =>
+export const getDisplacementIdFromContext = (context: any): string =>
   context.request &&
   context.request.params &&
   // Params have a weird type, but at runtime openapi-backend will check them
@@ -60,7 +59,7 @@ export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
 type GetDisplacement = (deps: {
   loggerService: LoggerService;
   timeService: TimeService;
-}) => (context: Context, _req: any, res: Response) => void;
+}) => (context: any, _req: any, res: Response) => void;
 export const getDisplacement: GetDisplacement = ({
   loggerService,
   timeService,

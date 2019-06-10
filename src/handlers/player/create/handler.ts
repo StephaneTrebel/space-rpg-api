@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { Context } from 'openapi-backend';
 import * as uuid from 'uuid';
 
 import {
@@ -48,7 +47,7 @@ export const createPlayerMutator = (currentState: State) => (
 });
 
 export const addNewPlayer = (deps: { stateService: StateService }) => (
-  context: Context,
+  context: any,
   _req: any,
   res: Response,
 ) => {

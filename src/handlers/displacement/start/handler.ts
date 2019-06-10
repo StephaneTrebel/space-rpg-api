@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { Context } from 'openapi-backend';
 import * as uuid from 'uuid';
 
 import { Id } from '../../../types/id';
@@ -172,10 +171,10 @@ export const createDisplacement: CreateDisplacement = ({ loggerService }) => ({
   return newDisplacement;
 };
 
-export const getTargetCoordinatesFromContext = (context: Context): Position =>
+export const getTargetCoordinatesFromContext = (context: any): Position =>
   context.request && context.request.requestBody.targetCoordinates;
 
-export const getEntityIdFromContext = (context: Context): string =>
+export const getEntityIdFromContext = (context: any): string =>
   context.request && context.request.requestBody.entityId;
 
 export const getEntityCurrentPosition = ({
@@ -208,7 +207,7 @@ type StartDisplacement = (deps: {
   loggerService: LoggerService;
   testId?: Id;
   timeService: TimeService;
-}) => (context: Context, _req: any, res: Response) => Response;
+}) => (context: any, _req: any, res: Response) => Response;
 export const startDisplacement: StartDisplacement = ({
   loggerService,
   testId,
