@@ -13,6 +13,8 @@ servers:
 paths:
   /:
     $ref: 'src/handlers/root/openapi.yaml'
+  /openapi:
+    $ref: 'src/handlers/specification/openapi.yaml'
   /self-health/ping:
     $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /player/create:

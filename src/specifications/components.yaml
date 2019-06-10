@@ -18,6 +18,10 @@ components:
       description: A short message
       example: This an example of a short message
       type: string
+    specification:
+      description: This application OpenAPI specification
+      example: "{ 'foo': 'bar' }"
+      type: string
     username:
       description: A user unique name identifier
       example: warlordz123
@@ -58,6 +62,10 @@ components:
       operationRef: /self-health/ping
       description: >
         You can use this endpoint to test whether the server is online.
+    Root:
+      operationRef: /
+      description: >
+        The base endpoint
 
   # Reusable responses
   responses:

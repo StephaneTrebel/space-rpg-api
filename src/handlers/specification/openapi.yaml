@@ -1,0 +1,23 @@
+get:
+  description: The openapi api specification, so that you can know all endpoints
+  summary: Openapi api specification
+  operationId: getSpecification
+  tags:
+    - Root
+  responses:
+    200:
+      description: Expected response to a valid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              specification:
+                $ref: '../../specifications/components.yaml#/components/schemas/specification'
+      links:
+        Ping:
+          $ref: '../../specifications/components.yaml#/components/links/Ping'
+        Root:
+          $ref: '../../specifications/components.yaml#/components/links/Root'
+    500:
+      $ref: '../../specifications/components.yaml#/components/responses/500'
