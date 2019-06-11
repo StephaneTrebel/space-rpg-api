@@ -23,33 +23,39 @@ const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
 };
 
-const createBackend = (deps: {
+type CreateBackend = (deps: {
   backendEngine: typeof OpenAPIBackend;
   loggerService: LoggerService;
   stateService: StateService;
   timeService: TimeService;
-}) => (specification: string) => {
-  deps.loggerService.debug('Entering createBackend…');
-  const apiBackend = new deps.backendEngine({
-    ajvOpts: { unknownFormats: ['int32', 'int64'] },
-    definition: specification,
-    strict: true,
-    validate: true,
-    withContext: true,
+}) => (specification: string) => Promise<OpenAPIBackend>;
+export const createBackend: CreateBackend = deps => specification =>
+  new Promise((resolve, reject) => {
+    try {
+      deps.loggerService.debug('Entering createBackend…');
+      const apiBackend = new deps.backendEngine({
+        ajvOpts: { unknownFormats: ['int32', 'int64'] },
+        definition: specification,
+        strict: true,
+        validate: true,
+        withContext: true,
+      });
+      apiBackend.register({
+        addNewPlayer: addNewPlayer(deps),
+        getDisplacement: getDisplacement(deps),
+        getSpecification: getSpecification(apiBackend),
+        notFound,
+        notImplemented,
+        root,
+        selfHealthPing,
+        startDisplacement: startDisplacement(deps),
+        validationFail,
+      });
+      return resolve(apiBackend.init());
+    } catch (error) {
+      return reject(error);
+    }
   });
-  apiBackend.register({
-    addNewPlayer: addNewPlayer(deps),
-    getDisplacement: getDisplacement(deps),
-    getSpecification: getSpecification(apiBackend),
-    notFound,
-    notImplemented,
-    root,
-    selfHealthPing,
-    startDisplacement: startDisplacement(deps),
-    validationFail,
-  });
-  return apiBackend.init();
-};
 
 export type SpawnAPIBackend = (deps: {
   backendEngine: typeof OpenAPIBackend;

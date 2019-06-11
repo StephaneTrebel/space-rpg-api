@@ -7,36 +7,117 @@ import { timeServiceFactory } from '../time/service';
 
 import * as testedModule from './service';
 
-tape('OpenAPI Backend', (test: tape.Test) => {
-  test.plan(2);
-  class MockBackEndEngine {
-    constructor() {
-      return this;
-    }
+tape('OpenAPI Backend', (functions: tape.Test) => {
+  functions.test('createBackend()', (given: tape.Test) => {
+    given.test('GIVEN improper dependencies', (when: tape.Test) => {
+      when.test('WHEN called with a specification', (test: tape.Test) => {
+        test.plan(1);
+        // tslint:disable-next-line:max-classes-per-file
+        class MockBackEndEngine {
+          constructor() {
+            return;
+          }
+          public register() {
+            throw new Error('NOPE');
+          }
+        }
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
+        return testedModule
+          .createBackend({
+            backendEngine: MockBackEndEngine as any,
+            loggerService,
+            stateService,
+            timeService: timeServiceFactory({
+              configService: configServiceFactory(),
+              loggerService: loggerServiceFactory(),
+              stateService,
+            })(),
+          })('foo')
+          .catch(() => {
+            test.pass('SHOULD eventually return an error');
+            test.end();
+          });
+      });
+    });
 
-    public register() {
-      test.pass('SHOULD register handlers');
-    }
+    given.test('GIVEN proper dependencies', (when: tape.Test) => {
+      when.test('WHEN called with a specification', (test: tape.Test) => {
+        test.plan(2);
+        // tslint:disable-next-line:max-classes-per-file
+        class MockBackEndEngine {
+          constructor() {
+            return;
+          }
+          public register() {
+            test.pass('SHOULD register handlers');
+          }
+          public init() {
+            return Promise.resolve(
+              test.pass('SHOULD initialize the OpenAPI Backend'),
+            );
+          }
+        }
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
+        return testedModule
+          .createBackend({
+            backendEngine: MockBackEndEngine as any,
+            loggerService,
+            stateService,
+            timeService: timeServiceFactory({
+              configService: configServiceFactory(),
+              loggerService: loggerServiceFactory(),
+              stateService,
+            })(),
+          })('foo')
+          .then(() => test.end());
+      });
+    });
+  });
 
-    public init() {
-      return Promise.resolve(
-        test.pass('SHOULD initialize the OpenAPI Backend'),
-      );
-    }
-  }
+  functions.test('spawnAPIBackend()', (given: tape.Test) => {
+    given.test('GIVEN proper dependencies', (when: tape.Test) => {
+      when.test('WHEN called with these dependencies', (test: tape.Test) => {
+        test.plan(2);
+        // tslint:disable-next-line:max-classes-per-file
+        class MockBackEndEngine {
+          constructor() {
+            return;
+          }
 
-  const loggerService = loggerServiceFactory();
-  const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
-  testedModule
-    .spawnAPIBackend({
-      backendEngine: MockBackEndEngine as any,
-      loggerService,
-      stateService,
-      timeService: timeServiceFactory({
-        configService: configServiceFactory(),
-        loggerService: loggerServiceFactory(),
-        stateService,
-      })(),
-    })
-    .then(() => test.end());
+          public register() {
+            test.pass('SHOULD register handlers');
+          }
+
+          public init() {
+            return Promise.resolve(
+              test.pass('SHOULD initialize the OpenAPI Backend'),
+            );
+          }
+        }
+
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
+        return testedModule
+          .spawnAPIBackend({
+            backendEngine: MockBackEndEngine as any,
+            loggerService,
+            stateService,
+            timeService: timeServiceFactory({
+              configService: configServiceFactory(),
+              loggerService: loggerServiceFactory(),
+              stateService,
+            })(),
+          })
+          .then(() => test.end());
+      });
+    });
+  });
 });
