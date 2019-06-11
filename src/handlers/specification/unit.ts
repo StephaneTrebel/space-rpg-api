@@ -4,7 +4,7 @@ import * as testedModule from './handler';
 
 tape('Root handler', (functions: tape.Test) => {
   functions.test('root()', (test: tape.Test) =>
-    testedModule.getSpecification({ document: 'foo' } as any)('', '', {
+    testedModule.getSpecification({ definition: 'foo' } as any)('', '', {
       status: (returnedStatus: number) => ({
         json: (returnedJSON: {
           links: Array<{ href: string; rel: string }>;
