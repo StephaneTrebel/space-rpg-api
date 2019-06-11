@@ -13,14 +13,14 @@
     "start": "npm run build && npm run start:dist",
     "start:dist": "NODE_ENV=production node dist/index.js",
     "start:watch": "chokidar e2e/**/*.ts src/**/*.ts src/**/*.yaml --initial -c 'npm run lint && npm run start'",
-    "tape:e2e": "tape -r ts-node/register src/**/*e2e.ts",
-    "tape:unit": "tape -r ts-node/register src/**/*unit.ts",
+    "tape:e2e": "tape -r ts-node/register **/*e2e.ts",
+    "tape:unit": "tape -r ts-node/register **/*unit.ts",
     "test": "npm run test:all",
     "test:all": "npm run validate-spec && npm run lint && npm run nyc:unit && npm run nyc:e2e",
     "test:e2e": "npm run validate-spec && npm run lint && npm run nyc:e2e && echo All Good !",
     "test:e2e:watch": "chokidar .nycrc.e2e src --initial -c 'time npm run test:e2e'",
     "test:unit": "npm run lint && npm run nyc:unit",
-    "test:unit:watch": "chokidar .nycrc.unit src/**/*.ts --initial -c 'time npm run test:unit'",
+    "test:unit:watch": "chokidar .nycrc.unit src --initial -c 'time npm run test:unit'",
     "test:watch": "chokidar .nycrc.unit .nycrc.e2e src --initial -c 'time npm run test:all'",
     "validate-spec": "node scripts/validate-spec.js"
   },
@@ -28,12 +28,7 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": [
-    "space",
-    "rpg",
-    "api",
-    "openapi"
-  ],
+  "keywords": ["space", "rpg", "api", "openapi"],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {
