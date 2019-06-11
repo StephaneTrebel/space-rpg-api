@@ -1,15 +1,17 @@
 import { get, RequestResponse, post } from 'request';
 import tape from 'tape';
 
-import { main } from '../src/index';
+import { main } from './main/main';
+import { MainAssets } from './main/types';
 
+import { EMPTY_UNIVERSE } from './assets/universe';
+
+import { DEFAULT_CONFIG } from './services/config/service';
+import { Config } from './services/config/types';
 import { spawnAPIBackend } from './services/openapi-backend/service';
 import { State } from './services/state/types';
-import { spawnWebServer } from './services/webserver/service';
 import { ActionList } from './services/time/types';
-import { Config } from './services/config/types';
-import { DEFAULT_CONFIG } from './services/config/service';
-import { MainAssets } from '.';
+import { spawnWebServer } from './services/webserver/service';
 
 type RunE2ETest = (params: {
   config?: Config;
@@ -28,7 +30,7 @@ export const runE2ETest: RunE2ETest = ({
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })().then(assets => {
+  })(EMPTY_UNIVERSE).then(assets => {
     const teardown = () => {
       assets.loggerService.debug('Stopping the test…');
       assets.teardown();
