@@ -52,9 +52,11 @@ export const addNewPlayer = (deps: { stateService: StateService }) => (
   res: Response,
 ) => {
   const username = context.request && context.request.requestBody.username;
-  deps.stateService.mutate(StateMutation.CREATE_PLAYER)({
+  const newPlayer = createPlayer({
+    currentPosition: { x: 0, y: 0, z: 0 },
     username,
   });
+  deps.stateService.mutate(StateMutation.CREATE_PLAYER)(newPlayer);
   res.status(201).json({
     links: [
       {
@@ -62,6 +64,6 @@ export const addNewPlayer = (deps: { stateService: StateService }) => (
         rel: 'ping',
       },
     ],
-    username,
+    ...newPlayer,
   });
 };
