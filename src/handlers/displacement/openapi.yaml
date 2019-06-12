@@ -16,12 +16,25 @@ get:
         application/json:
           schema:
             type: object
+            required:
+              - displacement
             properties:
-              currentPosition:
-                $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
-              id:
-                $ref: '../../specifications/components.yaml#/components/schemas/id'
-              targetCoordinates:
-                $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
+              displacement:
+                type: object
+                required:
+                  - entityId
+                  - id
+                  - targetCoordinates
+                properties:
+                  entityId:
+                    $ref: '../../specifications/components.yaml#/components/schemas/id'
+                  id:
+                    $ref: '../../specifications/components.yaml#/components/schemas/id'
+                  targetCoordinates:
+                    $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
+    400:
+      $ref: '../../specifications/components.yaml#/components/responses/400'
     500:
       $ref: '../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../specifications/components.yaml#/components/responses/502'

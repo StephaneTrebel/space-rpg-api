@@ -9,7 +9,6 @@ import { timeServiceFactory } from '../../services/time/service';
 
 import * as testedModule from './handler';
 import { Displacement } from './types';
-import { LinkList } from '../../services/webserver/types';
 
 tape('Displacement handler', (functions: tape.Test) => {
   functions.test('getDisplacementIdFromContext()', (cases: tape.Test) => {
@@ -125,35 +124,26 @@ tape('Displacement handler', (functions: tape.Test) => {
           loggerService,
           stateService,
         })();
-        testedModule.getDisplacement({
+        const handlerResponse = testedModule.getDisplacement({
           loggerService,
           timeService,
-        })(
-          { request: { params: { id } } } as any,
-          {} as any,
-          {
-            status: (returnedStatus: number) => ({
-              json: (returnedJSON: { code: string; message: string }) => {
-                test.equal(
-                  returnedStatus,
-                  400,
-                  'SHOULD sucessfully return a 400 response',
-                );
-                test.equal(
-                  typeof returnedJSON.code,
-                  'string',
-                  'SHOULD sucessfully return a body having a string code property',
-                );
-                test.equal(
-                  typeof returnedJSON.message,
-                  'string',
-                  'SHOULD sucessfully return a body having a string message property',
-                );
-                test.end();
-              },
-            }),
-          } as any,
+        })({ request: { params: { id } } } as any);
+        test.equal(
+          handlerResponse.status,
+          400,
+          'SHOULD sucessfully return a 400 response',
         );
+        test.equal(
+          typeof handlerResponse.json.code,
+          'string',
+          'SHOULD sucessfully return a body having a string code property',
+        );
+        test.equal(
+          typeof handlerResponse.json.message,
+          'string',
+          'SHOULD sucessfully return a body having a string message property',
+        );
+        test.end();
       },
     );
 
@@ -176,35 +166,26 @@ tape('Displacement handler', (functions: tape.Test) => {
           loggerService,
           stateService,
         })([displacement]);
-        testedModule.getDisplacement({
+        const handlerResponse = testedModule.getDisplacement({
           loggerService,
           timeService,
-        })(
-          { request: { params: { id } } } as any,
-          {} as any,
-          {
-            status: (returnedStatus: number) => ({
-              json: (returnedJSON: { links: LinkList }) => {
-                test.equal(
-                  returnedStatus,
-                  200,
-                  'SHOULD sucessfully return a 200 response',
-                );
-                test.deepEqual(
-                  returnedJSON,
-                  { ...displacement, links: [] },
-                  'SHOULD sucessfully return a body having a displacement object',
-                );
-                test.deepEqual(
-                  returnedJSON.links,
-                  [],
-                  'SHOULD sucessfully return a body having an empty link list',
-                );
-                test.end();
-              },
-            }),
-          } as any,
+        })({ request: { params: { id } } } as any);
+        test.equal(
+          handlerResponse.status,
+          200,
+          'SHOULD sucessfully return a 200 response',
         );
+        test.deepEqual(
+          handlerResponse.json.displacement,
+          displacement,
+          'SHOULD sucessfully return a body having a displacement object',
+        );
+        test.deepEqual(
+          handlerResponse.json.links,
+          [],
+          'SHOULD sucessfully return a body having an empty link list',
+        );
+        test.end();
       },
     );
   });

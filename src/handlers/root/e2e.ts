@@ -4,6 +4,8 @@ import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
 
 import { runE2ETest, getPromisified } from '../../e2e-utils';
 
+import { SELF_HEALTH_LINK } from '../miscellaneous/self-health/handler';
+
 const ENDPOINT = '/';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
@@ -26,12 +28,7 @@ tape(ENDPOINT, (t: tape.Test) =>
       );
       test.deepEqual(
         JSON.parse(response.body).links,
-        [
-          {
-            href: '/self-health/ping',
-            rel: 'ping',
-          },
-        ],
+        [SELF_HEALTH_LINK],
         'SHOULD return a JSON body having a link to Self-Health Ping endpoint',
       );
       test.end();

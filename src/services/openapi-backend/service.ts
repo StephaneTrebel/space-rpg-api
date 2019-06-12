@@ -1,7 +1,9 @@
 import fs from 'fs';
 
+import { Response } from 'express';
 import * as yaml from 'js-yaml';
 import OpenAPIBackend from 'openapi-backend';
+import { Context, Request } from 'openapi-backend';
 
 import { getDisplacement } from '../../handlers/displacement/handler';
 import { startDisplacement } from '../../handlers/displacement/start/handler';
@@ -21,6 +23,53 @@ import { TimeService } from '../time/types';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
+};
+
+type PostResponseHandler = (deps: {
+  loggerService: LoggerService;
+}) => (
+  context: Context | undefined,
+  req: Request,
+  res: Response,
+) => Response | void;
+export const postResponseHandler: PostResponseHandler = deps => (
+  context: Context | undefined,
+  _req: Request,
+  res: Response,
+) => {
+  try {
+    deps.loggerService.debug('Entering postResponseHandler…');
+    if (!context) {
+      throw new Error('No context');
+    }
+    // Only validate response if request is valid
+    if (context.validation && context.validation.valid) {
+      deps.loggerService.debug(
+        `Response is: ${JSON.stringify(context.response)}`,
+      );
+      const validationResult = context.api.validateResponse(
+        context.response.json,
+        context.operation || 'unknown',
+        context.response.status,
+      );
+      if (validationResult.errors) {
+        deps.loggerService.error(JSON.stringify(validationResult.errors));
+        return res.status(502).json({
+          code: 'ResponseValidationError',
+          errors: validationResult.errors,
+        });
+      }
+      deps.loggerService.debug('Response is valid.');
+      return res.status(context.response.status).json(context.response.json);
+    }
+    // Request is invalid, so openapi-backend will take it from here
+    return;
+  } catch (error) {
+    deps.loggerService.crit(error.message);
+    return res
+      .status(500)
+      .json({ code: 'CriticalError', message: error.message });
+  }
 };
 
 type CreateBackend = (deps: {
@@ -44,12 +93,13 @@ export const createBackend: CreateBackend = deps => specification =>
         addNewPlayer: addNewPlayer(deps),
         getDisplacement: getDisplacement(deps),
         getSpecification: getSpecification(apiBackend),
-        notFound,
-        notImplemented,
+        notFound, // openapi-backend specific
+        notImplemented, // openapi-backend specific
+        postResponseHandler: postResponseHandler(deps), // openapi-backend specific
         root,
         selfHealthPing,
         startDisplacement: startDisplacement(deps),
-        validationFail,
+        validationFail, // openapi-backend specific
       });
       return resolve(apiBackend.init());
     } catch (error) {

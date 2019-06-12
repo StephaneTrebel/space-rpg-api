@@ -2,17 +2,21 @@ components:
   schemas:
     # Fields used in complex schemas
     code:
-      description: A numeric code for abstracting an information
-      example: 123456
-      type: integer
-      format: int32
+      description: A short string identifier
+      example: MyAwesomeCode
+      type: string
     coordinate:
       description: A position on an axis
       example: 123456
       type: number
+    errors:
+      description: Validation errors
+      type: array
+      items:
+        type: object
     id:
       description: An entity unique identifier
-      example: 'igmq45ef3qz4f3q4z3ef4qz63ef45q63zef43q4zef3'
+      example: igmq45ef3qz4f3q4z3ef4qz63ef45q63zef43q4zef3
       type: string
     message:
       description: A short message
@@ -20,8 +24,8 @@ components:
       type: string
     specification:
       description: This application OpenAPI specification
-      example: "{ 'foo': 'bar' }"
-      type: string
+      example: { foo: 'bar' }
+      type: object
     username:
       description: A user unique name identifier
       example: warlordz123
@@ -30,7 +34,7 @@ components:
     # Complex schemas
 
     ## Service schemas
-    ServiceError:
+    RequestValidationError:
       type: object
       required:
         - code
@@ -40,6 +44,28 @@ components:
           $ref: '#/components/schemas/code'
         message:
           $ref: '#/components/schemas/message'
+
+    ServiceCriticalError:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: '#/components/schemas/code'
+        message:
+          $ref: '#/components/schemas/message'
+
+    ResponseValidationError:
+      type: object
+      required:
+        - code
+        - errors
+      properties:
+        code:
+          $ref: '#/components/schemas/code'
+        errors:
+          $ref: '#/components/schemas/errors'
 
     ## Business schemas
     coordinates:
@@ -69,9 +95,21 @@ components:
 
   # Reusable responses
   responses:
-    500:
-      description: Service error
+    400:
+      description: Request error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ServiceError'
+            $ref: '#/components/schemas/RequestValidationError'
+    500:
+      description: Service critical error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ServiceCriticalError'
+    502:
+      description: Response validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResponseValidationError'

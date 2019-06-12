@@ -1,21 +1,16 @@
 import { OpenAPIBackend } from 'openapi-backend';
 
-export const getSpecification = (backendEngine: OpenAPIBackend) => (
-  _c: any,
-  _req: any,
-  res: any,
-) => {
-  res.status(200).json({
-    links: [
-      {
-        href: '/',
-        rel: 'root',
-      },
-      {
-        href: '/self-health/ping',
-        rel: 'ping',
-      },
-    ],
+import { SELF_HEALTH_LINK } from '../miscellaneous/self-health/handler';
+import { ROOT_LINK } from '../root/handler';
+
+import { HandlerResponse } from '../../services/openapi-backend/types';
+
+export const getSpecification = (
+  backendEngine: OpenAPIBackend,
+) => (): HandlerResponse => ({
+  json: {
+    links: [ROOT_LINK, SELF_HEALTH_LINK],
     specification: backendEngine.definition,
-  });
-};
+  },
+  status: 200,
+});

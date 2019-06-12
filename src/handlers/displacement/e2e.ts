@@ -39,7 +39,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             test.equals(
               response.statusCode,
               EXPECTED_RETURN_CODE,
-              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+              `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
             );
             test.end();
           }),
@@ -76,10 +76,10 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             test.equals(
               response.statusCode,
               EXPECTED_RETURN_CODE,
-              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+              `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
             );
             test.equals(
-              body.id,
+              body.displacement.id,
               id,
               'SHOULD return a JSON body having the displacement id',
             );
@@ -113,10 +113,10 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             test.equals(
               response.statusCode,
               EXPECTED_RETURN_CODE,
-              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+              `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
             );
             test.equals(
-              body.id,
+              body.displacement.id,
               displacementId,
               'SHOULD return a JSON body having the displacement id',
             );
@@ -219,10 +219,10 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             test.equals(
               response.statusCode,
               EXPECTED_RETURN_CODE,
-              `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+              `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
             );
             test.equals(
-              body.id,
+              body.displacement.id,
               displacementId,
               'SHOULD return a JSON body having the displacement id',
             );
@@ -302,7 +302,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
                       test.equals(
                         response.statusCode,
                         EXPECTED_RETURN_CODE,
-                        `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+                        `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
                       );
                       test.deepEqual(
                         body.links,

@@ -1,7 +1,10 @@
 import tape from 'tape';
 
 import { runE2ETest, postPromisified } from '../../../e2e-utils';
+
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
+
+import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
 
 const ENDPOINT = '/player/create';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
@@ -14,11 +17,12 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         body: '',
         url: URL,
       }).then(response => {
+        test.plan(1);
         const EXPECTED_RETURN_CODE = 400;
-        test.equals(
+        test.equal(
           response.statusCode,
           EXPECTED_RETURN_CODE,
-          `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+          `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
         );
         test.end();
       }),
@@ -33,25 +37,31 @@ tape(ENDPOINT, (subTest: tape.Test) => {
         json: true,
         url: URL,
       }).then(response => {
+        test.plan(5);
         const EXPECTED_RETURN_CODE = 201;
-        test.equals(
+        test.equal(
           response.statusCode,
           EXPECTED_RETURN_CODE,
-          `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+          `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
         );
-        test.equals(
-          response.body.username,
+        test.deepEqual(
+          response.body.player.currentPosition,
+          { x: 0, y: 0, z: 0 },
+          'SHOULD return a player having the expected starting position',
+        );
+        test.equal(
+          typeof response.body.player.id,
+          'string',
+          'SHOULD return a player having a string id',
+        );
+        test.equal(
+          response.body.player.username,
           MOCK_USERNAME,
-          'SHOULD return a JSON body having the expected username property',
+          'SHOULD return a player having the expected username',
         );
         test.deepEqual(
           response.body.links,
-          [
-            {
-              href: '/self-health/ping',
-              rel: 'ping',
-            },
-          ],
+          [SELF_HEALTH_LINK],
           'SHOULD return a JSON body having a link to Self-Health Ping endpoint',
         );
         test.end();

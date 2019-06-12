@@ -1,5 +1,13 @@
-export const root = (_c: any, _req: any, res: any) => {
-  res.status(200).json({
+import { HandlerResponse } from '../../services/openapi-backend/types';
+import { Link } from '../../services/webserver/types';
+
+export const ROOT_LINK: Link = {
+  href: '/',
+  rel: 'root',
+};
+
+export const root = (): HandlerResponse => ({
+  json: {
     links: [
       {
         href: '/self-health/ping',
@@ -7,7 +15,8 @@ export const root = (_c: any, _req: any, res: any) => {
       },
     ],
     message: `Hi and welcome to Space RPG API !
-      Please be aware of related links, the game will be way easier to understand if you pay attention to them.
+        Please be aware of related links, the game will be way easier to understand if you pay attention to them.
       Have Fun !`,
-  });
-};
+  },
+  status: 200,
+});

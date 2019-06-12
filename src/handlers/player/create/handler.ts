@@ -1,14 +1,18 @@
-import { Response } from 'express';
 import * as uuid from 'uuid';
 
+import { LoggerService } from '../../../services/logger/types';
+import { HandlerResponse } from '../../../services/openapi-backend/types';
 import {
   State,
   StateMutation,
   StateService,
 } from '../../../services/state/types';
+
 import { EntityType } from '../../../types/entity';
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
+
+import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
 
 import { Player } from '../types';
 
@@ -46,24 +50,22 @@ export const createPlayerMutator = (currentState: State) => (
   entityList: [...currentState.entityList, newPlayer],
 });
 
-export const addNewPlayer = (deps: { stateService: StateService }) => (
-  context: any,
-  _req: any,
-  res: Response,
-) => {
+type AddPlayer = (deps: {
+  loggerService: LoggerService;
+  stateService: StateService;
+}) => (context: any) => HandlerResponse;
+export const addNewPlayer: AddPlayer = deps => context => {
   const username = context.request && context.request.requestBody.username;
   const newPlayer = createPlayer({
     currentPosition: { x: 0, y: 0, z: 0 },
     username,
   });
   deps.stateService.mutate(StateMutation.CREATE_PLAYER)(newPlayer);
-  res.status(201).json({
-    links: [
-      {
-        href: '/self-health/ping',
-        rel: 'ping',
-      },
-    ],
-    ...newPlayer,
-  });
+  return {
+    json: {
+      links: [SELF_HEALTH_LINK],
+      player: newPlayer,
+    },
+    status: 201,
+  };
 };

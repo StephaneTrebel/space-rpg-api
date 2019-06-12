@@ -1,12 +1,10 @@
-import { Response } from 'express-serve-static-core';
-
 import { Id } from '../../types/id';
 
+import { LoggerService } from '../../services/logger/types';
+import { HandlerResponse } from '../../services/openapi-backend/types';
 import { TimeService, ActionType } from '../../services/time/types';
-import { sendResponse } from '../../services/webserver/service';
 
 import { Displacement } from './types';
-import { LoggerService } from '../../services/logger/types';
 
 export const MOCK_DISPLACEMENT: Displacement = {
   entityId: 'foo',
@@ -59,11 +57,11 @@ export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
 type GetDisplacement = (deps: {
   loggerService: LoggerService;
   timeService: TimeService;
-}) => (context: any, _req: any, res: Response) => void;
+}) => (context: any) => HandlerResponse;
 export const getDisplacement: GetDisplacement = ({
   loggerService,
   timeService,
-}) => (context, _req, res) => {
+}) => context => {
   try {
     loggerService.debug('Entering getDisplacement handler…');
     const displacement = getDisplacementFromTimeService({
@@ -72,15 +70,17 @@ export const getDisplacement: GetDisplacement = ({
     })({
       id: getDisplacementIdFromContext(context),
     });
-    sendResponse(res)({ links: [], payload: displacement, status: 200 });
+    return { json: { links: [], displacement }, status: 200 };
   } catch (error) {
-    loggerService.error(`Error encountered: ${error.message}`);
-    sendResponse(res)({
-      payload: {
+    loggerService.error(
+      `Error encountered in getDisplacement handler: ${error.message}`,
+    );
+    return {
+      json: {
         code: 'getDisplacementError',
         message: `Error encountered: ${error.message}`,
       },
       status: 400,
-    });
+    };
   }
 };

@@ -9,7 +9,6 @@ import {
 import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
-import { LinkList } from '../../../services/webserver/types';
 
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
@@ -396,44 +395,32 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           loggerService,
           stateService,
         })();
-        testedModule.startDisplacement({
+        const handlerResponse = testedModule.startDisplacement({
           loggerService,
           testId,
           timeService,
-        })(
-          { request: { requestBody: { entityId: testId } } } as any,
-          {} as any,
-          {
-            status: (returnedStatus: number) => ({
-              json: (returnedJSON: {
-                links: LinkList;
-                displacementId: string;
-              }) => {
-                test.equal(
-                  returnedStatus,
-                  201,
-                  'SHOULD sucessfully return a 201 response',
-                );
-                test.equal(
-                  typeof returnedJSON.displacementId,
-                  'string',
-                  'SHOULD sucessfully return a body having a displacementId property',
-                );
-                test.deepEqual(
-                  returnedJSON.links,
-                  [
-                    {
-                      href: `/displacement/${testId}`,
-                      rel: 'details',
-                    },
-                  ],
-                  'SHOULD sucessfully return a body having a link to /displacement endpoint',
-                );
-                test.end();
-              },
-            }),
-          } as any,
+        })({ request: { requestBody: { entityId: testId } } } as any);
+        test.equal(
+          handlerResponse.status,
+          201,
+          'SHOULD sucessfully return a 201 response',
         );
+        test.equal(
+          typeof handlerResponse.json.displacementId,
+          'string',
+          'SHOULD sucessfully return a body having a displacementId property',
+        );
+        test.deepEqual(
+          handlerResponse.json.links,
+          [
+            {
+              href: `/displacement/${testId}`,
+              rel: 'details',
+            },
+          ],
+          'SHOULD sucessfully return a body having a link to /displacement endpoint',
+        );
+        test.end();
       },
     );
   });

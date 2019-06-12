@@ -3,8 +3,6 @@ import http from 'http';
 import express from 'express';
 import * as OpenAPIBackend from 'openapi-backend';
 
-import { LinkList } from './types';
-
 export type SpawnWebServer = (deps: {
   cors: () => any;
   express: typeof express;
@@ -25,16 +23,3 @@ export const spawnWebServer: SpawnWebServer = deps => api =>
     // on to handlers.
     .use((req, res) => api.handleRequest(req as any, req, res))
     .listen(9000);
-
-type SendResponse = (
-  res: express.Response,
-) => (params: {
-  status: number;
-  payload: any;
-  links?: LinkList;
-}) => express.Response;
-export const sendResponse: SendResponse = res => handlerResponse =>
-  res.status(handlerResponse.status).json({
-    ...handlerResponse.payload,
-    links: handlerResponse.links,
-  });

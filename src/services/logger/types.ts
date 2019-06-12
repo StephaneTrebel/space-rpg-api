@@ -20,9 +20,12 @@ export interface LoggerConfig {
 type Logger = (x: any) => void;
 
 export interface LoggerService {
-  debug: Logger;
+  emerg: Logger;
+  alert: Logger;
+  crit: Logger;
   error: Logger;
+  warning: Logger;
+  notice: Logger;
   info: Logger;
-  log: Logger;
-  warn: Logger;
+  debug: Logger;
 }

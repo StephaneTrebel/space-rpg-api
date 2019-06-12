@@ -23,10 +23,3 @@ paths:
     $ref: 'src/handlers/displacement/openapi.yaml'
   /displacement/start:
     $ref: 'src/handlers/displacement/start/openapi.yaml'
-
-components:
-  schemas:
-    ServiceError:
-      $ref: './src/specifications/components.yaml#/components/schemas/ServiceError'
-    message:
-      $ref: './src/specifications/components.yaml#/components/schemas/message'

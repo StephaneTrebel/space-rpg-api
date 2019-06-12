@@ -28,6 +28,8 @@ post:
         application/json:
           schema:
             type: object
+            required:
+              - displacementId
             properties:
               displacementId:
                 $ref: '../../../specifications/components.yaml#/components/schemas/id'
@@ -36,5 +38,9 @@ post:
           operationRef: /displace/:displacementId
           description: >
             Displacement action current status
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:
       $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

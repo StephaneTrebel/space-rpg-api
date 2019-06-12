@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'production') {
         disabled: false,
         errorFile: true,
         format: true,
-        level: LogLevel.INFO,
+        level: LogLevel.DEBUG,
       },
       server: {
         host: '127.0.0.1',

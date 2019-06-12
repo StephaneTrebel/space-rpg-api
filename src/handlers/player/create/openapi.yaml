@@ -19,14 +19,31 @@ post:
     201:
       description: New player entity
       content:
-        application/json:
+        'application/json':
           schema:
             type: object
+            required:
+              - player
             properties:
-              username:
-                $ref: '../../../specifications/components.yaml#/components/schemas/username'
+              player:
+                type: object
+                required:
+                  - currentPosition
+                  - id
+                  - username
+                properties:
+                  currentPosition:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+                  id:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
+                  username:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/username'
       links:
         Ping:
           $ref: '../../../specifications/components.yaml#/components/links/Ping'
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:
       $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

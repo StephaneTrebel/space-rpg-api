@@ -10,11 +10,17 @@ get:
         application/json:
           schema:
             type: object
+            required:
+              - message
             properties:
               message:
                 $ref: '../../specifications/components.yaml#/components/schemas/message'
       links:
         Ping:
           $ref: '../../specifications/components.yaml#/components/links/Ping'
+    400:
+      $ref: '../../specifications/components.yaml#/components/responses/400'
     500:
       $ref: '../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../specifications/components.yaml#/components/responses/502'

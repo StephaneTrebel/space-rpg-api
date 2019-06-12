@@ -1,6 +1,7 @@
 import get from 'lodash/fp/get';
 
 import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
+import { LogLevel } from '../logger/types';
 import { Protocol } from '../webserver/types';
 
 import { Config, ConfigService } from './types';
@@ -20,6 +21,16 @@ export const DEFAULT_CONFIG: Config = {
   time: {
     period: 0,
     startDelay: 0,
+  },
+};
+
+export const DEFAULT_DEBUG_CONFIG: Config = {
+  ...DEFAULT_CONFIG,
+  logger: {
+    ...DEFAULT_LOGGER_CONFIG,
+    console: true,
+    disabled: false,
+    level: LogLevel.DEBUG,
   },
 };
 

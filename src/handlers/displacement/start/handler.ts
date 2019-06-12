@@ -1,22 +1,21 @@
-import { Response } from 'express';
 import * as uuid from 'uuid';
 
+import { EntityType } from '../../../types/entity';
 import { Id } from '../../../types/id';
 import { Position } from '../../../types/position';
 
 import { LoggerService } from '../../../services/logger/types';
+import { HandlerResponse } from '../../../services/openapi-backend/types';
 import {
   StateService,
   StateMutation,
   State,
 } from '../../../services/state/types';
 import { TimeService, ActionType } from '../../../services/time/types';
-import { sendResponse } from '../../../services/webserver/service';
 
 import { Displacement } from '../types';
 
 import { DisplaceEntityPayload } from './types';
-import { EntityType } from '../../../types/entity';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -207,12 +206,12 @@ type StartDisplacement = (deps: {
   loggerService: LoggerService;
   testId?: Id;
   timeService: TimeService;
-}) => (context: any, _req: any, res: Response) => Response;
+}) => (context: any) => HandlerResponse;
 export const startDisplacement: StartDisplacement = ({
   loggerService,
   testId,
   timeService,
-}) => (context, _req, res) => {
+}) => context => {
   loggerService.debug('Entering startDisplacement…');
   const entityId = getEntityIdFromContext(context);
   const displacement = createDisplacement({ loggerService })({
@@ -221,14 +220,16 @@ export const startDisplacement: StartDisplacement = ({
     targetCoordinates: getTargetCoordinatesFromContext(context),
   });
   timeService.addAction(displacement);
-  return sendResponse(res)({
-    links: [
-      {
-        href: `/displacement/${displacement.id}`,
-        rel: 'details',
-      },
-    ],
-    payload: { displacementId: displacement.id },
+  return {
+    json: {
+      displacementId: displacement.id,
+      links: [
+        {
+          href: `/displacement/${displacement.id}`,
+          rel: 'details',
+        },
+      ],
+    },
     status: 201,
-  });
+  };
 };
