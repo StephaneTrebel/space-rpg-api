@@ -10,8 +10,7 @@
     "nyc:e2e": "nyc --nycrc-path .nycrc.e2e npm run tape:e2e",
     "nyc:unit": "nyc --nycrc-path .nycrc.unit npm run tape:unit",
     "spec-editor": "docker run --rm -d -p 80:8080 swaggerapi/swagger-editor",
-    "start": "npm run build && npm run start:dist",
-    "start:dist": "NODE_ENV=production node dist/index.js",
+    "start": "NODE_ENV=production node dist/index.js",
     "start:watch": "chokidar e2e/**/*.ts src/**/*.ts src/**/*.yaml --initial -c 'npm run lint && npm run start'",
     "tape:e2e": "tape -r ts-node/register **/*e2e.ts",
     "tape:unit": "tape -r ts-node/register **/*unit.ts",
@@ -28,12 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": [
-    "space",
-    "rpg",
-    "api",
-    "openapi"
-  ],
+  "keywords": ["space", "rpg", "api", "openapi"],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {
