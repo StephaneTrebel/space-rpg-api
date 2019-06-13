@@ -1,6 +1,7 @@
 // istanbul ignore file
 
 import * as fs from 'fs';
+import * as process from 'process';
 
 import { LogLevel } from './services/logger/types';
 import { spawnAPIBackend } from './services/openapi-backend/service';
@@ -25,7 +26,7 @@ if (process.env.NODE_ENV === 'production') {
       },
       server: {
         host: '127.0.0.1',
-        port: 9000,
+        port: process.env.PORT ? parseInt(process.env.PORT, 10) : 9000,
         protocol: Protocol.HTTP,
       },
       time: {
