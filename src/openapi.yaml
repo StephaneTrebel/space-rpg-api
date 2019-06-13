@@ -8,6 +8,7 @@ info:
     name: GPL v3.0
 
 servers:
+  - url: https://space-rpg-api.herokuapp.com
   - url: http://localhost:9000
 
 paths:
