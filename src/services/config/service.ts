@@ -6,9 +6,17 @@ import { Protocol } from '../webserver/types';
 
 import { Config, ConfigService } from './types';
 
+export const getURL = (config: Config) => (endpoint: string) =>
+  `${config.server.protocol}://${config.server.host}:${
+    config.server.port
+  }${endpoint}`;
+
 type ConfigServiceFactory = (config?: Config) => ConfigService;
-export const configServiceFactory: ConfigServiceFactory = config => ({
+export const configServiceFactory: ConfigServiceFactory = (
+  config = DEFAULT_CONFIG,
+) => ({
   get: (path: string) => get(path, config as any),
+  getURL: (endpoint: string) => getURL(config)(endpoint),
 });
 
 export const DEFAULT_CONFIG: Config = {
@@ -33,8 +41,3 @@ export const DEFAULT_DEBUG_CONFIG: Config = {
     level: LogLevel.DEBUG,
   },
 };
-
-export const getURL = (config: Config) => (endpoint: string) =>
-  `${config.server.protocol}://${config.server.host}:${
-    config.server.port
-  }${endpoint}`;

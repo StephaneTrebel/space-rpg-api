@@ -29,6 +29,7 @@ interface InstanciateApplicationParams {
 }
 
 export const instanciateApplication = ({
+  configService,
   loggerService,
   spawnAPIBackend,
   spawnWebServer,
@@ -41,7 +42,9 @@ export const instanciateApplication = ({
     stateService,
     timeService,
   })
-    .then((api: OpenAPIBackend) => spawnWebServer({ cors, express })(api))
+    .then((api: OpenAPIBackend) =>
+      spawnWebServer({ configService, cors, express })(api),
+    )
     .then((server: http.Server) => {
       loggerService.info('Service started');
       const assets: MainAssets = {

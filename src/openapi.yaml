@@ -15,6 +15,19 @@ paths:
     $ref: 'src/handlers/root/openapi.yaml'
   /specification:
     $ref: 'src/handlers/specification/openapi.yaml'
+  /swagger-ui/:
+    get:
+      description: A SwaggerUI front-end that is based on this specification.
+      summary: SwaggerUI
+      tags:
+        - Root
+      responses:
+        200:
+          description: SwaggerUI index.html page
+          content:
+            text/html:
+              schema:
+                type: string
   /self-health/ping:
     $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /player/create:

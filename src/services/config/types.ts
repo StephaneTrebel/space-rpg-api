@@ -10,4 +10,5 @@ export interface Config {
 
 export interface ConfigService {
   get: (path: string) => any;
+  getURL: (endpoint: string) => string;
 }

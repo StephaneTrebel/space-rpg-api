@@ -6,21 +6,11 @@ get:
     - Root
   responses:
     200:
-      description: Expected response to a valid request
+      description: The whole OpenAPI specification for this service
       content:
         application/json:
           schema:
             type: object
-            required:
-              - specification
-            properties:
-              specification:
-                $ref: '../../specifications/components.yaml#/components/schemas/specification'
-      links:
-        Ping:
-          $ref: '../../specifications/components.yaml#/components/links/Ping'
-        Root:
-          $ref: '../../specifications/components.yaml#/components/links/Root'
     400:
       $ref: '../../specifications/components.yaml#/components/responses/400'
     500:
