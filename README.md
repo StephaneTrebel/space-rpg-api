@@ -1,6 +1,8 @@
 # space-rpg-api
 
-A Space RPG RESTful API
+A Space RPG RESTful API
+
+[![CircleCI](https://circleci.com/gh/StephaneTrebel/space-rpg-api/tree/master.svg?style=svg)](https://circleci.com/gh/StephaneTrebel/space-rpg-api/tree/master)
 
 # Introduction
 
