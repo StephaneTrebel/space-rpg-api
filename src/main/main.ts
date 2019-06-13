@@ -43,7 +43,7 @@ export const instanciateApplication = ({
     timeService,
   })
     .then((api: OpenAPIBackend) =>
-      spawnWebServer({ configService, cors, express })(api),
+      spawnWebServer({ configService, cors, loggerService, express })(api),
     )
     .then((server: http.Server) => {
       loggerService.info('Service started');

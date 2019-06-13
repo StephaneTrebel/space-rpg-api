@@ -1,6 +1,7 @@
 import tape from 'tape';
 
 import { configServiceFactory } from '../config/service';
+import { loggerServiceFactory } from '../logger/service';
 
 import * as testedModule from './service';
 
@@ -27,7 +28,8 @@ tape('Webserver service', (functions: tape.Test) => {
     express.json = () => () => {
       test.pass('SHOULD use JSON Express module');
     };
-    express.listen = (_ignore: number) => {
+    express.listen = (_ignore: number, fn: () => void) => {
+      fn();
       test.pass('SHOULD start a listening process');
       test.end();
     };
@@ -38,6 +40,7 @@ tape('Webserver service', (functions: tape.Test) => {
       configService: configServiceFactory(),
       cors: () => () => test.pass('SHOULD use CORS middleware'),
       express,
+      loggerService: loggerServiceFactory(),
     })({
       handleRequest: () => ({}),
     });

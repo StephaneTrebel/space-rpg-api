@@ -5,11 +5,13 @@ import express from 'express';
 import * as OpenAPIBackend from 'openapi-backend';
 
 import { ConfigService } from '../config/types';
+import { LoggerService } from '../logger/types';
 
 export type SpawnWebServer = (deps: {
   configService: ConfigService;
   cors: () => any;
   express: typeof express;
+  loggerService: LoggerService;
 }) => (api: {
   handleRequest: (
     baseReq: OpenAPIBackend.Request,
@@ -42,6 +44,10 @@ export const spawnWebServer: SpawnWebServer = deps => api => {
       // that OpenAPI-backend will use, the second one will be the first argument
       // passed on to handlers.
       .use((req, res) => api.handleRequest(req as any, req, res))
-      .listen(9000)
+      .listen(deps.configService.get('server.port'), () =>
+        deps.loggerService.info(
+          `Listening on ${deps.configService.getURL('/')}`,
+        ),
+      )
   );
 };
