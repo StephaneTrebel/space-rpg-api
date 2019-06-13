@@ -1,10 +1,6 @@
-export enum Protocol {
-  HTTP = 'http',
-}
 export interface ServerConfig {
-  host: string;
+  baseURL: string;
   port: number;
-  protocol: Protocol;
 }
 
 export interface Link {

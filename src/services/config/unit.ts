@@ -1,6 +1,5 @@
 import tape from 'tape';
 
-import { Protocol } from '../webserver/types';
 import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
 
 import * as testedModule from './service';
@@ -37,12 +36,11 @@ tape('Config service', (functions: tape.Test) => {
             testedModule.getURL({
               ...testedModule.DEFAULT_CONFIG,
               server: {
-                host: 'toto',
+                baseURL: 'toto',
                 port: 1234,
-                protocol: Protocol.HTTP,
               },
             })('/foo/bar'),
-            'http://toto:1234/foo/bar',
+            'toto/foo/bar',
             'SHOULD send back the computed URL',
           );
           test.end();

@@ -2,14 +2,11 @@ import get from 'lodash/fp/get';
 
 import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
 import { LogLevel } from '../logger/types';
-import { Protocol } from '../webserver/types';
 
 import { Config, ConfigService } from './types';
 
 export const getURL = (config: Config) => (endpoint: string) =>
-  `${config.server.protocol}://${config.server.host}:${
-    config.server.port
-  }${endpoint}`;
+  `${config.server.baseURL}${endpoint}`;
 
 type ConfigServiceFactory = (config?: Config) => ConfigService;
 export const configServiceFactory: ConfigServiceFactory = (
@@ -22,9 +19,8 @@ export const configServiceFactory: ConfigServiceFactory = (
 export const DEFAULT_CONFIG: Config = {
   logger: { ...DEFAULT_LOGGER_CONFIG, disabled: true },
   server: {
-    host: '127.0.0.1',
+    baseURL: 'http://127.0.0.1:9000',
     port: 9000,
-    protocol: Protocol.HTTP,
   },
   time: {
     period: 0,

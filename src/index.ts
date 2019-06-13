@@ -6,7 +6,6 @@ import * as process from 'process';
 import { LogLevel } from './services/logger/types';
 import { spawnAPIBackend } from './services/openapi-backend/service';
 import { spawnWebServer } from './services/webserver/service';
-import { Protocol } from './services/webserver/types';
 
 import { main } from './main/main';
 
@@ -25,9 +24,8 @@ if (process.env.NODE_ENV === 'production') {
         level: LogLevel.DEBUG,
       },
       server: {
-        host: process.env.HOSTNAME || '0.0.0.0',
+        baseURL: process.env.BASE_URL || 'http://127.0.0.1:9000',
         port: process.env.PORT ? parseInt(process.env.PORT, 10) : 9000,
-        protocol: Protocol.HTTP,
       },
       time: {
         period: 66,
