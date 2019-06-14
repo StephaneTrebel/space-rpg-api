@@ -8,9 +8,9 @@ import {
   StateService,
 } from '../../../services/state/types';
 
-import { EntityType } from '../../../types/entity';
-import { Id } from '../../../types/id';
-import { Position } from '../../../types/position';
+import { EntityType } from '../../../utils/entity/types';
+import { Id } from '../../../utils/id/types';
+import { Position } from '../../../utils/position/types';
 
 import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
 

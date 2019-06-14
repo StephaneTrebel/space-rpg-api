@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs';
 
 import { Displacement } from '../../handlers/displacement/types';
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';

@@ -1,4 +1,4 @@
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { LoggerService } from '../../services/logger/types';
 import { HandlerResponse } from '../../services/openapi-backend/types';

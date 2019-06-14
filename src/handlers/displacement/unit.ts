@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { configServiceFactory } from '../../services/config/service';
 import { loggerServiceFactory } from '../../services/logger/service';

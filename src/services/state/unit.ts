@@ -6,7 +6,7 @@ import {
   createPlayer,
   MOCK_PLAYER,
 } from '../../handlers/player/create/handler';
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
 

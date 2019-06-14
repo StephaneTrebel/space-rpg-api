@@ -1,8 +1,8 @@
 import * as uuid from 'uuid';
 
-import { EntityType } from '../../../types/entity';
-import { Id } from '../../../types/id';
-import { Position } from '../../../types/position';
+import { EntityType } from '../../../utils/entity/types';
+import { Id } from '../../../utils/id/types';
+import { Position } from '../../../utils/position/types';
 
 import { LoggerService } from '../../../services/logger/types';
 import { HandlerResponse } from '../../../services/openapi-backend/types';

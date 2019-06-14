@@ -11,7 +11,7 @@ import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
 import { loggerServiceFactory } from '../../services/logger/service';
 import { EMPTY_STATE } from '../../services/state/service';
 
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { MOCK_PLAYER } from '../player/create/handler';
 

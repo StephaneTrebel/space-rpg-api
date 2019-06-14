@@ -1,7 +1,7 @@
 import tape from 'tape';
 
-import { Id } from '../../../types/id';
-import { Position } from '../../../types/position';
+import { Id } from '../../../utils/id/types';
+import { Position } from '../../../utils/position/types';
 
 import { EMPTY_STATE } from '../../../services/state/service';
 

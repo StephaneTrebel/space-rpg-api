@@ -1,6 +1,6 @@
 import { Subscription, timer } from 'rxjs';
 
-import { Id } from '../../types/id';
+import { Id } from '../../utils/id/types';
 
 import { ConfigService } from '../config/types';
 

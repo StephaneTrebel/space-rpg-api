@@ -1,7 +1,7 @@
 import { Universe } from '../../assets/universe';
 
-import { EntityType, EntityList, Entity } from '../../types/entity';
-import { Id } from '../../types/id';
+import { EntityType, EntityList, Entity } from '../../utils/entity/types';
+import { Id } from '../../utils/id/types';
 
 export enum StateProperties {
   ENTITY_LIST = 'entityList',

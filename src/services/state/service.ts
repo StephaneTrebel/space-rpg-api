@@ -5,8 +5,8 @@ import { createPlayerMutator } from '../../handlers/player/create/handler';
 
 import { LoggerService } from '../logger/types';
 
-import { Id } from '../../types/id';
-import { Entity, EntityList } from '../../types/entity';
+import { Id } from '../../utils/id/types';
+import { Entity, EntityList } from '../../utils/entity/types';
 
 import { State, StateMutation, StateProperties, StateService } from './types';
 
