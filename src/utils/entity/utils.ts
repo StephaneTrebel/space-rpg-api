@@ -6,6 +6,16 @@ import { Position } from '../position/types';
 import { Entity, EntityType, BaseEntity } from './types';
 import { Player } from '../../handlers/player/types';
 
+export const MOCK_ENTITY: BaseEntity = {
+  currentPosition: {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  id: 'mockEntity',
+  type: EntityType.MOCK,
+};
+
 type CreateEntity = (params: {
   currentPosition: Position;
   id?: Id;

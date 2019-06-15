@@ -5,11 +5,9 @@ import { runE2ETest, postPromisified } from '../../../e2e-utils';
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
-import { createEntity } from '../../../utils/entity/utils';
+import { createEntity, MOCK_ENTITY } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
-
-import { MOCK_PLAYER } from '../../player/create/handler';
 
 const ENDPOINT = '/displacement/start';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
@@ -44,7 +42,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
           initialState: {
             ...EMPTY_STATE,
             entityList: [
-              createEntity({ ...MOCK_PLAYER, id: entityId }),
+              createEntity({ ...MOCK_ENTITY, id: entityId }),
             ],
           },
         })(caseTest)((test, assets) =>
