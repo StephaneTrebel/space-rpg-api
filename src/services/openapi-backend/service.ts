@@ -10,7 +10,6 @@ import { startDisplacement } from '../../handlers/displacement/start/handler';
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
 import {
   notFound,
-  notImplemented,
   validationFail,
 } from '../../handlers/miscellaneous/openapi-validators/handler';
 import { addNewPlayer } from '../../handlers/player/create/handler';
@@ -94,7 +93,6 @@ export const createBackend: CreateBackend = deps => specification =>
         getDisplacement: getDisplacement(deps),
         getSpecification: getSpecification(apiBackend),
         notFound, // openapi-backend specific
-        notImplemented, // openapi-backend specific
         postResponseHandler: postResponseHandler(deps), // openapi-backend specific
         root,
         selfHealthPing,

@@ -5,10 +5,3 @@ export const validationFail = (c: any, _req: any, res: any) => {
 export const notFound = (_c: any, _req: any, res: any) => {
   res.status(404).json({ err: 'not found' });
 };
-
-export const notImplemented = (c: any, _req: any, res: any) => {
-  const { status, mock } = c.api.mockResponseForOperation(
-    c.operation.operationId,
-  );
-  res.status(status).json(mock);
-};

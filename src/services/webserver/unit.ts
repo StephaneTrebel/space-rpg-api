@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import { configServiceFactory } from '../config/service';
+import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 
 import * as testedModule from './service';
@@ -37,7 +37,7 @@ tape('Webserver service', (functions: tape.Test) => {
       test.pass('SHOULD serve static assets');
     };
     testedModule.spawnWebServer({
-      configService: configServiceFactory(),
+      configService: configServiceFactory({ ...DEFAULT_CONFIG }),
       cors: () => () => test.pass('SHOULD use CORS middleware'),
       express,
       loggerService: loggerServiceFactory(),

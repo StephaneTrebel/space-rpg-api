@@ -1,6 +1,6 @@
 import tape from 'tape';
 
-import { configServiceFactory } from '../config/service';
+import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { stateServiceFactory, EMPTY_STATE } from '../state/service';
 import { timeServiceFactory } from '../time/service';
@@ -175,7 +175,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory(),
+              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -214,7 +214,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory(),
+              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -246,7 +246,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory(),
+              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -285,7 +285,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory(),
+              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -326,7 +326,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory(),
+              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
               loggerService: loggerServiceFactory(),
               stateService,
             })(),

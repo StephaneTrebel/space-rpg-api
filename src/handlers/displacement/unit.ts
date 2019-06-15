@@ -2,7 +2,10 @@ import tape from 'tape';
 
 import { Id } from '../../utils/id/types';
 
-import { configServiceFactory } from '../../services/config/service';
+import {
+  configServiceFactory,
+  DEFAULT_CONFIG,
+} from '../../services/config/service';
 import { loggerServiceFactory } from '../../services/logger/service';
 import { stateServiceFactory, EMPTY_STATE } from '../../services/state/service';
 import { timeServiceFactory } from '../../services/time/service';
@@ -55,7 +58,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           ...testedModule.MOCK_DISPLACEMENT,
           id,
         });
-        const configService = configServiceFactory();
+        const configService = configServiceFactory({ ...DEFAULT_CONFIG });
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
@@ -91,7 +94,7 @@ tape('Displacement handler', (functions: tape.Test) => {
         });
         const loggerService = loggerServiceFactory();
         const timeService = timeServiceFactory({
-          configService: configServiceFactory(),
+          configService: configServiceFactory({ ...DEFAULT_CONFIG }),
           loggerService: loggerServiceFactory(),
           stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })([displacement]);
@@ -114,7 +117,7 @@ tape('Displacement handler', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const id: Id = 'getDisplacement';
-        const configService = configServiceFactory();
+        const configService = configServiceFactory({ ...DEFAULT_CONFIG });
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -156,7 +159,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           ...testedModule.MOCK_DISPLACEMENT,
           id,
         });
-        const configService = configServiceFactory();
+        const configService = configServiceFactory({ ...DEFAULT_CONFIG });
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,

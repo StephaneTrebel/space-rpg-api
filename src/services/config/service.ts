@@ -8,9 +8,9 @@ import { Config, ConfigService } from './types';
 export const getURL = (config: Config) => (endpoint: string) =>
   `${config.server.baseURL}${endpoint}`;
 
-type ConfigServiceFactory = (config?: Config) => ConfigService;
+type ConfigServiceFactory = (config: Config) => ConfigService;
 export const configServiceFactory: ConfigServiceFactory = (
-  config = DEFAULT_CONFIG,
+  config,
 ) => ({
   get: (path: string) => get(path, config as any),
   getURL: (endpoint: string) => getURL(config)(endpoint),

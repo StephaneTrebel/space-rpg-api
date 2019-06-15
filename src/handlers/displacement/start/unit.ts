@@ -1,6 +1,9 @@
 import tape from 'tape';
 
-import { configServiceFactory } from '../../../services/config/service';
+import {
+  configServiceFactory,
+  DEFAULT_CONFIG,
+} from '../../../services/config/service';
 import { loggerServiceFactory } from '../../../services/logger/service';
 import {
   stateServiceFactory,
@@ -152,7 +155,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             test.plan(3);
             const entityId: Id = 'foo';
             const currentPosition: Position = { x: 0, y: 0, z: 0 };
-            const configService = configServiceFactory();
+            const configService = configServiceFactory({ ...DEFAULT_CONFIG });
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
@@ -214,7 +217,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             test.plan(3);
             const entityId: Id = 'foo';
             const currentPosition: Position = { x: 0, y: 0, z: 0 };
-            const configService = configServiceFactory();
+            const configService = configServiceFactory({ ...DEFAULT_CONFIG });
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
@@ -385,7 +388,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           currentPosition,
           id: testId,
         });
-        const configService = configServiceFactory();
+        const configService = configServiceFactory({ ...DEFAULT_CONFIG });
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })({
           ...EMPTY_STATE,
