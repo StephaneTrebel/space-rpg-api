@@ -8,19 +8,23 @@ A Space RPG RESTful API
 
 Space-RPG-API is exactly this: A space-theme Role Playing Game you can play through interacting with a full fledged RESTful API
 
-# How to install
+# Instances
+
+[Production instance on Heroku](https://space-rpg-api.herokuapp.com/).
+
+# How to play locally
 
 ```
-$ npm install space-rpg-api
+$ git clone https://github.com/StephaneTrebel/space-rpg-api.git
 
-$ npm start
+$ cd space-rpg-api
+
+$ npm install && npm build && npm start
 ```
 
 The API will start on port 9000.
 
-# How to play
-
-Start with a the root endpoint:
+Start with the root endpoint:
 
 ```
 $ curl http://localhost:9000/
