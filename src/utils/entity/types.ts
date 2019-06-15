@@ -1,7 +1,6 @@
-import { Player } from '../../handlers/player/types';
-
 import { Id } from '../id/types';
 import { Planet } from '../planet/types';
+import { Player } from '../player/types';
 import { Position } from '../position/types';
 
 export enum EntityType {

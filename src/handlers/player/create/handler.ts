@@ -1,7 +1,6 @@
 import { LoggerService } from '../../../services/logger/types';
 import { HandlerResponse } from '../../../services/openapi-backend/types';
 import {
-  State,
   StateMutation,
   StateService,
 } from '../../../services/state/types';
@@ -10,26 +9,7 @@ import { EntityType } from '../../../utils/entity/types';
 
 import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
 
-import { Player } from '../types';
 import { createEntity } from '../../../utils/entity/utils';
-
-export const MOCK_PLAYER: Player = {
-  currentPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-  id: 'mockPlayer',
-  type: EntityType.PLAYER,
-  username: 'foo',
-};
-
-export const createPlayerMutator = (currentState: State) => (
-  newPlayer: Player,
-): State => ({
-  ...currentState,
-  entityList: [...currentState.entityList, newPlayer],
-});
 
 type AddPlayer = (deps: {
   loggerService: LoggerService;

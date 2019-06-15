@@ -1,10 +1,10 @@
 import { displaceEntityMutator } from '../../handlers/displacement/start/handler';
-import { createPlayerMutator } from '../../handlers/player/create/handler';
 
 import { LoggerService } from '../logger/types';
 
-import { Id } from '../../utils/id/types';
 import { Entity, EntityList } from '../../utils/entity/types';
+import { Id } from '../../utils/id/types';
+import { createPlayerMutator } from '../../utils/player/utils';
 
 import { State, StateMutation, StateProperties, StateService } from './types';
 

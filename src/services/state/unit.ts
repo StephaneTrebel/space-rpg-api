@@ -1,9 +1,8 @@
 import tape from 'tape';
 
-import { MOCK_PLAYER } from '../../handlers/player/create/handler';
-
 import { createEntity } from '../../utils/entity/utils';
 import { EntityList } from '../../utils/entity/types';
+import { MOCK_PLAYER } from '../../utils/player/utils';
 import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';

@@ -2,10 +2,10 @@ import * as uuid from 'uuid';
 
 import { Id } from '../id/types';
 import { Planet } from '../planet/types';
+import { Player } from '../player/types';
 import { Position } from '../position/types';
 
 import { Entity, EntityType, BaseEntity } from './types';
-import { Player } from '../../handlers/player/types';
 
 export const MOCK_ENTITY: BaseEntity = {
   currentPosition: {

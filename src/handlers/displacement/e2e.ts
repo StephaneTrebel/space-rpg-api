@@ -12,8 +12,7 @@ import { loggerServiceFactory } from '../../services/logger/service';
 import { EMPTY_STATE } from '../../services/state/service';
 
 import { Id } from '../../utils/id/types';
-
-import { MOCK_PLAYER } from '../player/create/handler';
+import { MOCK_PLAYER } from '../../utils/player/utils';
 
 import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
 import { createDisplacement } from './start/handler';

@@ -15,10 +15,9 @@ import { ActionType } from '../../../services/time/types';
 
 import { createEntity } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
+import { MOCK_PLAYER } from '../../../utils/player/utils';
+import { Player } from '../../../utils/player/types';
 import { Position } from '../../../utils/position/types';
-
-import { MOCK_PLAYER } from '../../player/create/handler';
-import { Player } from '../../player/types';
 
 import { Displacement } from '../types';
 
