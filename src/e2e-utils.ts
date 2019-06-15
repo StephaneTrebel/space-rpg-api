@@ -10,6 +10,7 @@ import { spawnAPIBackend } from './services/openapi-backend/service';
 import { State } from './services/state/types';
 import { ActionList } from './services/time/types';
 import { spawnWebServer } from './services/webserver/service';
+import { EMPTY_STATE } from "./services/state/service";
 
 type RunE2ETest = (params: {
   config?: Config;
@@ -23,12 +24,12 @@ type RunE2ETest = (params: {
 export const runE2ETest: RunE2ETest = ({
   config,
   initialActionQueue,
-  initialState,
+  initialState = EMPTY_STATE,
 }) => test => testCase =>
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })([]).then(assets => {
+  }).then(assets => {
     const teardown = () => {
       assets.loggerService.debug('Stopping the test…');
       assets.teardown();

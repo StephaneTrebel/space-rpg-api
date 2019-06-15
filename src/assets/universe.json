@@ -1,8 +1,40 @@
 [
   {
     "name": "Spawn",
-    "position": {
+    "currentPosition": {
       "x": 0,
+      "y": 0,
+      "z": 0
+    }
+  },
+  {
+    "name": "SomeWhere",
+    "currentPosition": {
+      "x": 100,
+      "y": 100,
+      "z": 100
+    }
+  },
+  {
+    "name": "Hell",
+    "currentPosition": {
+      "x": 666,
+      "y": 666,
+      "z": 666
+    }
+  },
+  {
+    "name": "Tantalos",
+    "currentPosition": {
+      "x": 123,
+      "y": 123,
+      "z": 123
+    }
+  },
+  {
+    "name": "XLand",
+    "currentPosition": {
+      "x": 1000,
       "y": 0,
       "z": 0
     }

@@ -1,6 +1,7 @@
 import * as uuid from 'uuid';
 
 import { Id } from '../id/types';
+import { Planet } from '../planet/types';
 import { Position } from '../position/types';
 
 import { Entity, EntityType, BaseEntity } from './types';
@@ -19,12 +20,14 @@ export const MOCK_ENTITY: BaseEntity = {
 type CreateEntity = (params: {
   currentPosition: Position;
   id?: Id;
+  name?: string;
   username?: string;
   type: EntityType;
 }) => Entity;
 export const createEntity: CreateEntity = ({
   currentPosition,
   id,
+  name,
   username,
   type,
 }) => {
@@ -38,6 +41,13 @@ export const createEntity: CreateEntity = ({
         id: newId,
         type,
       } as BaseEntity;
+    case EntityType.PLANET:
+      return {
+        currentPosition,
+        id: newId,
+        name,
+        type,
+      } as Planet;
     case EntityType.PLAYER:
       return {
         currentPosition,
@@ -45,7 +55,5 @@ export const createEntity: CreateEntity = ({
         type,
         username,
       } as Player;
-    default:
-      throw new Error(`Unknown entity type ${type}`);
   }
 };

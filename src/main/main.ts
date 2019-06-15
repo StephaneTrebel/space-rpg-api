@@ -16,7 +16,6 @@ import { TimeService } from '../services/time/types';
 import { SpawnWebServer } from '../services/webserver/service';
 
 import { MainDeps, MainParams, MainAssets } from './types';
-import { EntityList } from '../utils/entity/types';
 
 interface InstanciateApplicationParams {
   configService: ConfigService;
@@ -65,8 +64,8 @@ export const instanciateApplication = ({
 
 export type Main = (
   deps: MainDeps,
-) => (params: MainParams) => (entityList: EntityList) => Promise<MainAssets>;
-export const main: Main = deps => params => entityList =>
+) => (params: MainParams) => Promise<MainAssets>;
+export const main: Main = deps => params =>
   // Since we're returning a promise, we might as well start as soon as
   // possible to factor out error handling in the `catch`
   new Promise<InstanciateApplicationParams>((resolve, reject) => {
@@ -74,7 +73,7 @@ export const main: Main = deps => params => entityList =>
       const configService = configServiceFactory(params.config);
       const loggerService = loggerServiceFactory(configService.get('logger'));
       const stateService = stateServiceFactory({ loggerService })(
-        deps.initialState || { entityList },
+        deps.initialState,
       );
       const timeService = timeServiceFactory({
         configService,

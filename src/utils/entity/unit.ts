@@ -6,15 +6,6 @@ import * as testedModule from './utils';
 
 tape('Entity utils', (functions: tape.Test) => {
   functions.test('createEntity()', (cases: tape.Test) => {
-    cases.test('WHEN called with an unknown type', (test: tape.Test) => {
-      test.plan(1);
-      test.throws(
-        () => testedModule.createEntity('foo' as any),
-        'SHOULD throw an error',
-      );
-      test.end();
-    });
-
     cases.test(
       'WHEN called with a NONE entity parameters',
       (test: tape.Test) => {
@@ -48,6 +39,29 @@ tape('Entity utils', (functions: tape.Test) => {
             type: EntityType.MOCK,
           },
           'SHOULD return a new Mock Entity',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      'WHEN called with a Planet entity parameters',
+      (test: tape.Test) => {
+        test.plan(1);
+        test.deepEqual(
+          testedModule.createEntity({
+            currentPosition: { x: 1, y: 2, z: 3 },
+            id: 'myNewPlanetEntity',
+            name: 'toto',
+            type: EntityType.PLANET,
+          }),
+          {
+            currentPosition: { x: 1, y: 2, z: 3 },
+            id: 'myNewPlanetEntity',
+            name: 'toto',
+            type: EntityType.PLANET,
+          },
+          'SHOULD return a new Planet Entity',
         );
         test.end();
       },

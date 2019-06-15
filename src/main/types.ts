@@ -9,7 +9,7 @@ import { SpawnWebServer } from '../services/webserver/service';
 
 export interface MainDeps {
   initialActionQueue?: ActionList;
-  initialState?: State;
+  initialState: State;
   spawnAPIBackend: SpawnAPIBackend;
   spawnWebServer: SpawnWebServer;
 }

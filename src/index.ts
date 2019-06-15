@@ -8,9 +8,19 @@ import { spawnAPIBackend } from './services/openapi-backend/service';
 import { spawnWebServer } from './services/webserver/service';
 
 import { main } from './main/main';
+import { EntityType } from './utils/entity/types';
+import { createEntity } from './utils/entity/utils';
+import { Position } from './utils/position/types';
 
 if (process.env.NODE_ENV === 'production') {
   main({
+    initialState: {
+      entityList: JSON.parse(
+        fs.readFileSync('src/assets/universe.json', 'utf-8'),
+      ).map((planet: { name: string; currentPosition: Position }) =>
+        createEntity({ ...planet, type: EntityType.PLANET }),
+      ),
+    },
     spawnAPIBackend,
     spawnWebServer,
   })({
@@ -33,5 +43,5 @@ if (process.env.NODE_ENV === 'production') {
       },
     },
     startTime: true,
-  })(JSON.parse(fs.readFileSync('src/assets/universe.json', 'utf-8')));
+  });
 }
