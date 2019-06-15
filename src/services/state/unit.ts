@@ -1,11 +1,10 @@
 import tape from 'tape';
 
 import { EMPTY_UNIVERSE } from '../../assets/universe';
-import { Player } from '../../handlers/player/types';
-import {
-  createPlayer,
-  MOCK_PLAYER,
-} from '../../handlers/player/create/handler';
+import { MOCK_PLAYER } from '../../handlers/player/create/handler';
+
+import { createEntity } from '../../utils/entity/utils';
+import { EntityList } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
@@ -17,16 +16,16 @@ import * as testedModule from './service';
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
-    const MOCK_PLAYER_LIST: Array<Player> = [createPlayer({ ...MOCK_PLAYER })];
+    const MOCK_ENTITY_LIST: EntityList = [createEntity({ ...MOCK_PLAYER })];
     const loggerService = loggerServiceFactory();
     test.deepEqual(
       testedModule
         .stateServiceFactory({ loggerService })({
-          entityList: MOCK_PLAYER_LIST,
+          entityList: MOCK_ENTITY_LIST,
           universe: EMPTY_UNIVERSE,
         })
         .get(StateProperties.ENTITY_LIST),
-      MOCK_PLAYER_LIST,
+      MOCK_ENTITY_LIST,
       'SHOULD retrieve entityList from a State',
     );
     test.end();
@@ -39,7 +38,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createPlayer({
+          const entity = createEntity({
             ...MOCK_PLAYER,
             id,
           });
@@ -65,7 +64,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createPlayer({
+          const entity = createEntity({
             ...MOCK_PLAYER,
             currentPosition: { x: 0, y: 0, z: 0 },
             id,
@@ -91,7 +90,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity: Player = createPlayer({
+          const entity = createEntity({
             ...MOCK_PLAYER,
             id,
           });

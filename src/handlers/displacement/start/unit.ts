@@ -10,10 +10,11 @@ import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
 
+import { createEntity } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
 
-import { createPlayer, MOCK_PLAYER } from '../../player/create/handler';
+import { MOCK_PLAYER } from '../../player/create/handler';
 import { Player } from '../../player/types';
 
 import { Displacement } from '../types';
@@ -311,7 +312,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           y: 456,
           z: 789,
         };
-        const entity: Player = createPlayer({
+        const entity = createEntity({
           ...MOCK_PLAYER,
           currentPosition,
           id,
@@ -379,7 +380,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           y: 923,
           z: 391,
         };
-        const entity: Player = createPlayer({
+        const entity = createEntity({
           ...MOCK_PLAYER,
           currentPosition,
           id: testId,

@@ -11,43 +11,6 @@ import { Player } from '../types';
 import * as testedModule from './handler';
 
 tape('Player creation handler', (functionTest: tape.Test) => {
-  functionTest.test('createPlayer()', (test: tape.Test) => {
-    test.plan(5);
-    test.equal(
-      typeof testedModule.createPlayer({
-        ...testedModule.MOCK_PLAYER,
-        id: undefined,
-      }).id,
-      'string',
-      'createPlayer() SHOULD sucessfully return an object with a string id',
-    );
-    test.equal(
-      typeof testedModule.createPlayer({ ...testedModule.MOCK_PLAYER })
-        .username,
-      'string',
-      'createPlayer() SHOULD sucessfully return an object that has a username property',
-    );
-    test.equal(
-      typeof testedModule.createPlayer({ ...testedModule.MOCK_PLAYER })
-        .currentPosition.x,
-      'number',
-      'createPlayer() SHOULD sucessfully return an object that has a currentPosition.x property',
-    );
-    test.equal(
-      typeof testedModule.createPlayer({ ...testedModule.MOCK_PLAYER })
-        .currentPosition.y,
-      'number',
-      'createPlayer() SHOULD sucessfully return an object that has a currentPosition.y property',
-    );
-    test.equal(
-      typeof testedModule.createPlayer({ ...testedModule.MOCK_PLAYER })
-        .currentPosition.z,
-      'number',
-      'createPlayer() SHOULD sucessfully return an object that has a currentPosition.z property',
-    );
-    test.end();
-  });
-
   functionTest.test('createPlayerMutator()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a state AND a newPlayer',

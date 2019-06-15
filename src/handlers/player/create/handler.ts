@@ -1,5 +1,3 @@
-import * as uuid from 'uuid';
-
 import { LoggerService } from '../../../services/logger/types';
 import { HandlerResponse } from '../../../services/openapi-backend/types';
 import {
@@ -9,12 +7,11 @@ import {
 } from '../../../services/state/types';
 
 import { EntityType } from '../../../utils/entity/types';
-import { Id } from '../../../utils/id/types';
-import { Position } from '../../../utils/position/types';
 
 import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
 
 import { Player } from '../types';
+import { createEntity } from '../../../utils/entity/utils';
 
 export const MOCK_PLAYER: Player = {
   currentPosition: {
@@ -26,22 +23,6 @@ export const MOCK_PLAYER: Player = {
   type: EntityType.PLAYER,
   username: 'foo',
 };
-
-type CreatePlayer = (params: {
-  currentPosition: Position;
-  id?: Id;
-  username: string;
-}) => Player;
-export const createPlayer: CreatePlayer = ({
-  currentPosition,
-  id,
-  username,
-}) => ({
-  currentPosition,
-  id: id || uuid.v4(),
-  type: EntityType.PLAYER,
-  username,
-});
 
 export const createPlayerMutator = (currentState: State) => (
   newPlayer: Player,
@@ -56,8 +37,9 @@ type AddPlayer = (deps: {
 }) => (context: any) => HandlerResponse;
 export const addNewPlayer: AddPlayer = deps => context => {
   const username = context.request && context.request.requestBody.username;
-  const newPlayer = createPlayer({
+  const newPlayer = createEntity({
     currentPosition: { x: 0, y: 0, z: 0 },
+    type: EntityType.PLAYER,
     username,
   });
   deps.stateService.mutate(StateMutation.CREATE_PLAYER)(newPlayer);

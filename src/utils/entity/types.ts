@@ -16,4 +16,4 @@ export interface BaseEntity {
 }
 
 export type Entity = BaseEntity | Player;
-export type EntityList = Array<Player>;
+export type EntityList = Array<Entity>;
