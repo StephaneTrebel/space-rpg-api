@@ -19,9 +19,15 @@ import { getSpecification } from '../../handlers/miscellaneous/specification/han
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 import { TimeService } from '../time/types';
+import { Link } from '../webserver/types';
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
+};
+
+export const SWAGGER_UI_LINK: Link = {
+  href: '/swagger-ui',
+  rel: 'specification-ui',
 };
 
 type PostResponseHandler = (deps: {

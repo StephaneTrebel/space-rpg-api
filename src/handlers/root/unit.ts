@@ -1,5 +1,10 @@
 import tape from 'tape';
 
+import { SPECIFICATION_LINK } from '../../handlers/miscellaneous/specification/handler';
+import { SWAGGER_UI_LINK } from '../../services/openapi-backend/service';
+
+import { SELF_HEALTH_LINK } from '../miscellaneous/self-health/handler';
+
 import * as testedModule from './handler';
 
 tape('Root handler', (functions: tape.Test) => {
@@ -18,13 +23,8 @@ tape('Root handler', (functions: tape.Test) => {
     );
     test.deepEqual(
       handlerResponse.json.links,
-      [
-        {
-          href: '/self-health/ping',
-          rel: 'ping',
-        },
-      ],
-      'SHOULD sucessfully return a body having a link to Self-Health Ping endpoint',
+      [SELF_HEALTH_LINK, SPECIFICATION_LINK, SWAGGER_UI_LINK],
+      'SHOULD sucessfully return a body having a link to various endpoints',
     );
     test.end();
   });
