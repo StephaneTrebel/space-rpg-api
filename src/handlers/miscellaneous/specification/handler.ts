@@ -1,6 +1,6 @@
 import { OpenAPIBackend } from 'openapi-backend';
 
-import { HandlerResponse } from '../../services/openapi-backend/types';
+import { HandlerResponse } from '../../../services/openapi-backend/types';
 
 export const getSpecification = (
   backendEngine: OpenAPIBackend,

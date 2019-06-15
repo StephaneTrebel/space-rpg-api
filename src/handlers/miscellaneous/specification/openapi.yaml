@@ -12,8 +12,8 @@ get:
           schema:
             type: object
     400:
-      $ref: '../../specifications/components.yaml#/components/responses/400'
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:
-      $ref: '../../specifications/components.yaml#/components/responses/500'
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
     502:
-      $ref: '../../specifications/components.yaml#/components/responses/502'
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

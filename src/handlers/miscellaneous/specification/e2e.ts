@@ -1,8 +1,8 @@
 import tape from 'tape';
 
-import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
+import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 
-import { runE2ETest, getPromisified } from '../../e2e-utils';
+import { runE2ETest, getPromisified } from '../../../e2e-utils';
 
 const ENDPOINT = '/specification';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);

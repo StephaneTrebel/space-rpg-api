@@ -15,7 +15,7 @@ paths:
   /:
     $ref: 'src/handlers/root/openapi.yaml'
   /specification:
-    $ref: 'src/handlers/specification/openapi.yaml'
+    $ref: 'src/handlers/miscellaneous/specification/openapi.yaml'
   /swagger-ui/:
     get:
       description: A SwaggerUI front-end that is based on this specification.

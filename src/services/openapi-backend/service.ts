@@ -14,7 +14,7 @@ import {
 } from '../../handlers/miscellaneous/openapi-validators/handler';
 import { addNewPlayer } from '../../handlers/player/create/handler';
 import { root } from '../../handlers/root/handler';
-import { getSpecification } from '../../handlers/specification/handler';
+import { getSpecification } from '../../handlers/miscellaneous/specification/handler';
 
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
