@@ -1,5 +1,3 @@
-import { Universe, EMPTY_UNIVERSE } from '../../assets/universe';
-
 import { displaceEntityMutator } from '../../handlers/displacement/start/handler';
 import { createPlayerMutator } from '../../handlers/player/create/handler';
 
@@ -17,7 +15,7 @@ const mutations = {
 
 type Get = (deps: {
   loggerService: LoggerService;
-}) => (state: State) => (prop: StateProperties) => EntityList | Universe;
+}) => (state: State) => (prop: StateProperties) => EntityList;
 const get: Get = ({ loggerService }) => (state: State) => (
   prop: StateProperties,
 ) => {
@@ -52,7 +50,7 @@ const getMutatedState: GetMutatedState = ({ loggerService }) => (
   return mutations[mutation](state)(payload);
 };
 
-export const EMPTY_STATE: State = { entityList: [], universe: EMPTY_UNIVERSE };
+export const EMPTY_STATE: State = { entityList: [] };
 
 type StateServiceFactory = (deps: {
   loggerService: LoggerService;

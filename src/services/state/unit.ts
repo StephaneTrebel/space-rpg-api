@@ -1,6 +1,5 @@
 import tape from 'tape';
 
-import { EMPTY_UNIVERSE } from '../../assets/universe';
 import { MOCK_PLAYER } from '../../handlers/player/create/handler';
 
 import { createEntity } from '../../utils/entity/utils';
@@ -22,7 +21,6 @@ tape('State Service', (functionTest: tape.Test) => {
       testedModule
         .stateServiceFactory({ loggerService })({
           entityList: MOCK_ENTITY_LIST,
-          universe: EMPTY_UNIVERSE,
         })
         .get(StateProperties.ENTITY_LIST),
       MOCK_ENTITY_LIST,

@@ -4,8 +4,6 @@ import tape from 'tape';
 import { main } from './main/main';
 import { MainAssets } from './main/types';
 
-import { EMPTY_UNIVERSE } from './assets/universe';
-
 import { DEFAULT_CONFIG } from './services/config/service';
 import { Config } from './services/config/types';
 import { spawnAPIBackend } from './services/openapi-backend/service';
@@ -30,7 +28,7 @@ export const runE2ETest: RunE2ETest = ({
   main({ initialActionQueue, initialState, spawnAPIBackend, spawnWebServer })({
     config: config || DEFAULT_CONFIG,
     startTime: true,
-  })(EMPTY_UNIVERSE).then(assets => {
+  })([]).then(assets => {
     const teardown = () => {
       assets.loggerService.debug('Stopping the test…');
       assets.teardown();

@@ -1,7 +1,5 @@
 import tape from 'tape';
 
-import { EMPTY_UNIVERSE } from '../assets/universe';
-
 import { DEFAULT_CONFIG } from '../services/config/service';
 import { loggerServiceFactory } from '../services/logger/service';
 
@@ -46,7 +44,7 @@ tape('Index script', (functions: tape.Test) => {
         return testedModule
           .main({
             spawnAPIBackend: () => Promise.reject(new Error('NOPE')),
-          } as any)('params' as any)('universe' as any)
+          } as any)('params' as any)('initialEntityList' as any)
           .catch(() => {
             test.pass('SHOULD eventually return an error');
             test.end();
@@ -58,7 +56,7 @@ tape('Index script', (functions: tape.Test) => {
       when.test('WHEN called with improper params', (test: tape.Test) => {
         test.plan(1);
         return testedModule
-          .main({} as any)(undefined as any)('universe' as any)
+          .main({} as any)(undefined as any)('initialEntityList' as any)
           .catch(() => {
             test.pass('SHOULD eventually return an error');
             test.end();
@@ -79,9 +77,7 @@ tape('Index script', (functions: tape.Test) => {
                 },
               };
             },
-          } as any)({ config: DEFAULT_CONFIG, startTime: false })(
-            EMPTY_UNIVERSE,
-          )
+          } as any)({ config: DEFAULT_CONFIG, startTime: false })([])
           .then(assets => assets.teardown())
           .then(() => test.end());
       });
@@ -102,9 +98,7 @@ tape('Index script', (functions: tape.Test) => {
                   },
                 };
               },
-            } as any)({ config: DEFAULT_CONFIG, startTime: true })(
-              EMPTY_UNIVERSE,
-            )
+            } as any)({ config: DEFAULT_CONFIG, startTime: true })([])
             .then(assets => assets.teardown())
             .then(() => test.end());
         },
