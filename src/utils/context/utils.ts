@@ -15,3 +15,15 @@ export const getPropertyFromContextRequest: GetPropertyFromContextRequest = prop
   }
   throw new Error('No params in Context request');
 };
+
+type GetPropertyFromContextBody = (
+  property: string,
+) => (context: Context) => any;
+export const getPropertyFromContextBody: GetPropertyFromContextBody = property => context => {
+  return (
+    context.request &&
+    context.request.requestBody &&
+    context.request.requestBody &&
+    context.request.requestBody[property]
+  );
+};

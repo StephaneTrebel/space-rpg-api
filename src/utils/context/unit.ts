@@ -20,7 +20,7 @@ tape('Player handler', (functions: tape.Test) => {
     );
 
     cases.test(
-      'WHEN called with a property code a Context object having non-string request parameters',
+      'WHEN called with a property code and a Context object having non-string request parameters',
       (test: tape.Test) => {
         test.plan(1);
         const foo = ['bar', 'baz'];
@@ -36,7 +36,7 @@ tape('Player handler', (functions: tape.Test) => {
     );
 
     cases.test(
-      'WHEN called with a property code a Context object',
+      'WHEN called with a property code and a Context object having string request parameters',
       (test: tape.Test) => {
         test.plan(1);
         const foo = 'bar';
@@ -45,6 +45,25 @@ tape('Player handler', (functions: tape.Test) => {
         };
         test.equal(
           testedModule.getPropertyFromContextRequest('foo')(context),
+          foo,
+          'SHOULD return the related Context property value',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functions.test('getPropertyFromContextBody()', (cases: tape.Test) => {
+    cases.test(
+      'WHEN called with a property code and a Context object',
+      (test: tape.Test) => {
+        test.plan(1);
+        const foo = 'bar';
+        const context: any = {
+          request: { requestBody: { foo } },
+        };
+        test.equal(
+          testedModule.getPropertyFromContextBody('foo')(context),
           foo,
           'SHOULD return the related Context property value',
         );

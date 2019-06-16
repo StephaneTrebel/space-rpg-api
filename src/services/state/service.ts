@@ -1,7 +1,6 @@
-import { displaceEntityMutator } from '../../handlers/displacement/travelToCoordinates/handler';
-
 import { LoggerService } from '../logger/types';
 
+import { displaceEntityMutator } from '../../utils/displacememt/utils';
 import { Entity, EntityList } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { createPlayerMutator } from '../../utils/player/utils';

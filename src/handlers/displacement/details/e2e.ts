@@ -11,10 +11,9 @@ import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { loggerServiceFactory } from '../../../services/logger/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
+import { createDisplacement } from '../../../utils/displacememt/utils';
 import { Id } from '../../../utils/id/types';
 import { MOCK_PLAYER } from '../../../utils/player/utils';
-
-import { createDisplacement } from '../travelToCoordinates/handler';
 
 import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
 
