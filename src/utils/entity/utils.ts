@@ -17,19 +17,19 @@ export const MOCK_ENTITY: BaseEntity = {
   type: EntityType.MOCK,
 };
 
-type CreateEntity = (params: {
+type CreateEntity = (
+  type: EntityType,
+) => (params: {
   currentPosition: Position;
   id?: Id;
   name?: string;
   username?: string;
-  type: EntityType;
 }) => Entity;
-export const createEntity: CreateEntity = ({
+export const createEntity: CreateEntity = type => ({
   currentPosition,
   id,
   name,
   username,
-  type,
 }) => {
   const newId: Id = id || uuid.v4();
   switch (type) {

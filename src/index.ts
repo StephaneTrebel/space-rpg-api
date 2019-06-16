@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'production') {
       entityList: JSON.parse(
         fs.readFileSync('src/assets/universe.json', 'utf-8'),
       ).map((planet: { name: string; currentPosition: Position }) =>
-        createEntity({ ...planet, type: EntityType.PLANET }),
+        createEntity(EntityType.PLANET)({ ...planet }),
       ),
     },
     spawnAPIBackend,

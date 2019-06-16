@@ -13,6 +13,7 @@ import {
   validationFail,
 } from '../../handlers/miscellaneous/openapi-validators/handler';
 import { addNewPlayer } from '../../handlers/player/create/handler';
+import { getPlayerDetails } from '../../handlers/player/details/handler';
 import { root } from '../../handlers/root/handler';
 import { getSpecification } from '../../handlers/miscellaneous/specification/handler';
 
@@ -97,6 +98,7 @@ export const createBackend: CreateBackend = deps => specification =>
       apiBackend.register({
         addNewPlayer: addNewPlayer(deps),
         getDisplacement: getDisplacement(deps),
+        getPlayerDetails: getPlayerDetails(deps),
         getSpecification: getSpecification(apiBackend),
         notFound, // openapi-backend specific
         postResponseHandler: postResponseHandler(deps), // openapi-backend specific

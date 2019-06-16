@@ -1,0 +1,40 @@
+get:
+  summary: Retrieve a player details
+  operationId: getPlayerDetails
+  tags:
+    - Player
+  parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        $ref: '../../../specifications/components.yaml#/components/schemas/id'
+  responses:
+    200:
+      description: Player details
+      content:
+        'application/json':
+          schema:
+            type: object
+            required:
+              - player
+            properties:
+              player:
+                type: object
+                required:
+                  - currentPosition
+                  - id
+                  - username
+                properties:
+                  currentPosition:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+                  id:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
+                  username:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/username'
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
+    500:
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

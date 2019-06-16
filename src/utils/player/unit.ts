@@ -1,13 +1,16 @@
 import tape from 'tape';
 
-import { EMPTY_STATE } from '../../services/state/service';
+import { loggerServiceFactory } from '../../services/logger/service';
+import { EMPTY_STATE, stateServiceFactory } from '../../services/state/service';
+
+import { Id } from '../id/types';
 
 import { Player } from './types';
 
 import * as testedModule from './utils';
 
-tape('Player utils', (functionTest: tape.Test) => {
-  functionTest.test('createPlayerMutator()', (cases: tape.Test) => {
+tape('Player utils', (functions: tape.Test) => {
+  functions.test('createPlayerMutator()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a state AND a newPlayer',
       (test: tape.Test) => {
@@ -23,6 +26,62 @@ tape('Player utils', (functionTest: tape.Test) => {
             entityList: [{ ...testedModule.MOCK_PLAYER, username: 'foo' }],
           },
           'SHOULD return a state having this new player',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functions.test('getPlayerFromStateService()', (cases: tape.Test) => {
+    cases.test(
+      'WHEN given an player id and a StateService lacking this player',
+      (test: tape.Test) => {
+        test.plan(1);
+        const id: Id = 'bar';
+        const player: Player = {
+          ...testedModule.MOCK_PLAYER,
+          id,
+        };
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })({
+          ...EMPTY_STATE,
+          entityList: [player],
+        });
+        test.throws(
+          () =>
+            testedModule.getPlayerFromStateService({
+              loggerService,
+              stateService,
+            })({
+              id: 'qux',
+            }),
+          'SHOULD throw an error',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      'WHEN given an player id and a StateService having this player',
+      (test: tape.Test) => {
+        test.plan(1);
+        const id: Id = 'bar';
+        const player: Player = {
+          ...testedModule.MOCK_PLAYER,
+          id,
+        };
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })({
+          ...EMPTY_STATE,
+          entityList: [player],
+        });
+        test.equal(
+          testedModule.getPlayerFromStateService({
+            loggerService,
+            stateService,
+          })({ id }),
+          player,
+          'SHOULD return the player details',
         );
         test.end();
       },

@@ -12,10 +12,9 @@ tape('Entity utils', (functions: tape.Test) => {
         test.plan(1);
         test.throws(
           () =>
-            testedModule.createEntity({
+            testedModule.createEntity(EntityType.NONE)({
               currentPosition: { x: 1, y: 2, z: 3 },
               id: 'myNewNoneEntity',
-              type: EntityType.NONE,
             }),
           'SHOULD throw an error',
         );
@@ -28,10 +27,9 @@ tape('Entity utils', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(1);
         test.deepEqual(
-          testedModule.createEntity({
+          testedModule.createEntity(EntityType.MOCK)({
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewMockEntity',
-            type: EntityType.MOCK,
           }),
           {
             currentPosition: { x: 1, y: 2, z: 3 },
@@ -49,11 +47,10 @@ tape('Entity utils', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(1);
         test.deepEqual(
-          testedModule.createEntity({
+          testedModule.createEntity(EntityType.PLANET)({
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewPlanetEntity',
             name: 'toto',
-            type: EntityType.PLANET,
           }),
           {
             currentPosition: { x: 1, y: 2, z: 3 },
@@ -72,10 +69,9 @@ tape('Entity utils', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(1);
         test.deepEqual(
-          testedModule.createEntity({
+          testedModule.createEntity(EntityType.PLAYER)({
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewPlayerEntity',
-            type: EntityType.PLAYER,
             username: 'toto',
           }),
           {

@@ -1,8 +1,6 @@
 import tape from 'tape';
 
-import { createEntity } from '../../utils/entity/utils';
-import { EntityList } from '../../utils/entity/types';
-import { MOCK_PLAYER } from '../../utils/player/utils';
+import { MOCK_PLAYER, createPlayer } from '../../utils/player/utils';
 import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
@@ -14,7 +12,7 @@ import * as testedModule from './service';
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('get()', (test: tape.Test) => {
     test.plan(1);
-    const MOCK_ENTITY_LIST: EntityList = [createEntity({ ...MOCK_PLAYER })];
+    const MOCK_ENTITY_LIST = [createPlayer({ ...MOCK_PLAYER })];
     const loggerService = loggerServiceFactory();
     test.deepEqual(
       testedModule
@@ -35,7 +33,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity = createEntity({
+          const entity = createPlayer({
             ...MOCK_PLAYER,
             id,
           });
@@ -61,7 +59,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity = createEntity({
+          const entity = createPlayer({
             ...MOCK_PLAYER,
             currentPosition: { x: 0, y: 0, z: 0 },
             id,
@@ -87,7 +85,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity = createEntity({
+          const entity = createPlayer({
             ...MOCK_PLAYER,
             id,
           });

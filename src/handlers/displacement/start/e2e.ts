@@ -8,6 +8,7 @@ import { EMPTY_STATE } from '../../../services/state/service';
 import { createEntity, MOCK_ENTITY } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
+import { EntityType } from '../../../utils/entity/types';
 
 const ENDPOINT = '/displacement/start';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
@@ -42,7 +43,7 @@ tape(ENDPOINT, (subTest: tape.Test) => {
           initialState: {
             ...EMPTY_STATE,
             entityList: [
-              createEntity({ ...MOCK_ENTITY, id: entityId }),
+              createEntity(EntityType.MOCK)({ ...MOCK_ENTITY, id: entityId }),
             ],
           },
         })(caseTest)((test, assets) =>

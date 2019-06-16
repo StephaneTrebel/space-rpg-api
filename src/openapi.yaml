@@ -31,6 +31,8 @@ paths:
                 type: string
   /self-health/ping:
     $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
+  /player/{id}:
+    $ref: 'src/handlers/player/details/openapi.yaml'
   /player/create:
     $ref: 'src/handlers/player/create/openapi.yaml'
   /displacement/{id}:
