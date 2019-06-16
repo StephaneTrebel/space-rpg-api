@@ -14,7 +14,7 @@ import { EMPTY_STATE } from '../../../services/state/service';
 import { Id } from '../../../utils/id/types';
 import { MOCK_PLAYER } from '../../../utils/player/utils';
 
-import { createDisplacement } from '../start/handler';
+import { createDisplacement } from '../travelToCoordinates/handler';
 
 import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
 

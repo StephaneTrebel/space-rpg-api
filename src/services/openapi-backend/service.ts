@@ -6,7 +6,7 @@ import OpenAPIBackend from 'openapi-backend';
 import { Context, Request } from 'openapi-backend';
 
 import { getDisplacement } from '../../handlers/displacement/details/handler';
-import { startDisplacement } from '../../handlers/displacement/start/handler';
+import { startDisplacement } from '../../handlers/displacement/travelToCoordinates/handler';
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
 import {
   notFound,

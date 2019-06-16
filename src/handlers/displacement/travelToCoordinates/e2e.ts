@@ -10,7 +10,7 @@ import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
 import { EntityType } from '../../../utils/entity/types';
 
-const ENDPOINT = '/displacement/start';
+const ENDPOINT = '/displacement/travelToCoordinates';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
 tape(ENDPOINT, (subTest: tape.Test) => {

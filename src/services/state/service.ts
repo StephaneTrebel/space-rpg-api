@@ -1,4 +1,4 @@
-import { displaceEntityMutator } from '../../handlers/displacement/start/handler';
+import { displaceEntityMutator } from '../../handlers/displacement/travelToCoordinates/handler';
 
 import { LoggerService } from '../logger/types';
 
