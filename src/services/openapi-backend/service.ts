@@ -27,7 +27,7 @@ const loadSpecification = () => {
 };
 
 export const SWAGGER_UI_LINK: Link = {
-  href: '/swagger-ui',
+  href: '/swagger-ui/',
   rel: 'specification-ui',
 };
 
