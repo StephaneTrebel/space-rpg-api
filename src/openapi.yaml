@@ -37,5 +37,5 @@ paths:
     $ref: 'src/handlers/player/create/openapi.yaml'
   /displacement/{id}:
     $ref: 'src/handlers/displacement/details/openapi.yaml'
-  /displacement/travelToCoordinates:
-    $ref: 'src/handlers/displacement/travelToCoordinates/openapi.yaml'
+  /displacement/travelToPosition:
+    $ref: 'src/handlers/displacement/travelToPosition/openapi.yaml'

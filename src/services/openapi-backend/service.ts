@@ -6,7 +6,7 @@ import OpenAPIBackend from 'openapi-backend';
 import { Context, Request } from 'openapi-backend';
 
 import { getDisplacement } from '../../handlers/displacement/details/handler';
-import { startDisplacement } from '../../handlers/displacement/travelToCoordinates/handler';
+import { travelToPosition } from '../../handlers/displacement/travelToPosition/handler';
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
 import {
   notFound,
@@ -104,7 +104,7 @@ export const createBackend: CreateBackend = deps => specification =>
         postResponseHandler: postResponseHandler(deps), // openapi-backend specific
         root,
         selfHealthPing,
-        startDisplacement: startDisplacement(deps),
+        travelToPosition: travelToPosition(deps),
         validationFail, // openapi-backend specific
       });
       return resolve(apiBackend.init());

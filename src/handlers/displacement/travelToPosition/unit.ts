@@ -18,12 +18,12 @@ import { Position } from '../../../utils/position/types';
 import * as testedModule from './handler';
 
 tape('Displacement handler', (functionTest: tape.Test) => {
-  functionTest.test('startDisplacement()', (when: tape.Test) => {
+  functionTest.test('travelToPosition()', (when: tape.Test) => {
     when.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
         test.plan(3);
-        const testId: Id = 'startDisplacement';
+        const testId: Id = 'travelToPosition';
         const currentPosition: Position = {
           x: 271,
           y: 923,
@@ -45,7 +45,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           loggerService,
           stateService,
         })();
-        const handlerResponse = testedModule.startDisplacement({
+        const handlerResponse = testedModule.travelToPosition({
           loggerService,
           testId,
           timeService,

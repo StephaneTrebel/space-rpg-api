@@ -8,17 +8,17 @@ import { getPropertyFromContextBody } from '../../../utils/context/utils';
 import { createDisplacement } from '../../../utils/displacememt/utils';
 import { Position } from '../../../utils/position/types';
 
-type StartDisplacement = (deps: {
+type TravelToPosition = (deps: {
   loggerService: LoggerService;
   testId?: Id;
   timeService: TimeService;
 }) => (context: any) => HandlerResponse;
-export const startDisplacement: StartDisplacement = ({
+export const travelToPosition: TravelToPosition = ({
   loggerService,
   testId,
   timeService,
 }) => context => {
-  loggerService.debug('Entering startDisplacement…');
+  loggerService.debug('Entering travelToPosition…');
   const entityId = getPropertyFromContextBody('entityId')(context);
   const displacement = createDisplacement({ loggerService })({
     displacementId: testId,

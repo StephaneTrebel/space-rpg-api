@@ -10,3 +10,8 @@ export interface Displacement {
   targetCoordinates: Position;
   type: ActionType.DISPLACEMENT;
 }
+
+export interface DisplaceEntityPayload {
+  entityId: Id;
+  newPosition: Position;
+}

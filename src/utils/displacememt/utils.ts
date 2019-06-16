@@ -4,11 +4,13 @@ import { LoggerService } from '../../services/logger/types';
 import { StateService, StateMutation, State } from '../../services/state/types';
 import { TimeService, ActionType } from '../../services/time/types';
 
-import { Displacement } from '../../utils/displacememt/types';
+import {
+  Displacement,
+  DisplaceEntityPayload,
+} from '../../utils/displacememt/types';
 import { EntityType } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { Position } from '../../utils/position/types';
-import { DisplaceEntityPayload } from '../../handlers/displacement/travelToCoordinates/types';
 
 const DISTANCE_PER_TICK = 1;
 

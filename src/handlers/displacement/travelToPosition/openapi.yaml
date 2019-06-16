@@ -2,7 +2,7 @@ post:
   summary: Start displacing an entity to designated coordinates
   description: >
     Given entity will start to move towards given coordinates. Entity can be anything that has a position in space (a player, a planet, a comet, and so on.)
-  operationId: startDisplacement
+  operationId: travelToPosition
   tags:
     - Displace
   requestBody:
