@@ -10,7 +10,7 @@ Space-RPG-API is exactly this: A space-theme Role Playing Game you can play thro
 
 # Instances
 
-[Production instance on Heroku](https://space-rpg-api.herokuapp.com/).
+[Production instance on Heroku](https://space-rpg-api-master.herokuapp.com/).
 
 # How to play locally
 
