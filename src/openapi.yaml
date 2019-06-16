@@ -36,6 +36,6 @@ paths:
   /player/create:
     $ref: 'src/handlers/player/create/openapi.yaml'
   /displacement/{id}:
-    $ref: 'src/handlers/displacement/openapi.yaml'
+    $ref: 'src/handlers/displacement/details/openapi.yaml'
   /displacement/start:
     $ref: 'src/handlers/displacement/start/openapi.yaml'

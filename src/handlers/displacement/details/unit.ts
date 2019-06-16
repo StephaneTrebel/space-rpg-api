@@ -1,17 +1,20 @@
 import tape from 'tape';
 
-import { Id } from '../../utils/id/types';
-
 import {
   configServiceFactory,
   DEFAULT_CONFIG,
-} from '../../services/config/service';
-import { loggerServiceFactory } from '../../services/logger/service';
-import { stateServiceFactory, EMPTY_STATE } from '../../services/state/service';
-import { timeServiceFactory } from '../../services/time/service';
+} from '../../../services/config/service';
+import { loggerServiceFactory } from '../../../services/logger/service';
+import {
+  stateServiceFactory,
+  EMPTY_STATE,
+} from '../../../services/state/service';
+import { timeServiceFactory } from '../../../services/time/service';
+
+import { Id } from '../../../utils/id/types';
+import { Displacement } from '../../../utils/displacememt/types';
 
 import * as testedModule from './handler';
-import { Displacement } from './types';
 
 tape('Displacement handler', (functions: tape.Test) => {
   functions.test('getDisplacementIdFromContext()', (cases: tape.Test) => {

@@ -1,9 +1,5 @@
 import * as uuid from 'uuid';
 
-import { EntityType } from '../../../utils/entity/types';
-import { Id } from '../../../utils/id/types';
-import { Position } from '../../../utils/position/types';
-
 import { LoggerService } from '../../../services/logger/types';
 import { HandlerResponse } from '../../../services/openapi-backend/types';
 import {
@@ -13,7 +9,10 @@ import {
 } from '../../../services/state/types';
 import { TimeService, ActionType } from '../../../services/time/types';
 
-import { Displacement } from '../types';
+import { Displacement } from '../../../utils/displacememt/types';
+import { EntityType } from '../../../utils/entity/types';
+import { Id } from '../../../utils/id/types';
+import { Position } from '../../../utils/position/types';
 
 import { DisplaceEntityPayload } from './types';
 

@@ -1,10 +1,9 @@
-import { Id } from '../../utils/id/types';
+import { LoggerService } from '../../../services/logger/types';
+import { HandlerResponse } from '../../../services/openapi-backend/types';
+import { TimeService, ActionType } from '../../../services/time/types';
 
-import { LoggerService } from '../../services/logger/types';
-import { HandlerResponse } from '../../services/openapi-backend/types';
-import { TimeService, ActionType } from '../../services/time/types';
-
-import { Displacement } from './types';
+import { Displacement } from '../../../utils/displacememt/types';
+import { Id } from '../../../utils/id/types';
 
 export const MOCK_DISPLACEMENT: Displacement = {
   entityId: 'foo',

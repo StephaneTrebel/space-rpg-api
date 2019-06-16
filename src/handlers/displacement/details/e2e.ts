@@ -5,17 +5,18 @@ import {
   getPromisified,
   runE2ETest,
   setTimeoutPromisifed,
-} from '../../e2e-utils';
+} from '../../../e2e-utils';
 
-import { getURL, DEFAULT_CONFIG } from '../../services/config/service';
-import { loggerServiceFactory } from '../../services/logger/service';
-import { EMPTY_STATE } from '../../services/state/service';
+import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
+import { loggerServiceFactory } from '../../../services/logger/service';
+import { EMPTY_STATE } from '../../../services/state/service';
 
-import { Id } from '../../utils/id/types';
-import { MOCK_PLAYER } from '../../utils/player/utils';
+import { Id } from '../../../utils/id/types';
+import { MOCK_PLAYER } from '../../../utils/player/utils';
+
+import { createDisplacement } from '../start/handler';
 
 import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
-import { createDisplacement } from './start/handler';
 
 const ENDPOINT = '/displacement';
 const URL = (id: Id) => getURL(DEFAULT_CONFIG)(`${ENDPOINT}/${id}`);

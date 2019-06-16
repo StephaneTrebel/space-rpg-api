@@ -1,7 +1,7 @@
 import { ActionType, Executor } from '../../services/time/types';
 
-import { Id } from '../../utils/id/types';
-import { Position } from '../../utils/position/types';
+import { Id } from '../id/types';
+import { Position } from '../position/types';
 
 export interface Displacement {
   entityId: Id;

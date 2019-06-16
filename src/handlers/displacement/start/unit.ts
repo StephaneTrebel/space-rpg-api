@@ -13,12 +13,11 @@ import { State } from '../../../services/state/types';
 import { timeServiceFactory } from '../../../services/time/service';
 import { ActionType } from '../../../services/time/types';
 
+import { Displacement } from '../../../utils/displacememt/types';
 import { Id } from '../../../utils/id/types';
 import { MOCK_PLAYER, createPlayer } from '../../../utils/player/utils';
 import { Player } from '../../../utils/player/types';
 import { Position } from '../../../utils/position/types';
-
-import { Displacement } from '../types';
 
 import * as testedModule from './handler';
 

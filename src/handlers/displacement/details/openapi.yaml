@@ -8,7 +8,7 @@ get:
       name: id
       required: true
       schema:
-        $ref: '../../specifications/components.yaml#/components/schemas/id'
+        $ref: '../../../specifications/components.yaml#/components/schemas/id'
   responses:
     200:
       description: Displacement entity details
@@ -27,14 +27,14 @@ get:
                   - targetCoordinates
                 properties:
                   entityId:
-                    $ref: '../../specifications/components.yaml#/components/schemas/id'
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
                   id:
-                    $ref: '../../specifications/components.yaml#/components/schemas/id'
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
                   targetCoordinates:
-                    $ref: '../../specifications/components.yaml#/components/schemas/coordinates'
+                    $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
     400:
-      $ref: '../../specifications/components.yaml#/components/responses/400'
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:
-      $ref: '../../specifications/components.yaml#/components/responses/500'
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
     502:
-      $ref: '../../specifications/components.yaml#/components/responses/502'
+      $ref: '../../../specifications/components.yaml#/components/responses/502'
