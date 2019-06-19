@@ -3,7 +3,6 @@ import { Subscription } from 'rxjs';
 import { Displacement } from '../../utils/displacememt/types';
 import { Id } from '../../utils/id/types';
 
-import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 
@@ -41,9 +40,3 @@ export interface TimeService {
   start: () => Subscription;
   stop: () => void;
 }
-
-export type TimeServiceFactory = (deps: {
-  configService: ConfigService;
-  loggerService: LoggerService;
-  stateService: StateService;
-}) => (initialActionQueue?: ActionList | undefined) => TimeService;

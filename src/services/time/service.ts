@@ -3,6 +3,8 @@ import { Subscription, timer } from 'rxjs';
 import { Id } from '../../utils/id/types';
 
 import { ConfigService } from '../config/types';
+import { LoggerService } from '../logger/types';
+import { StateService } from '../state/types';
 
 import {
   Action,
@@ -10,7 +12,6 @@ import {
   ActionType,
   BaseAction,
   TimeConfig,
-  TimeServiceFactory,
   TimeService,
 } from './types';
 
@@ -41,6 +42,11 @@ export const findAction: FindAction = actionList => ({ id }) => {
   return maybeAction;
 };
 
+export type TimeServiceFactory = (deps: {
+  configService: ConfigService;
+  loggerService: LoggerService;
+  stateService: StateService;
+}) => (initialActionQueue?: ActionList | undefined) => TimeService;
 export const timeServiceFactory: TimeServiceFactory = ({
   configService,
   loggerService,
