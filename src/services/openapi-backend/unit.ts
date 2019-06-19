@@ -10,6 +10,51 @@ import { HandlerResponse } from './types';
 import * as testedModule from './service';
 
 tape('OpenAPI Backend', (functions: tape.Test) => {
+  functions.test('wrapHandler()', (cases: tape.Test) => {
+    cases.test(
+      'WHEN called with a handler and a context that makes it crash',
+      (test: tape.Test) => {
+        test.plan(3);
+        const loggerService = loggerServiceFactory();
+        const handlerResponse = testedModule.wrapHandler({
+          loggerService,
+        })(() => {
+          throw new Error(':(');
+        })('osef' as any);
+        test.equal(
+          handlerResponse.status,
+          400,
+          'SHOULD return a 400 handler response',
+        );
+        test.equal(
+          typeof handlerResponse.json.code,
+          'string',
+          'SHOULD return a handler response body having a code property',
+        );
+        test.equal(
+          typeof handlerResponse.json.message,
+          'string',
+          'SHOULD return a handler response body having a message property',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      'WHEN called with a handler and a context that does not make it crash',
+      (test: tape.Test) => {
+        test.plan(1);
+        const result: any = 'wrapHandler success';
+        const loggerService = loggerServiceFactory();
+        const handlerResponse = testedModule.wrapHandler({
+          loggerService,
+        })(() => result)('osef' as any);
+        test.equal(handlerResponse, result, 'SHOULD return the handler result');
+        test.end();
+      },
+    );
+  });
+
   functions.test('postResponseHandler()', (given: tape.Test) => {
     given.test('GIVEN a lack of context', (when: tape.Test) => {
       when.test('WHEN called without a context', (test: tape.Test) => {

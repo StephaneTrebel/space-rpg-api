@@ -1,9 +1,10 @@
 import { LoggerService } from '../../../services/logger/types';
-import { HandlerResponse } from '../../../services/openapi-backend/types';
+import { Handler } from '../../../services/openapi-backend/types';
 import { TimeService, ActionType } from '../../../services/time/types';
 
 import { Displacement } from '../../../utils/displacememt/types';
 import { Id } from '../../../utils/id/types';
+import { wrapHandler } from '../../../services/openapi-backend/service';
 
 export const MOCK_DISPLACEMENT: Displacement = {
   entityId: 'foo',
@@ -56,12 +57,12 @@ export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
 type GetDisplacement = (deps: {
   loggerService: LoggerService;
   timeService: TimeService;
-}) => (context: any) => HandlerResponse;
+}) => Handler;
 export const getDisplacement: GetDisplacement = ({
   loggerService,
   timeService,
-}) => context => {
-  try {
+}) =>
+  wrapHandler({ loggerService })(context => {
     loggerService.debug('Entering getDisplacement handler…');
     const displacement = getDisplacementFromTimeService({
       loggerService,
@@ -70,16 +71,4 @@ export const getDisplacement: GetDisplacement = ({
       id: getDisplacementIdFromContext(context),
     });
     return { json: { links: [], displacement }, status: 200 };
-  } catch (error) {
-    loggerService.error(
-      `Error encountered in getDisplacement handler: ${error.message}`,
-    );
-    return {
-      json: {
-        code: 'getDisplacementError',
-        message: `Error encountered: ${error.message}`,
-      },
-      status: 400,
-    };
-  }
-};
+  });

@@ -23,6 +23,8 @@ import { StateService } from '../state/types';
 import { TimeService } from '../time/types';
 import { Link } from '../webserver/types';
 
+import { Handler } from './types';
+
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
 };
@@ -30,6 +32,26 @@ const loadSpecification = () => {
 export const SWAGGER_UI_LINK: Link = {
   href: '/swagger-ui/',
   rel: 'specification-ui',
+};
+
+type WrapHandler = (deps: {
+  loggerService: LoggerService;
+}) => (handler: Handler) => Handler;
+export const wrapHandler: WrapHandler = ({
+  loggerService,
+}) => handler => context => {
+  try {
+    return handler(context);
+  } catch (error) {
+    loggerService.error(`Error encountered in handler: ${error.message}`);
+    return {
+      json: {
+        code: 'HandlerError',
+        message: `Error encountered: ${error.message}`,
+      },
+      status: 400,
+    };
+  }
 };
 
 type PostResponseHandler = (deps: {

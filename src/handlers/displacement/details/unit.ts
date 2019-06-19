@@ -137,17 +137,17 @@ tape('Displacement handler', (functions: tape.Test) => {
         test.equal(
           handlerResponse.status,
           400,
-          'SHOULD sucessfully return a 400 response',
+          'SHOULD return a 400 response',
         );
         test.equal(
           typeof handlerResponse.json.code,
           'string',
-          'SHOULD sucessfully return a body having a string code property',
+          'SHOULD return a body having a string code property',
         );
         test.equal(
           typeof handlerResponse.json.message,
           'string',
-          'SHOULD sucessfully return a body having a string message property',
+          'SHOULD return a body having a string message property',
         );
         test.end();
       },
@@ -179,17 +179,17 @@ tape('Displacement handler', (functions: tape.Test) => {
         test.equal(
           handlerResponse.status,
           200,
-          'SHOULD sucessfully return a 200 response',
+          'SHOULD return a 200 response',
         );
         test.deepEqual(
           handlerResponse.json.displacement,
           displacement,
-          'SHOULD sucessfully return a body having a displacement object',
+          'SHOULD return a body having a displacement object',
         );
         test.deepEqual(
           handlerResponse.json.links,
           [],
-          'SHOULD sucessfully return a body having an empty link list',
+          'SHOULD return a body having an empty link list',
         );
         test.end();
       },
