@@ -20,10 +20,13 @@ type GetPropertyFromContextBody = (
   property: string,
 ) => (context: Context) => any;
 export const getPropertyFromContextBody: GetPropertyFromContextBody = property => context => {
-  return (
+  const value =
     context.request &&
     context.request.requestBody &&
     context.request.requestBody &&
-    context.request.requestBody[property]
-  );
+    context.request.requestBody[property];
+  if (value) {
+    return value;
+  }
+  throw new Error(`No property '${property}' in Context body`);
 };

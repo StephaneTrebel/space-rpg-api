@@ -55,7 +55,22 @@ tape('Player handler', (functions: tape.Test) => {
 
   functions.test('getPropertyFromContextBody()', (cases: tape.Test) => {
     cases.test(
-      'WHEN called with a property code and a Context object',
+      'WHEN called with a property code and a Context object that lacks this property',
+      (test: tape.Test) => {
+        test.plan(1);
+        const context: any = {
+          request: { requestBody: {} },
+        };
+        test.throws(
+          () => testedModule.getPropertyFromContextBody('foo')(context),
+          'SHOULD throw an error',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      'WHEN called with a property code and a Context object that has this property',
       (test: tape.Test) => {
         test.plan(1);
         const foo = 'bar';

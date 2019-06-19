@@ -3,33 +3,29 @@ import { HandlerResponse } from '../../../services/openapi-backend/types';
 import { TimeService } from '../../../services/time/types';
 
 import { Id } from '../../../utils/id/types';
+import { generateId } from '../../../utils/id/utils';
 
 import { getPropertyFromContextBody } from '../../../utils/context/utils';
 import { createDisplacement } from '../../../utils/displacememt/utils';
-import { Position } from '../../../utils/position/types';
 import { StateService } from '../../../services/state/types';
 
-type TravelToPosition = (deps: {
+type TravelToEntity = (deps: {
   loggerService: LoggerService;
   stateService: StateService;
-  testId?: Id;
   timeService: TimeService;
 }) => (context: any) => HandlerResponse;
-export const travelToPosition: TravelToPosition = ({
+export const travelToEntity: TravelToEntity = ({
   loggerService,
   stateService,
-  testId,
   timeService,
 }) => context => {
   try {
-    loggerService.debug('Entering travelToPosition…');
-    const entityId = getPropertyFromContextBody('entityId')(context);
+    loggerService.debug('Entering travelToEntity…');
+    const entityId = getPropertyFromContextBody('entityId')(context) as Id;
     const displacement = createDisplacement({ loggerService, stateService })({
-      displacementId: testId,
+      displacementId: generateId(),
       entityId,
-      target: getPropertyFromContextBody('targetCoordinates')(
-        context,
-      ) as Position,
+      target: getPropertyFromContextBody('targetId')(context) as Id,
     });
     timeService.addAction(displacement);
     return {
@@ -46,11 +42,11 @@ export const travelToPosition: TravelToPosition = ({
     };
   } catch (error) {
     loggerService.error(
-      `Error encountered in travelToPosition handler: ${error.message}`,
+      `Error encountered in travelToEntity handler: ${error.message}`,
     );
     return {
       json: {
-        code: 'travelToPositionError',
+        code: 'travelToEntityError',
         message: `Error encountered: ${error.message}`,
       },
       status: 400,

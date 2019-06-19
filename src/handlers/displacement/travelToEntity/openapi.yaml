@@ -1,0 +1,46 @@
+post:
+  summary: Start displacing an entity to another entity
+  description: >
+    Given entity will start to move towards another entity. It will follow it until it reaches it (so maybe it will never end, if it is slower than its target)
+  operationId: travelToEntity
+  tags:
+    - Displace
+  requestBody:
+    required: true
+    description: Informations for entity displacement over time
+    content:
+      'application/json':
+        schema:
+          type: object
+          required:
+            - entityId
+            - targetId
+          properties:
+            entityId:
+              $ref: '../../../specifications/components.yaml#/components/schemas/id'
+            targetId:
+              $ref: '../../../specifications/components.yaml#/components/schemas/id'
+  responses:
+    201:
+      description: >
+        New displacement action started. Response includes and id that can be use to track this action until its completion, after which it will simply disappear.
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - displacementId
+            properties:
+              displacementId:
+                $ref: '../../../specifications/components.yaml#/components/schemas/id'
+      links:
+        Ping:
+          operationRef: /displace/:displacementId
+          description: >
+            Displacement action current status
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
+    500:
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

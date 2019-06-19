@@ -1,4 +1,4 @@
-import { EntityType, EntityList, Entity } from '../../utils/entity/types';
+import { EntityList, Entity } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 
 export enum StateProperties {
@@ -15,7 +15,7 @@ export enum StateMutation {
 }
 
 export interface StateService {
-  findEntity: (params: { id: Id; type: EntityType }) => Entity;
+  findEntity: (params: { id: Id }) => Entity;
   get: (prop: StateProperties) => EntityList;
   mutate: (mutation: StateMutation) => (payload: any) => State;
 }

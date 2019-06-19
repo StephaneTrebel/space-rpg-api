@@ -140,6 +140,30 @@ tape('Displacement handler', (functionTest: tape.Test) => {
   });
 
   functionTest.test('createDisplacement()', (given: tape.Test) => {
+    given.test('GIVEN an unknown entity', (when: tape.Test) => {
+      when.test('WHEN called with this entity id', (test: tape.Test) => {
+        test.plan(1);
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })({
+          ...EMPTY_STATE,
+          entityList: [],
+        });
+        const targetCoordinates: Position = { x: 0, y: 0, z: 0 };
+        test.throws(
+          () =>
+            testedModule.createDisplacement({
+              loggerService,
+              stateService,
+            })({
+              entityId: 'unknown',
+              target: targetCoordinates,
+            }),
+          'SHOULD throw an error',
+        );
+        test.end();
+      });
+    });
+
     given.test(
       'GIVEN an entity that is located at its target coordinates',
       (when: tape.Test) => {
@@ -164,10 +188,11 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             const maybeDisplacement: Displacement = testedModule.createDisplacement(
               {
                 loggerService,
+                stateService,
               },
             )({
               entityId,
-              targetCoordinates,
+              target: targetCoordinates,
             });
             test.equal(
               !!maybeDisplacement &&
@@ -226,10 +251,11 @@ tape('Displacement handler', (functionTest: tape.Test) => {
             const maybeDisplacement: Displacement = testedModule.createDisplacement(
               {
                 loggerService,
+                stateService,
               },
             )({
               entityId,
-              targetCoordinates,
+              target: targetCoordinates,
             });
             test.equal(
               !!maybeDisplacement &&

@@ -8,9 +8,9 @@ import {
   Displacement,
   DisplaceEntityPayload,
 } from '../../utils/displacememt/types';
-import { EntityType } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { Position } from '../../utils/position/types';
+import { isId } from '../id/utils';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -127,10 +127,10 @@ export const createExecutor: CreateExecutor = ({
   ).then(() => {
     if (!isSamePosition(currentPosition, targetCoordinates)) {
       return timeService.addAction(
-        createDisplacement({ loggerService })({
+        createDisplacement({ loggerService, stateService })({
           displacementId,
           entityId,
-          targetCoordinates,
+          target: targetCoordinates,
         }),
       );
     }
@@ -139,23 +139,31 @@ export const createExecutor: CreateExecutor = ({
 
 export type CreateDisplacement = (deps: {
   loggerService: LoggerService;
+  stateService: StateService;
 }) => (params: {
   entityId: Id;
   displacementId?: Id;
-  targetCoordinates: Position;
+  target: Position | Id;
 }) => Displacement;
-export const createDisplacement: CreateDisplacement = ({ loggerService }) => ({
-  entityId,
-  displacementId,
-  targetCoordinates,
-}) => {
+export const createDisplacement: CreateDisplacement = ({
+  loggerService,
+  stateService,
+}) => ({ entityId, displacementId, target }) => {
   loggerService.debug('Entering createDisplacement…');
+  const entity = stateService.findEntity({ id: entityId });
   const id: Id = displacementId || uuid.v4();
+  const targetCoordinates: Position = isId(target)
+    ? getEntityCurrentPosition({
+        id: target as Id,
+        loggerService,
+        stateService,
+      })
+    : (target as Position);
   const newDisplacement: Displacement = {
     entityId,
     executor: createExecutor({
       displacementId: id,
-      entityId,
+      entityId: entity.id,
       targetCoordinates,
     }),
     id,
@@ -175,8 +183,7 @@ export const getEntityCurrentPosition = ({
   stateService: StateService;
 }): Position => {
   loggerService.debug('Entering getEntityCurrentPosition…');
-  return stateService.findEntity({ id, type: EntityType.PLAYER })
-    .currentPosition;
+  return stateService.findEntity({ id }).currentPosition;
 };
 
 export const displaceEntityMutator = (currentState: State) => ({

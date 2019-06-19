@@ -38,7 +38,6 @@ export const getPlayerFromStateService: GetPlayerFromStateService = ({
   loggerService.debug('Entering getPlayerFromStateService…');
   const entity = stateService.findEntity({
     id,
-    type: EntityType.PLAYER,
   }) as Player;
   loggerService.debug(
     `Player retrieved for id '${id}': ${JSON.stringify(entity)}`,

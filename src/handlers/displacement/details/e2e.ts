@@ -9,13 +9,17 @@ import {
 
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { loggerServiceFactory } from '../../../services/logger/service';
-import { EMPTY_STATE } from '../../../services/state/service';
+import {
+  EMPTY_STATE,
+  stateServiceFactory,
+} from '../../../services/state/service';
 
 import { createDisplacement } from '../../../utils/displacememt/utils';
 import { Id } from '../../../utils/id/types';
-import { MOCK_PLAYER } from '../../../utils/player/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
+import { State } from '../../../services/state/types';
 
 const ENDPOINT = '/displacement';
 const URL = (id: Id) => getURL(DEFAULT_CONFIG)(`${ENDPOINT}/${id}`);
@@ -99,7 +103,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
     AND this displacement will not be done after three ticks`,
     (when: tape.Test) => {
       when.test(
-        'WHEN requesting for this displacement existence',
+        'WHEN requesting for this displacement existence three ticks in a row',
         (cases: tape.Test) => {
           cases.plan(9);
           const displacementId: Id = 'success_over_time_2';
@@ -126,6 +130,24 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             );
           };
           const entityId: Id = 'bar';
+          const loggerService = loggerServiceFactory();
+          const initialState: State = {
+            ...EMPTY_STATE,
+            entityList: [
+              createPlayer({
+                currentPosition: {
+                  x: 271,
+                  y: 923,
+                  z: 391,
+                },
+                id: entityId,
+                username: 'osef',
+              }),
+            ],
+          };
+          const stateService = stateServiceFactory({ loggerService })(
+            initialState,
+          );
           return runE2ETest({
             config: {
               ...DEFAULT_CONFIG,
@@ -136,31 +158,19 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             },
             initialActionQueue: [
               createDisplacement({
-                loggerService: loggerServiceFactory(),
+                loggerService,
+                stateService,
               })({
                 displacementId,
                 entityId,
-                targetCoordinates: {
+                target: {
                   x: 666,
                   y: 999,
                   z: 400,
                 },
               }),
             ],
-            initialState: {
-              ...EMPTY_STATE,
-              entityList: [
-                {
-                  ...MOCK_PLAYER,
-                  currentPosition: {
-                    x: 271,
-                    y: 923,
-                    z: 391,
-                  },
-                  id: entityId,
-                },
-              ],
-            },
+            initialState,
           })(cases)((test, assets) =>
             getPromisified({
               assets,
@@ -232,6 +242,24 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             );
           };
           const entityId: Id = 'bar';
+          const loggerService = loggerServiceFactory();
+          const initialState: State = {
+            ...EMPTY_STATE,
+            entityList: [
+              createPlayer({
+                currentPosition: {
+                  x: 124,
+                  y: 455,
+                  z: 788,
+                },
+                id: entityId,
+                username: 'osef',
+              }),
+            ],
+          };
+          const stateService = stateServiceFactory({ loggerService })(
+            initialState,
+          );
           return runE2ETest({
             config: {
               ...DEFAULT_CONFIG,
@@ -242,31 +270,19 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
             },
             initialActionQueue: [
               createDisplacement({
-                loggerService: loggerServiceFactory(),
+                loggerService,
+                stateService,
               })({
                 displacementId,
                 entityId,
-                targetCoordinates: {
+                target: {
                   x: 124,
                   y: 457,
                   z: 790,
                 },
               }),
             ],
-            initialState: {
-              ...EMPTY_STATE,
-              entityList: [
-                {
-                  ...MOCK_PLAYER,
-                  currentPosition: {
-                    x: 124,
-                    y: 455,
-                    z: 788,
-                  },
-                  id: entityId,
-                },
-              ],
-            },
+            initialState,
           })(cases)((test, assets) =>
             getPromisified({
               assets,

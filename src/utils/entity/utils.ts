@@ -1,6 +1,5 @@
-import * as uuid from 'uuid';
-
 import { Id } from '../id/types';
+import { generateId } from '../id/utils';
 import { Planet } from '../planet/types';
 import { Player } from '../player/types';
 import { Position } from '../position/types';
@@ -31,7 +30,7 @@ export const createEntity: CreateEntity = type => ({
   name,
   username,
 }) => {
-  const newId: Id = id || uuid.v4();
+  const newId: Id = id || generateId();
   switch (type) {
     case EntityType.NONE:
       throw new Error('No entity of type None can be created');
