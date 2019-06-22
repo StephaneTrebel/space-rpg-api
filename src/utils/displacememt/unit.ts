@@ -214,10 +214,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
                   `AND this object SHOULD have an executor method that returns a Promise`,
                 );
                 test.throws(
-                  () =>
-                    timeService.findAction({
-                      id: maybeDisplacement.id,
-                    }),
+                  () => timeService.findAction(maybeDisplacement.id),
                   `AND there should be no additionnal displacement planned`,
                 );
                 test.end();
@@ -276,9 +273,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
                 test.pass(
                   `AND this object SHOULD have an executor method that returns a Promise`,
                 );
-                const action = timeService.findAction({
-                  id: maybeDisplacement.id,
-                });
+                const action = timeService.findAction(maybeDisplacement.id);
                 test.equal(
                   action.id,
                   maybeDisplacement.id,

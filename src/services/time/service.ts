@@ -15,74 +15,9 @@ import {
   TimeService,
 } from './types';
 
-export const getTimeConfig = (configService: ConfigService): TimeConfig =>
-  configService.get('time');
-
-export const addAction = (actionQueue: ActionList) => (action: Action) => [
-  ...actionQueue,
-  action,
-];
-
-export const createTimer: (
-  timeConfig?: TimeConfig,
-) => (fn: () => void) => Subscription = (timeConfig = {}) => fn =>
-  timer(timeConfig.startDelay, timeConfig.period).subscribe(fn);
-
-export interface FindActionParams {
-  id: Id;
-}
-type FindAction = (
-  actionList: ActionList,
-) => (params: FindActionParams) => Action;
-export const findAction: FindAction = actionList => ({ id }) => {
-  const maybeAction = actionList.find(action => action.id === id);
-  if (!maybeAction) {
-    throw new Error(`Cannot find action with id '${id}'`);
-  }
-  return maybeAction;
-};
-
-export type TimeServiceFactory = (deps: {
-  configService: ConfigService;
-  loggerService: LoggerService;
-  stateService: StateService;
-}) => (initialActionQueue?: ActionList | undefined) => TimeService;
-export const timeServiceFactory: TimeServiceFactory = ({
-  configService,
-  loggerService,
-  stateService,
-}) => initialActionQueue => {
-  const internal: {
-    actionQueue: ActionList;
-    processQueue: ActionList;
-    timer?: Subscription;
-  } = {
-    actionQueue: initialActionQueue || [],
-    processQueue: [],
-  };
-  const timeService: TimeService = {
-    addAction: (action: Action) => {
-      loggerService.debug(
-        `Adding action to internal action queue: ${JSON.stringify(action)}`,
-      );
-      internal.actionQueue = addAction(internal.actionQueue)(action);
-      return internal.actionQueue;
-    },
-    findAction: (params: FindActionParams) =>
-      findAction(internal.actionQueue)(params),
-    start: () =>
-      (internal.timer = createTimer(getTimeConfig(configService))(() => {
-        internal.processQueue = [...internal.actionQueue];
-        internal.actionQueue = [];
-        return Promise.all(
-          internal.processQueue.map(action =>
-            action.executor({ loggerService, stateService, timeService }),
-          ),
-        );
-      })),
-    stop: () => internal.timer && internal.timer.unsubscribe(),
-  };
-  return timeService;
+export const MOCK_TIME_CONFIG: TimeConfig = {
+  period: 0,
+  startDelay: 0,
 };
 
 export const MOCK_BASE_ACTION: BaseAction = {
@@ -98,3 +33,120 @@ export const createBaseActionMock = ({
   id,
   type: ActionType.MOCK,
 });
+
+export const getTimeConfig = (configService: ConfigService): TimeConfig =>
+  configService.get('time');
+
+type CreateTimer = (deps: {
+  timerFn: typeof timer;
+}) => (params: { timeConfig: TimeConfig; fn: () => void }) => Subscription;
+export const createTimer: CreateTimer = ({ timerFn }) => ({ timeConfig, fn }) =>
+  timerFn(timeConfig.startDelay, timeConfig.period).subscribe(fn);
+
+interface TimeServiceInternal {
+  actionQueue: ActionList;
+  processQueue: ActionList;
+  timer?: Subscription;
+}
+
+type FindAction = (deps: {
+  loggerService: LoggerService;
+}) => (internal: TimeServiceInternal) => (id: Id) => Action;
+export const findAction: FindAction = ({ loggerService }) => (
+  internal: TimeServiceInternal,
+) => (id: Id) => {
+  loggerService.debug(`Looking for action having id: ${JSON.stringify(id)}`);
+  const maybeAction = internal.actionQueue.find(action => action.id === id);
+  if (!maybeAction) {
+    throw new Error(`Cannot find action with id '${id}'`);
+  }
+  return maybeAction;
+};
+
+export const addAction = (deps: { loggerService: LoggerService }) => (
+  internal: TimeServiceInternal,
+) => (action: Action) => {
+  deps.loggerService.debug(
+    `Adding action to internal action queue: ${JSON.stringify(action)}`,
+  );
+  return (internal.actionQueue = [...internal.actionQueue, action]);
+};
+
+export const cancelAction = (deps: { loggerService: LoggerService }) => (
+  internal: TimeServiceInternal,
+) => (id: Id) => {
+  deps.loggerService.debug(`Cancelling action id: ${JSON.stringify(id)}`);
+  return (internal.actionQueue = internal.actionQueue.filter(
+    action => action.id !== id,
+  ));
+};
+
+type Start = (deps: {
+  configService: ConfigService;
+  loggerService: LoggerService;
+  stateService: StateService;
+  timeService: TimeService;
+  createTimerFn: typeof createTimer;
+  timerFn: typeof timer;
+}) => (internal: TimeServiceInternal) => () => void;
+export const start: Start = ({
+  configService,
+  loggerService,
+  stateService,
+  timeService,
+  createTimerFn,
+  timerFn,
+}) => (internal: TimeServiceInternal) => () => {
+  loggerService.debug(`Starting time service`);
+  internal.timer = createTimerFn({ timerFn })({
+    fn: () => {
+      internal.processQueue = [...internal.actionQueue];
+      internal.actionQueue = [];
+      return Promise.all(
+        internal.processQueue.map(action =>
+          action.executor({
+            loggerService,
+            stateService,
+            timeService,
+          }),
+        ),
+      );
+    },
+    timeConfig: getTimeConfig(configService),
+  });
+};
+
+export const stop = (deps: { loggerService: LoggerService }) => (
+  internal: TimeServiceInternal,
+) => () => {
+  deps.loggerService.debug(`Stopping time service`);
+  if (internal.timer) {
+    internal.timer.unsubscribe();
+  }
+};
+
+export type TimeServiceFactory = (deps: {
+  configService: ConfigService;
+  loggerService: LoggerService;
+  stateService: StateService;
+}) => (initialActionQueue?: ActionList | undefined) => TimeService;
+export const timeServiceFactory: TimeServiceFactory = deps => initialActionQueue => {
+  const internal: TimeServiceInternal = {
+    actionQueue: initialActionQueue || [],
+    processQueue: [],
+  };
+  const timeService: TimeService = {
+    addAction: addAction(deps)(internal),
+    cancelAction: cancelAction(deps)(internal),
+    findAction: findAction(deps)(internal),
+    start: () =>
+      start({
+        ...deps,
+        createTimerFn: createTimer,
+        timeService,
+        timerFn: timer,
+      })(internal)(),
+    stop: stop(deps)(internal),
+  };
+  return timeService;
+};

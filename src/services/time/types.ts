@@ -1,12 +1,9 @@
-import { Subscription } from 'rxjs';
-
 import { Displacement } from '../../utils/displacememt/types';
 import { Id } from '../../utils/id/types';
 
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 
-import { FindActionParams } from './service';
 import { TimeService } from './types';
 
 export type Executor = (params: {
@@ -36,7 +33,8 @@ export interface TimeConfig {
 
 export interface TimeService {
   addAction: (action: Action) => void;
-  findAction: (params: FindActionParams) => Action;
-  start: () => Subscription;
+  cancelAction: (id: Id) => void;
+  findAction: (id: Id) => Action;
+  start: () => void;
   stop: () => void;
 }

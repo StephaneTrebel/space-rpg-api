@@ -4,7 +4,7 @@ import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
 
-import { Action, TimeConfig } from './types';
+import { TimeConfig } from './types';
 
 import * as testedModule from './service';
 
@@ -45,75 +45,221 @@ tape('Time Service', (functions: tape.Test) => {
     });
   });
 
-  functions.test('addAction()', (cases: tape.Test) => {
-    cases.test('WHEN given an action queue', (test: tape.Test) => {
-      test.plan(1);
-      const action: Action = 'foo' as any;
-      test.deepEqual(
-        testedModule.addAction(['bar' as any])(action),
-        ['bar' as any, action],
-        'SHOULD add an Action to its action queue',
-      );
-      test.end();
-    });
-  });
-
   functions.test('createTimer()', (cases: tape.Test) => {
     cases.test(
-      'WHEN given no timer config AND a callback function',
+      'WHEN given a time config and any function',
       (test: tape.Test) => {
-        test.plan(1);
-        const fn = () => {
-          test.pass('SHOULD create an Observable that emits one value');
-          test.end();
-        };
-        testedModule.createTimer()(fn);
+        test.plan(3);
+        const subscription = testedModule.createTimer({
+          timerFn: () =>
+            ({
+              subscribe: (fn: any) => {
+                test.pass('SHOULD subscribe to an Observable');
+                fn();
+                return 'subscription';
+              },
+            } as any),
+        })({
+          fn: () => {
+            test.pass('SHOULD eventually execute given function');
+          },
+          timeConfig: testedModule.MOCK_TIME_CONFIG,
+        });
+        test.equal(
+          subscription,
+          'subscription',
+          'SHOULD return a subscription to an Observable',
+        );
+        test.end();
       },
     );
   });
 
-  functions.test('getAction()', (given: tape.Test) => {
-    given.test('GIVEN an action that does not exist', (when: tape.Test) => {
-      when.test('WHEN called with its id', (test: tape.Test) => {
+  functions.test('findAction()', (cases: tape.Test) => {
+    cases.test(
+      `WHEN called with the TimeService internal object
+    AND an unknown action id`,
+      (test: tape.Test) => {
         test.plan(1);
+        const loggerService = loggerServiceFactory();
         test.throws(
           () =>
-            testedModule.findAction([
-              testedModule.createBaseActionMock({
-                ...testedModule.MOCK_BASE_ACTION,
-                executor: undefined as any,
-                id: 'foo',
-              }),
-            ])({ id: 'bar' }),
+            testedModule.findAction({ loggerService })({
+              actionQueue: [
+                testedModule.createBaseActionMock({
+                  ...testedModule.MOCK_BASE_ACTION,
+                  executor: undefined as any,
+                  id: 'foo',
+                }),
+              ],
+              processQueue: [],
+            })('bar'),
           'SHOULD throw an error',
         );
         test.end();
-      });
-    });
+      },
+    );
 
-    given.test('GIVEN an action that does exist', (when: tape.Test) => {
-      when.test('WHEN called with its id', (test: tape.Test) => {
+    cases.test(
+      `WHEN called with the TimeService internal object
+    AND a known action id`,
+      (test: tape.Test) => {
         test.plan(1);
         const action = testedModule.createBaseActionMock({
           ...testedModule.MOCK_BASE_ACTION,
           executor: undefined as any,
           id: 'foo',
         });
+        const loggerService = loggerServiceFactory();
         test.equal(
-          testedModule.findAction([action])({
-            id: 'foo',
-          }),
+          testedModule.findAction({ loggerService })({
+            actionQueue: [action],
+            processQueue: [],
+          })('foo'),
           action,
-          'SHOULD return the action',
+          'SHOULD return the related action',
         );
         test.end();
-      });
-    });
+      },
+    );
   });
 
-  functions.test('timeServiceFactory()', (cases: tape.Test) => {
+  functions.test('addAction()', (cases: tape.Test) => {
     cases.test(
-      'WHEN 2 actions are added to its action queue',
+      `WHEN called with the TimeService internal object
+    AND a known action id`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.addAction({ loggerService })({
+            actionQueue: ['bar', 'baz'] as any,
+            processQueue: [],
+          })('foo' as any),
+          ['bar', 'baz', 'foo'] as any,
+          'SHOULD add an Action to its action queue',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functions.test('cancelAction()', (cases: tape.Test) => {
+    cases.test(
+      `WHEN called with the TimeService internal object
+    AND a known action id`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.cancelAction({ loggerService })({
+            actionQueue: [{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }] as any,
+            processQueue: [],
+          })('bar'),
+          [{ id: 'foo' }, { id: 'baz' }] as any,
+          'SHOULD remove an Action from the action queue',
+        );
+        test.end();
+      },
+    );
+  });
+
+  functions.test('start()', (cases: tape.Test) => {
+    cases.test(
+      `WHEN called with the TimeService internal object`,
+      (test: tape.Test) => {
+        test.plan(4);
+        const configService = configServiceFactory(DEFAULT_CONFIG);
+        const loggerService = loggerServiceFactory();
+        const stateService = stateServiceFactory({ loggerService })(
+          EMPTY_STATE,
+        );
+        const timeService = testedModule.timeServiceFactory({
+          configService,
+          loggerService,
+          stateService,
+        })();
+        const internal: any = {
+          actionQueue: [
+            {
+              executor: () => {
+                test.pass('SHOULD execute the first action');
+              },
+            },
+            {
+              executor: () => {
+                test.pass('SHOULD execute the second action');
+              },
+            },
+            {
+              executor: () => {
+                test.pass('SHOULD execute the third action');
+              },
+            },
+          ],
+          processQueue: [],
+        };
+        testedModule.start({
+          configService,
+          createTimerFn: (() => ({ fn }: any) => {
+            test.pass(
+              'SHOULD create a timer to execute the processing function',
+            );
+            fn();
+          }) as any,
+          loggerService,
+          stateService,
+          timeService,
+          timerFn: 'osef' as any,
+        })(internal)();
+        test.end();
+      },
+    );
+  });
+
+  functions.test('stop()', (cases: tape.Test) => {
+    cases.test(
+      `WHEN called with the internal object of a stopped TimeService`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const loggerService = loggerServiceFactory();
+        const internal: any = {
+          actionQueue: [],
+          processQueue: [],
+        };
+        testedModule.stop({
+          loggerService,
+        })(internal)();
+        test.pass('SHOULD do nothing');
+        test.end();
+      },
+    );
+
+    cases.test(
+      `WHEN called with the internal object of a started TimeService`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const loggerService = loggerServiceFactory();
+        const internal: any = {
+          actionQueue: [],
+          processQueue: [],
+          timer: {
+            unsubscribe: () => {
+              test.pass('SHOULD unsubscribe the internal timer');
+            },
+          },
+        };
+        testedModule.stop({
+          loggerService,
+        })(internal)();
+        test.end();
+      },
+    );
+  });
+
+  functions.test('Service tests', (cases: tape.Test) => {
+    cases.test(
+      'WHEN 2 actions are added to the TimeService action queue',
       (test: tape.Test) => {
         test.plan(2);
         const START_DELAY = 100;
@@ -159,7 +305,8 @@ tape('Time Service', (functions: tape.Test) => {
     );
 
     cases.test(
-      'WHEN 2 actions are added to its action queue, AND then after a while two more are added',
+      `WHEN 2 actions are added to the TimeService action queue,
+    AND then after a while two more are added`,
       (test: tape.Test) => {
         test.plan(4);
         const START_DELAY = 100;
