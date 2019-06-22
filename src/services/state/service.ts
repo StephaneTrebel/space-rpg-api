@@ -1,28 +1,15 @@
 import { LoggerService } from '../logger/types';
 
 import { displaceEntityMutator } from '../../utils/displacememt/utils';
-import { Entity, EntityList } from '../../utils/entity/types';
+import { Entity } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { createPlayerMutator } from '../../utils/player/utils';
 
-import { State, StateMutation, StateProperties, StateService } from './types';
+import { State, StateMutation, StateService } from './types';
 
 const mutations = {
   [StateMutation.CREATE_PLAYER]: createPlayerMutator,
   [StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
-};
-
-type Get = (deps: {
-  loggerService: LoggerService;
-}) => (state: State) => (prop: StateProperties) => EntityList;
-const get: Get = ({ loggerService }) => (state: State) => (
-  prop: StateProperties,
-) => {
-  loggerService.debug('Entering stateService.get…');
-  loggerService.debug(`Retrieving prop '${prop}' from state`);
-  const result = state[prop];
-  loggerService.debug(`Result is ${JSON.stringify(result)}`);
-  return result;
 };
 
 type FindEntity = (deps: {
@@ -61,8 +48,6 @@ export const stateServiceFactory: StateServiceFactory = ({ loggerService }) => (
   return {
     findEntity: ({ id }) =>
       findEntity({ loggerService })(internal.state)({ id }),
-    get: (prop: StateProperties) =>
-      get({ loggerService })(internal.state)(prop),
     mutate: (mutation: StateMutation) => (payload: any) => {
       loggerService.debug(
         `Mutating state with mutation '${mutation}' and payload '${JSON.stringify(

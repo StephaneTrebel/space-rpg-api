@@ -5,27 +5,9 @@ import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
 
-import { StateProperties } from './types';
-
 import * as testedModule from './service';
 
 tape('State Service', (functionTest: tape.Test) => {
-  functionTest.test('get()', (test: tape.Test) => {
-    test.plan(1);
-    const MOCK_ENTITY_LIST = [createPlayer({ ...MOCK_PLAYER })];
-    const loggerService = loggerServiceFactory();
-    test.deepEqual(
-      testedModule
-        .stateServiceFactory({ loggerService })({
-          entityList: MOCK_ENTITY_LIST,
-        })
-        .get(StateProperties.ENTITY_LIST),
-      MOCK_ENTITY_LIST,
-      'SHOULD retrieve entityList from a State',
-    );
-    test.end();
-  });
-
   functionTest.test('findEntity()', (given: tape.Test) => {
     given.test('GIVEN a State that has an entity', (when: tape.Test) => {
       when.test(

@@ -16,6 +16,5 @@ export enum StateMutation {
 
 export interface StateService {
   findEntity: (params: { id: Id }) => Entity;
-  get: (prop: StateProperties) => EntityList;
   mutate: (mutation: StateMutation) => (payload: any) => State;
 }
