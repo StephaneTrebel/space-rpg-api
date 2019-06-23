@@ -65,18 +65,18 @@ tape('Time Service', (functions: tape.Test) => {
     AND an unknown action id`,
       (test: tape.Test) => {
         test.plan(1);
+        const id = 'myUnknownId';
         const loggerService = loggerServiceFactory();
         test.throws(
           () =>
             testedModule.findAction({ loggerService })({
               actionQueue: [
                 createDisplacementMock({
-                  executor: undefined as any,
-                  id: 'foo',
+                  id,
                 }),
               ],
               processQueue: [],
-            })('bar'),
+            })(id + 'lol'),
           'SHOULD throw an error',
         );
         test.end();
@@ -88,16 +88,16 @@ tape('Time Service', (functions: tape.Test) => {
     AND a known action id`,
       (test: tape.Test) => {
         test.plan(1);
+        const id = 'myAwesomeId';
         const action = createDisplacementMock({
-          executor: undefined as any,
-          id: 'foo',
+          id,
         });
         const loggerService = loggerServiceFactory();
         test.equal(
           testedModule.findAction({ loggerService })({
             actionQueue: [action],
             processQueue: [],
-          })('foo'),
+          })(id),
           action,
           'SHOULD return the related action',
         );
@@ -112,13 +112,16 @@ tape('Time Service', (functions: tape.Test) => {
     AND a known action id`,
       (test: tape.Test) => {
         test.plan(1);
+        const displacementA = createDisplacementMock({ id: 'foo' });
+        const displacementB = createDisplacementMock({ id: 'bar' });
+        const displacementC = createDisplacementMock({ id: 'baz' });
         const loggerService = loggerServiceFactory();
         test.deepEqual(
           testedModule.addAction({ loggerService })({
-            actionQueue: ['bar', 'baz'] as any,
+            actionQueue: [displacementB, displacementC],
             processQueue: [],
-          })('foo' as any),
-          ['bar', 'baz', 'foo'] as any,
+          })(displacementA),
+          [displacementB, displacementC, displacementA],
           'SHOULD add an Action to its action queue',
         );
         test.end();
@@ -132,13 +135,16 @@ tape('Time Service', (functions: tape.Test) => {
     AND a known action id`,
       (test: tape.Test) => {
         test.plan(1);
+        const displacementA = createDisplacementMock({ id: 'foo' });
+        const displacementB = createDisplacementMock({ id: 'bar' });
+        const displacementC = createDisplacementMock({ id: 'baz' });
         const loggerService = loggerServiceFactory();
         test.deepEqual(
           testedModule.cancelAction({ loggerService })({
-            actionQueue: [{ id: 'foo' }, { id: 'bar' }, { id: 'baz' }] as any,
+            actionQueue: [displacementA, displacementB, displacementC],
             processQueue: [],
-          })('bar'),
-          [{ id: 'foo' }, { id: 'baz' }] as any,
+          })(displacementB.id),
+          [displacementA, displacementC],
           'SHOULD remove an Action from the action queue',
         );
         test.end();
@@ -161,23 +167,20 @@ tape('Time Service', (functions: tape.Test) => {
           loggerService,
           stateService,
         })();
-        const internal: any = {
+        const internal = {
           actionQueue: [
-            {
-              executor: () => {
-                test.pass('SHOULD execute the first action');
-              },
-            },
-            {
-              executor: () => {
-                test.pass('SHOULD execute the second action');
-              },
-            },
-            {
-              executor: () => {
-                test.pass('SHOULD execute the third action');
-              },
-            },
+            createDisplacementMock({
+              executor: () =>
+                Promise.resolve(test.pass('SHOULD execute the first action')),
+            }),
+            createDisplacementMock({
+              executor: () =>
+                Promise.resolve(test.pass('SHOULD execute the second action')),
+            }),
+            createDisplacementMock({
+              executor: () =>
+                Promise.resolve(test.pass('SHOULD execute the third action')),
+            }),
           ],
           processQueue: [],
         };
