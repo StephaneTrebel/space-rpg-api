@@ -2,7 +2,7 @@ import * as uuid from 'uuid';
 
 import { LoggerService } from '../../services/logger/types';
 import { StateService, StateMutation, State } from '../../services/state/types';
-import { TimeService, ActionType } from '../../services/time/types';
+import { TimeService, ActionType, Executor } from '../../services/time/types';
 
 import {
   Displacement,
@@ -13,6 +13,28 @@ import { Position } from '../../utils/position/types';
 import { isId } from '../id/utils';
 
 const DISTANCE_PER_TICK = 1;
+
+export const createDisplacementMock = ({
+  entityId,
+  executor,
+  id,
+  targetCoordinates,
+}: {
+  entityId?: Id;
+  executor?: Executor;
+  id?: Id;
+  targetCoordinates?: Position;
+}): Displacement => ({
+  entityId: entityId || 'mockEntityId',
+  executor: executor || (() => Promise.resolve()),
+  id: id || 'mockId',
+  targetCoordinates: targetCoordinates || {
+    x: 0,
+    y: 0,
+    z: 0,
+  },
+  type: ActionType.DISPLACEMENT,
+});
 
 type MovePosition = (deps: {
   loggerService: LoggerService;

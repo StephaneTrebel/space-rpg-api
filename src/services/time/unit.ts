@@ -1,5 +1,7 @@
 import tape from 'tape';
 
+import { createDisplacementMock } from '../../utils/displacememt/utils';
+
 import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
@@ -9,24 +11,6 @@ import { TimeConfig } from './types';
 import * as testedModule from './service';
 
 tape('Time Service', (functions: tape.Test) => {
-  functions.test('createBaseActionMock()', (cases: tape.Test) => {
-    cases.test('WHEN given no parameters', (test: tape.Test) => {
-      test.plan(2);
-      const displacement = testedModule.createBaseActionMock();
-      test.deepEqual(
-        displacement,
-        testedModule.MOCK_BASE_ACTION,
-        'SHOULD return a BaseAction mock object',
-      );
-      return displacement.executor({} as any).then(() => {
-        test.pass(
-          'this BaseAction mock object executor method should return a Promise',
-        );
-        test.end();
-      });
-    });
-  });
-
   functions.test('getTimeConfig()', (cases: tape.Test) => {
     cases.test('WHEN given a global config', (test: tape.Test) => {
       test.plan(1);
@@ -86,8 +70,7 @@ tape('Time Service', (functions: tape.Test) => {
           () =>
             testedModule.findAction({ loggerService })({
               actionQueue: [
-                testedModule.createBaseActionMock({
-                  ...testedModule.MOCK_BASE_ACTION,
+                createDisplacementMock({
                   executor: undefined as any,
                   id: 'foo',
                 }),
@@ -105,8 +88,7 @@ tape('Time Service', (functions: tape.Test) => {
     AND a known action id`,
       (test: tape.Test) => {
         test.plan(1);
-        const action = testedModule.createBaseActionMock({
-          ...testedModule.MOCK_BASE_ACTION,
+        const action = createDisplacementMock({
           executor: undefined as any,
           id: 'foo',
         });
@@ -277,8 +259,7 @@ tape('Time Service', (functions: tape.Test) => {
           stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })();
         timeService.addAction(
-          testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
+          createDisplacementMock({
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the first one'),
@@ -287,8 +268,7 @@ tape('Time Service', (functions: tape.Test) => {
           }),
         );
         timeService.addAction(
-          testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
+          createDisplacementMock({
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the second one'),
@@ -324,8 +304,7 @@ tape('Time Service', (functions: tape.Test) => {
           stateService: stateServiceFactory({ loggerService })(EMPTY_STATE),
         })();
         timeService.addAction(
-          testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
+          createDisplacementMock({
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the first one'),
@@ -334,8 +313,7 @@ tape('Time Service', (functions: tape.Test) => {
           }),
         );
         timeService.addAction(
-          testedModule.createBaseActionMock({
-            ...testedModule.MOCK_BASE_ACTION,
+          createDisplacementMock({
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the second one'),
@@ -346,8 +324,7 @@ tape('Time Service', (functions: tape.Test) => {
         timeService.start();
         setTimeout(() => {
           timeService.addAction(
-            testedModule.createBaseActionMock({
-              ...testedModule.MOCK_BASE_ACTION,
+            createDisplacementMock({
               executor: () =>
                 Promise.resolve(
                   test.pass('SHOULD eventually execute the third one'),
@@ -356,8 +333,7 @@ tape('Time Service', (functions: tape.Test) => {
             }),
           );
           timeService.addAction(
-            testedModule.createBaseActionMock({
-              ...testedModule.MOCK_BASE_ACTION,
+            createDisplacementMock({
               executor: () =>
                 Promise.resolve(
                   test.pass('SHOULD eventually execute the fourth one'),

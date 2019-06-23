@@ -1,35 +1,10 @@
 import { LoggerService } from '../../../services/logger/types';
 import { Handler } from '../../../services/openapi-backend/types';
-import { TimeService, ActionType } from '../../../services/time/types';
+import { TimeService } from '../../../services/time/types';
 
 import { Displacement } from '../../../utils/displacememt/types';
 import { Id } from '../../../utils/id/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-
-export const MOCK_DISPLACEMENT: Displacement = {
-  entityId: 'foo',
-  executor: () => Promise.resolve(),
-  id: 'bar',
-  targetCoordinates: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-  type: ActionType.DISPLACEMENT,
-};
-export const createDisplacementMock = ({
-  entityId,
-  executor,
-  id,
-  targetCoordinates,
-  type,
-}: Displacement = MOCK_DISPLACEMENT): Displacement => ({
-  entityId,
-  executor,
-  id,
-  targetCoordinates,
-  type,
-});
 
 export const getDisplacementIdFromContext = (context: any): string =>
   context.request &&

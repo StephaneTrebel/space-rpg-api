@@ -6,33 +6,12 @@ import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 
-import {
-  Action,
-  ActionList,
-  ActionType,
-  BaseAction,
-  TimeConfig,
-  TimeService,
-} from './types';
+import { Action, ActionList, TimeConfig, TimeService } from './types';
 
 export const MOCK_TIME_CONFIG: TimeConfig = {
   period: 0,
   startDelay: 0,
 };
-
-export const MOCK_BASE_ACTION: BaseAction = {
-  executor: () => Promise.resolve(),
-  id: 'mock base action',
-  type: ActionType.MOCK,
-};
-export const createBaseActionMock = ({
-  executor,
-  id,
-}: BaseAction = MOCK_BASE_ACTION): BaseAction => ({
-  executor,
-  id,
-  type: ActionType.MOCK,
-});
 
 export const getTimeConfig = (configService: ConfigService): TimeConfig =>
   configService.get('time');

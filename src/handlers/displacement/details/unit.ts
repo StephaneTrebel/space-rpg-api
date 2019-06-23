@@ -13,6 +13,7 @@ import { timeServiceFactory } from '../../../services/time/service';
 
 import { Id } from '../../../utils/id/types';
 import { Displacement } from '../../../utils/displacememt/types';
+import { createDisplacementMock } from '../../../utils/displacememt/utils';
 
 import * as testedModule from './handler';
 
@@ -33,32 +34,13 @@ tape('Displacement handler', (functions: tape.Test) => {
     });
   });
 
-  functions.test('createDisplacementMock()', (cases: tape.Test) => {
-    cases.test('WHEN given no parameters', (test: tape.Test) => {
-      test.plan(2);
-      const displacement = testedModule.createDisplacementMock();
-      test.deepEqual(
-        displacement,
-        testedModule.MOCK_DISPLACEMENT,
-        'SHOULD return a Displacement mock object',
-      );
-      return displacement.executor({} as any).then(() => {
-        test.pass(
-          'this Displacement mock object executor method should return a Promise',
-        );
-        test.end();
-      });
-    });
-  });
-
   functions.test('getDisplacementFromTimeService()', (cases: tape.Test) => {
     cases.test(
       'WHEN given an displacement id and a TimeService lacking this displacement',
       (test: tape.Test) => {
         test.plan(1);
         const id: Id = 'bar';
-        const displacement: Displacement = testedModule.createDisplacementMock({
-          ...testedModule.MOCK_DISPLACEMENT,
+        const displacement: Displacement = createDisplacementMock({
           id,
         });
         const configService = configServiceFactory({ ...DEFAULT_CONFIG });
@@ -91,8 +73,7 @@ tape('Displacement handler', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(1);
         const id: Id = 'bar';
-        const displacement: Displacement = testedModule.createDisplacementMock({
-          ...testedModule.MOCK_DISPLACEMENT,
+        const displacement: Displacement = createDisplacementMock({
           id,
         });
         const loggerService = loggerServiceFactory();
@@ -134,11 +115,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           loggerService,
           timeService,
         })({ request: { params: { id } } } as any);
-        test.equal(
-          handlerResponse.status,
-          400,
-          'SHOULD return a 400 response',
-        );
+        test.equal(handlerResponse.status, 400, 'SHOULD return a 400 response');
         test.equal(
           typeof handlerResponse.json.code,
           'string',
@@ -158,8 +135,7 @@ tape('Displacement handler', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const id: Id = 'getDisplacement';
-        const displacement: Displacement = testedModule.createDisplacementMock({
-          ...testedModule.MOCK_DISPLACEMENT,
+        const displacement: Displacement = createDisplacementMock({
           id,
         });
         const configService = configServiceFactory({ ...DEFAULT_CONFIG });
@@ -176,11 +152,7 @@ tape('Displacement handler', (functions: tape.Test) => {
           loggerService,
           timeService,
         })({ request: { params: { id } } } as any);
-        test.equal(
-          handlerResponse.status,
-          200,
-          'SHOULD return a 200 response',
-        );
+        test.equal(handlerResponse.status, 200, 'SHOULD return a 200 response');
         test.deepEqual(
           handlerResponse.json.displacement,
           displacement,

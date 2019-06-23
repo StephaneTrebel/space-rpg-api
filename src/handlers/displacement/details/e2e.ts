@@ -14,11 +14,13 @@ import {
   stateServiceFactory,
 } from '../../../services/state/service';
 
-import { createDisplacement } from '../../../utils/displacememt/utils';
+import {
+  createDisplacement,
+  createDisplacementMock,
+} from '../../../utils/displacememt/utils';
 import { Id } from '../../../utils/id/types';
 import { createPlayer } from '../../../utils/player/utils';
 
-import { createDisplacementMock, MOCK_DISPLACEMENT } from './handler';
 import { State } from '../../../services/state/types';
 
 const ENDPOINT = '/displacement';
@@ -63,9 +65,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
               startDelay: 5000,
             },
           },
-          initialActionQueue: [
-            createDisplacementMock({ ...MOCK_DISPLACEMENT, id }),
-          ],
+          initialActionQueue: [createDisplacementMock({ id })],
         })(cases)((test, assets) =>
           getPromisified({
             assets,

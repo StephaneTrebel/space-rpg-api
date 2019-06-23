@@ -18,8 +18,37 @@ import { Position } from '../position/types';
 
 import * as testedModule from './utils';
 
-tape('Displacement handler', (functionTest: tape.Test) => {
-  functionTest.test('movePosition()', (when: tape.Test) => {
+tape('Displacement handler', (functions: tape.Test) => {
+
+  functions.test('createDisplacementMock()', (cases: tape.Test) => {
+    cases.test('WHEN given no parameters', (test: tape.Test) => {
+      test.plan(4);
+      const displacement = testedModule.createDisplacementMock({});
+      test.equal(
+        displacement.type,
+        ActionType.DISPLACEMENT,
+        'SHOULD return an object that is an action of type DISPLACEMENT',
+      );
+      test.equal(
+        typeof displacement.id,
+        'string',
+        'SHOULD return an object that has an id',
+      );
+      test.equal(
+        typeof displacement.executor,
+        'function',
+        'SHOULD return an object that has an executor function',
+      );
+      return displacement.executor({} as any).then(() => {
+        test.pass(
+          'SHOULD return an object which executor function returns a Promise',
+        );
+        test.end();
+      });
+    });
+  });
+
+  functions.test('movePosition()', (when: tape.Test) => {
     when.test(
       `WHEN given a point in space
         AND a target
@@ -117,7 +146,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('isSamePosition()', (when: tape.Test) => {
+  functions.test('isSamePosition()', (when: tape.Test) => {
     when.test('WHEN given two different positions', (test: tape.Test) => {
       test.plan(1);
       test.equal(
@@ -139,7 +168,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     });
   });
 
-  functionTest.test('createDisplacement()', (given: tape.Test) => {
+  functions.test('createDisplacement()', (given: tape.Test) => {
     given.test('GIVEN an unknown entity', (when: tape.Test) => {
       when.test('WHEN called with this entity id', (test: tape.Test) => {
         test.plan(1);
@@ -287,7 +316,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('getEntityCurrentPosition()', (when: tape.Test) => {
+  functions.test('getEntityCurrentPosition()', (when: tape.Test) => {
     when.test(
       'WHEN given an entity and a State having this entity',
       (test: tape.Test) => {
@@ -321,7 +350,7 @@ tape('Displacement handler', (functionTest: tape.Test) => {
     );
   });
 
-  functionTest.test('displaceEntityMutator()', (when: tape.Test) => {
+  functions.test('displaceEntityMutator()', (when: tape.Test) => {
     when.test(
       'WHEN called with a state AND a displacement payload',
       (test: tape.Test) => {

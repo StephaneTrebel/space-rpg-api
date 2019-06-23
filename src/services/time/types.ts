@@ -14,16 +14,10 @@ export type Executor = (params: {
 
 export enum ActionType {
   NONE = 'none', // No action should ever have this type. For tests only
-  MOCK = 'mock', // Mock actions only
   DISPLACEMENT = 'displacement',
 }
 
-export interface BaseAction {
-  executor: Executor;
-  id: Id;
-  type: ActionType.MOCK;
-}
-export type Action = BaseAction | Displacement;
+export type Action = Displacement;
 export type ActionList = Array<Action>;
 
 export interface TimeConfig {
