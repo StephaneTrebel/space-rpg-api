@@ -44,11 +44,18 @@ export const findAction: FindAction = ({ loggerService }) => (
 
 export const addAction = (deps: { loggerService: LoggerService }) => (
   internal: TimeServiceInternal,
-) => (action: Action) => {
+) => (newAction: Action) => {
   deps.loggerService.debug(
-    `Adding action to internal action queue: ${JSON.stringify(action)}`,
+    `Adding action to internal action queue: ${JSON.stringify(newAction)}`,
   );
-  return (internal.actionQueue = [...internal.actionQueue, action]);
+  return (internal.actionQueue = [
+      // Filtering to remove any existing action for this entity
+      // Thus ensuring there won't be any cumulative effect.
+    ...internal.actionQueue.filter(
+      action => action.entityId !== newAction.entityId,
+    ),
+    newAction,
+  ]);
 };
 
 export const cancelAction = (deps: { loggerService: LoggerService }) => (

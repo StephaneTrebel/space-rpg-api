@@ -109,12 +109,51 @@ tape('Time Service', (functions: tape.Test) => {
   functions.test('addAction()', (cases: tape.Test) => {
     cases.test(
       `WHEN called with the TimeService internal object
-    AND a known action id`,
+    AND a new action for a an entity that already has a registered action`,
       (test: tape.Test) => {
         test.plan(1);
-        const displacementA = createDisplacementMock({ id: 'foo' });
-        const displacementB = createDisplacementMock({ id: 'bar' });
-        const displacementC = createDisplacementMock({ id: 'baz' });
+        const displacementA = createDisplacementMock({
+          entityId: 'alpha',
+          id: 'foo',
+        });
+        const displacementBOld = createDisplacementMock({
+          entityId: 'beta',
+          id: 'oldB',
+        });
+        const displacementBNew = createDisplacementMock({
+          entityId: 'beta',
+          id: 'newB',
+        });
+        const loggerService = loggerServiceFactory();
+        test.deepEqual(
+          testedModule.addAction({ loggerService })({
+            actionQueue: [displacementA, displacementBOld],
+            processQueue: [],
+          })(displacementBNew),
+          [displacementA, displacementBNew],
+          'SHOULD replace the existing action with the new one in the action queue',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      `WHEN called with the TimeService internal object
+    AND a new action for an entity that has no registered action`,
+      (test: tape.Test) => {
+        test.plan(1);
+        const displacementA = createDisplacementMock({
+          entityId: 'alpha',
+          id: 'foo',
+        });
+        const displacementB = createDisplacementMock({
+          entityId: 'beta',
+          id: 'bar',
+        });
+        const displacementC = createDisplacementMock({
+          entityId: 'gamma',
+          id: 'baz',
+        });
         const loggerService = loggerServiceFactory();
         test.deepEqual(
           testedModule.addAction({ loggerService })({
@@ -263,6 +302,7 @@ tape('Time Service', (functions: tape.Test) => {
         })();
         timeService.addAction(
           createDisplacementMock({
+            entityId: 'alpha',
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the first one'),
@@ -272,6 +312,7 @@ tape('Time Service', (functions: tape.Test) => {
         );
         timeService.addAction(
           createDisplacementMock({
+            entityId: 'beta',
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the second one'),
@@ -308,6 +349,7 @@ tape('Time Service', (functions: tape.Test) => {
         })();
         timeService.addAction(
           createDisplacementMock({
+            entityId: 'alpha',
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the first one'),
@@ -317,6 +359,7 @@ tape('Time Service', (functions: tape.Test) => {
         );
         timeService.addAction(
           createDisplacementMock({
+            entityId: 'beta',
             executor: () =>
               Promise.resolve(
                 test.pass('SHOULD eventually execute the second one'),
@@ -328,6 +371,7 @@ tape('Time Service', (functions: tape.Test) => {
         setTimeout(() => {
           timeService.addAction(
             createDisplacementMock({
+              entityId: 'gamma',
               executor: () =>
                 Promise.resolve(
                   test.pass('SHOULD eventually execute the third one'),
@@ -337,6 +381,7 @@ tape('Time Service', (functions: tape.Test) => {
           );
           timeService.addAction(
             createDisplacementMock({
+              entityId: 'delta',
               executor: () =>
                 Promise.resolve(
                   test.pass('SHOULD eventually execute the fourth one'),
