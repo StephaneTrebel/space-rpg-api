@@ -18,6 +18,12 @@ get:
       links:
         Ping:
           $ref: '../../specifications/components.yaml#/components/links/Ping'
+        Specification:
+          $ref: '../../specifications/components.yaml#/components/links/Specification'
+        SwaggerUI:
+          $ref: '../../specifications/components.yaml#/components/links/SwaggerUI'
+        Versions:
+          $ref: '../../specifications/components.yaml#/components/links/Versions'
     400:
       $ref: '../../specifications/components.yaml#/components/responses/400'
     500:

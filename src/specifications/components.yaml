@@ -92,6 +92,18 @@ components:
       operationRef: /
       description: >
         The base endpoint
+    Specification:
+      operationRef: /specification
+      description: >
+        This service OpenAPI raw specification
+    SwaggerUI:
+      operationRef: /swagger-ui/
+      description: >
+        A nice front-end based on this service specification
+    Versions:
+      operationRef: /versions
+      description: >
+        Versions used by this service
 
   # Reusable responses
   responses:

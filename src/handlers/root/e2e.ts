@@ -7,6 +7,7 @@ import { runE2ETest, getPromisified } from '../../e2e-utils';
 import { SWAGGER_UI_LINK } from '../../services/openapi-backend/service';
 import { SPECIFICATION_LINK } from '../../handlers/miscellaneous/specification/handler';
 import { SELF_HEALTH_LINK } from '../miscellaneous/self-health/handler';
+import { VERSIONS_LINK } from "../miscellaneous/versions/handler";
 
 const ENDPOINT = '/';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
@@ -32,7 +33,7 @@ tape(ENDPOINT, (cases: tape.Test) => {
         );
         test.deepEqual(
           JSON.parse(response.body).links,
-          [SELF_HEALTH_LINK, SPECIFICATION_LINK, SWAGGER_UI_LINK],
+          [SELF_HEALTH_LINK, SPECIFICATION_LINK, SWAGGER_UI_LINK, VERSIONS_LINK],
           'SHOULD return a JSON body having a link to various endpoints',
         );
         test.end();
