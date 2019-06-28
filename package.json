@@ -1,6 +1,6 @@
 {
   "name": "space-rpg-api",
-  "version": "1.1.0-0",
+  "version": "1.1.0",
   "description": "A Space RPG RESTful API",
   "main": "index.js",
   "scripts": {
@@ -27,7 +27,12 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": ["space", "rpg", "api", "openapi"],
+  "keywords": [
+    "space",
+    "rpg",
+    "api",
+    "openapi"
+  ],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {
