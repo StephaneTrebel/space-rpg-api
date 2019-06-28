@@ -18,22 +18,6 @@ import { createDisplacementMock } from '../../../utils/displacememt/utils';
 import * as testedModule from './handler';
 
 tape('Displacement handler', (functions: tape.Test) => {
-  functions.test('getDisplacementIdFromContext()', (cases: tape.Test) => {
-    cases.test('WHEN given a Context object', (test: tape.Test) => {
-      test.plan(1);
-      const id: Id = 'lel';
-      const context: any = {
-        request: { params: { id } },
-      };
-      test.equal(
-        testedModule.getDisplacementIdFromContext(context),
-        id,
-        'SHOULD return the Context id property',
-      );
-      test.end();
-    });
-  });
-
   functions.test('getDisplacementFromTimeService()', (cases: tape.Test) => {
     cases.test(
       'WHEN given an displacement id and a TimeService lacking this displacement',

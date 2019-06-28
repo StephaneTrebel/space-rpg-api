@@ -5,13 +5,7 @@ import { TimeService } from '../../../services/time/types';
 import { Displacement } from '../../../utils/displacememt/types';
 import { Id } from '../../../utils/id/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-
-export const getDisplacementIdFromContext = (context: any): string =>
-  context.request &&
-  context.request.params &&
-  // Params have a weird type, but at runtime openapi-backend will check them
-  // accordingly, so no need for additionnal code here
-  (context.request.params.id as any);
+import { getPropertyFromContextRequest } from '../../../utils/context/utils';
 
 type GetDisplacementFromTimeService = (deps: {
   loggerService: LoggerService;
@@ -43,7 +37,7 @@ export const getDisplacement: GetDisplacement = ({
       loggerService,
       timeService,
     })({
-      id: getDisplacementIdFromContext(context),
+      id: getPropertyFromContextRequest('id')(context) as Id,
     });
     return { json: { links: [], displacement }, status: 200 };
   });
