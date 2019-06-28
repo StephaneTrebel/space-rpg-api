@@ -1,7 +1,7 @@
 openapi: '3.0.0'
 
 info:
-  version: 1.0.0
+  version: 1.2.0
   title: Space RPG API
   description: A Space RPG that can be experienced through a REST API
   license:
