@@ -14,6 +14,18 @@ servers:
 paths:
   /:
     $ref: 'src/handlers/root/openapi.yaml'
+  /displacement/travelToEntity:
+    $ref: 'src/handlers/displacement/travelToEntity/openapi.yaml'
+  /displacement/travelToPosition:
+    $ref: 'src/handlers/displacement/travelToPosition/openapi.yaml'
+  /player/{id}:
+    $ref: 'src/handlers/player/details/openapi.yaml'
+  /player/create:
+    $ref: 'src/handlers/player/create/openapi.yaml'
+  /displacement/{id}:
+    $ref: 'src/handlers/displacement/details/openapi.yaml'
+  /self-health/ping:
+    $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /specification:
     $ref: 'src/handlers/miscellaneous/specification/openapi.yaml'
   /swagger-ui/:
@@ -29,15 +41,5 @@ paths:
             text/html:
               schema:
                 type: string
-  /self-health/ping:
-    $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
-  /player/{id}:
-    $ref: 'src/handlers/player/details/openapi.yaml'
-  /player/create:
-    $ref: 'src/handlers/player/create/openapi.yaml'
-  /displacement/{id}:
-    $ref: 'src/handlers/displacement/details/openapi.yaml'
-  /displacement/travelToEntity:
-    $ref: 'src/handlers/displacement/travelToEntity/openapi.yaml'
-  /displacement/travelToPosition:
-    $ref: 'src/handlers/displacement/travelToPosition/openapi.yaml'
+  /versions:
+    $ref: 'src/handlers/miscellaneous/versions/openapi.yaml'

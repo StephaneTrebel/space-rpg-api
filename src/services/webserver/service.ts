@@ -48,7 +48,7 @@ export const spawnWebServer: SpawnWebServer = deps => api => {
       // that OpenAPI-backend will use, the second one will be the first argument
       // passed on to handlers.
       .use((req, res) => api.handleRequest(req as any, req, res))
-      .listen(deps.configService.get('server.port'), () =>
+      .listen(deps.configService.getServerConfig().port, () =>
         deps.loggerService.info(
           `Listening on ${deps.configService.getURL('/')}`,
         ),

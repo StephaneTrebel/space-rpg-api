@@ -1,5 +1,3 @@
-import get from 'lodash/fp/get';
-
 import { DEFAULT_LOGGER_CONFIG } from '../logger/service';
 import { LogLevel } from '../logger/types';
 
@@ -9,12 +7,17 @@ export const getURL = (config: Config) => (endpoint: string) =>
   `${config.server.baseURL}${endpoint}`;
 
 type ConfigServiceFactory = (config: Config) => ConfigService;
-export const configServiceFactory: ConfigServiceFactory = (
-  config,
-) => ({
-  get: (path: string) => get(path, config as any),
-  getURL: (endpoint: string) => getURL(config)(endpoint),
-});
+export const configServiceFactory: ConfigServiceFactory = config => {
+  const internal: Config = { ...config };
+  Object.freeze(internal);
+  return {
+    getLoggerConfig: () => internal.logger,
+    getServerConfig: () => internal.server,
+    getTimeConfig: () => internal.time,
+    getURL: getURL(internal),
+    getVersions: () => internal.versions,
+  };
+};
 
 export const DEFAULT_CONFIG: Config = {
   logger: { ...DEFAULT_LOGGER_CONFIG, disabled: true },
@@ -26,6 +29,7 @@ export const DEFAULT_CONFIG: Config = {
     period: 0,
     startDelay: 0,
   },
+  versions: { 'space-rpg-api': 'x.y.z' },
 };
 
 export const DEFAULT_DEBUG_CONFIG: Config = {

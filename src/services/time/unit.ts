@@ -6,28 +6,9 @@ import { configServiceFactory, DEFAULT_CONFIG } from '../config/service';
 import { loggerServiceFactory } from '../logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../state/service';
 
-import { TimeConfig } from './types';
-
 import * as testedModule from './service';
 
 tape('Time Service', (functions: tape.Test) => {
-  functions.test('getTimeConfig()', (cases: tape.Test) => {
-    cases.test('WHEN given a global config', (test: tape.Test) => {
-      test.plan(1);
-      const TIME_CONFIG: TimeConfig = {
-        period: 456,
-        startDelay: 123,
-      };
-      test.deepEqual(
-        testedModule.getTimeConfig(
-          configServiceFactory({ ...DEFAULT_CONFIG, time: TIME_CONFIG }),
-        ),
-        TIME_CONFIG,
-        'SHOULD retrieve its time configuration',
-      );
-      test.end();
-    });
-  });
 
   functions.test('createTimer()', (cases: tape.Test) => {
     cases.test(

@@ -27,12 +27,7 @@
     "type": "git",
     "url": "git+https://github.com/StephaneTrebel/space-rpg-api.git"
   },
-  "keywords": [
-    "space",
-    "rpg",
-    "api",
-    "openapi"
-  ],
+  "keywords": ["space", "rpg", "api", "openapi"],
   "author": "Stéphane TREBEL",
   "license": "GPL-3.0-or-later",
   "bugs": {
@@ -44,7 +39,6 @@
     "@types/cors": "2.8.5",
     "@types/express": "4.16.1",
     "@types/js-yaml": "3.12.1",
-    "@types/lodash": "4.14.125",
     "@types/request": "2.48.1",
     "@types/tape": "4.2.33",
     "@types/uuid": "3.4.4",
@@ -63,7 +57,6 @@
   "dependencies": {
     "cors": "2.8.5",
     "express": "4.16.4",
-    "lodash": "4.17.11",
     "openapi-backend": "2.2.0",
     "rxjs": "6.5.2",
     "swagger-ui-dist": "3.22.3",

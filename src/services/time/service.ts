@@ -13,9 +13,6 @@ export const MOCK_TIME_CONFIG: TimeConfig = {
   startDelay: 0,
 };
 
-export const getTimeConfig = (configService: ConfigService): TimeConfig =>
-  configService.get('time');
-
 type CreateTimer = (deps: {
   timerFn: typeof timer;
 }) => (params: { timeConfig: TimeConfig; fn: () => void }) => Subscription;
@@ -49,8 +46,8 @@ export const addAction = (deps: { loggerService: LoggerService }) => (
     `Adding action to internal action queue: ${JSON.stringify(newAction)}`,
   );
   return (internal.actionQueue = [
-      // Filtering to remove any existing action for this entity
-      // Thus ensuring there won't be any cumulative effect.
+    // Filtering to remove any existing action for this entity
+    // Thus ensuring there won't be any cumulative effect.
     ...internal.actionQueue.filter(
       action => action.entityId !== newAction.entityId,
     ),
@@ -98,7 +95,7 @@ export const start: Start = ({
         ),
       );
     },
-    timeConfig: getTimeConfig(configService),
+    timeConfig: configService.getTimeConfig(),
   });
 };
 

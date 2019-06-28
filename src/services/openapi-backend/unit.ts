@@ -210,6 +210,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             throw new Error('NOPE');
           }
         }
+        const configService = configServiceFactory(DEFAULT_CONFIG);
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -217,10 +218,11 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
         return testedModule
           .createBackend({
             backendEngine: MockBackEndEngine as any,
+            configService,
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
+              configService,
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -249,6 +251,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             );
           }
         }
+        const configService = configServiceFactory(DEFAULT_CONFIG);
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -256,10 +259,11 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
         return testedModule
           .createBackend({
             backendEngine: MockBackEndEngine as any,
+            configService,
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
+              configService,
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -281,6 +285,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             throw new Error('NOPE');
           }
         }
+        const configService = configServiceFactory(DEFAULT_CONFIG);
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -288,10 +293,11 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
         return testedModule
           .createBackend({
             backendEngine: MockBackEndEngine as any,
+            configService,
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
+              configService,
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -320,6 +326,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
             );
           }
         }
+        const configService = configServiceFactory(DEFAULT_CONFIG);
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -327,10 +334,11 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
         return testedModule
           .createBackend({
             backendEngine: MockBackEndEngine as any,
+            configService,
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
+              configService,
               loggerService: loggerServiceFactory(),
               stateService,
             })(),
@@ -361,6 +369,7 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
           }
         }
 
+        const configService = configServiceFactory(DEFAULT_CONFIG);
         const loggerService = loggerServiceFactory();
         const stateService = stateServiceFactory({ loggerService })(
           EMPTY_STATE,
@@ -368,10 +377,11 @@ tape('OpenAPI Backend', (functions: tape.Test) => {
         return testedModule
           .spawnAPIBackend({
             backendEngine: MockBackEndEngine as any,
+            configService,
             loggerService,
             stateService,
             timeService: timeServiceFactory({
-              configService: configServiceFactory({ ...DEFAULT_CONFIG }),
+              configService,
               loggerService: loggerServiceFactory(),
               stateService,
             })(),

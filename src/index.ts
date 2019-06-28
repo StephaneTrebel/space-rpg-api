@@ -1,6 +1,7 @@
 // istanbul ignore file
 
 import * as fs from 'fs';
+import * as path from 'path';
 import * as process from 'process';
 
 import { LogLevel } from './services/logger/types';
@@ -40,6 +41,14 @@ if (process.env.NODE_ENV === 'production') {
       time: {
         period: 66,
         startDelay: 1000,
+      },
+      versions: {
+        'space-rpg-api': JSON.parse(
+          fs.readFileSync(
+            path.resolve(__dirname, '..', 'package.json'),
+            'utf-8',
+          ),
+        ).version,
       },
     },
     startTime: true,

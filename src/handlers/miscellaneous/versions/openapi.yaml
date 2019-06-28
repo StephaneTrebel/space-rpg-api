@@ -1,0 +1,25 @@
+get:
+  description: All relevant versions for this webservice
+  summary: This service versions
+  operationId: getVersions
+  tags:
+    - Root
+  responses:
+    200:
+      description: All relevant versions for this webservice
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - space-rpg-api
+            properties:
+              space-rpg-api:
+                type: string
+                example: 1.2.3
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
+    500:
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

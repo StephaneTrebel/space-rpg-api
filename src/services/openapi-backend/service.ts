@@ -24,6 +24,8 @@ import { TimeService } from '../time/types';
 import { Link } from '../webserver/types';
 
 import { Handler } from './types';
+import { getVersions } from "../../handlers/miscellaneous/versions/handler";
+import { ConfigService } from "../config/types";
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -103,6 +105,7 @@ export const postResponseHandler: PostResponseHandler = deps => (
 
 type CreateBackend = (deps: {
   backendEngine: typeof OpenAPIBackend;
+  configService: ConfigService;
   loggerService: LoggerService;
   stateService: StateService;
   timeService: TimeService;
@@ -123,6 +126,7 @@ export const createBackend: CreateBackend = deps => specification =>
         getDisplacement: getDisplacement(deps),
         getPlayerDetails: getPlayerDetails(deps),
         getSpecification: getSpecification(apiBackend),
+        getVersions: getVersions(deps),
         notFound, // openapi-backend specific
         postResponseHandler: postResponseHandler(deps), // openapi-backend specific
         root,
@@ -139,6 +143,7 @@ export const createBackend: CreateBackend = deps => specification =>
 
 export type SpawnAPIBackend = (deps: {
   backendEngine: typeof OpenAPIBackend;
+  configService: ConfigService;
   loggerService: LoggerService;
   stateService: StateService;
   timeService: TimeService;

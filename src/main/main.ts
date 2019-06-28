@@ -36,6 +36,7 @@ export const instanciateApplication = ({
 }: InstanciateApplicationParams) =>
   spawnAPIBackend({
     backendEngine: OpenAPIBackend,
+    configService,
     loggerService,
     stateService,
     timeService,
@@ -71,7 +72,9 @@ export const main: Main = deps => params =>
   new Promise<InstanciateApplicationParams>((resolve, reject) => {
     try {
       const configService = configServiceFactory(params.config);
-      const loggerService = loggerServiceFactory(configService.get('logger'));
+      const loggerService = loggerServiceFactory(
+        configService.getLoggerConfig(),
+      );
       const stateService = stateServiceFactory({ loggerService })(
         deps.initialState,
       );

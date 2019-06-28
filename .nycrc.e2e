@@ -12,7 +12,7 @@
   "statements": 96,
   "branches": 80,
   "functions": 96,
-  "lines": 95,
+  "lines": 96,
   "report-dir": "./coverage-e2e",
   "reporter": [
     "html",
