@@ -1,0 +1,40 @@
+get:
+  summary: Retrieve an entity details
+  operationId: getEntityDetails
+  tags:
+    - Entity
+  parameters:
+    - in: path
+      name: id
+      required: true
+      schema:
+        $ref: '../../../specifications/components.yaml#/components/schemas/id'
+  responses:
+    200:
+      description: Entity details
+      content:
+        application/json:
+          schema:
+            type: object
+            required:
+              - entity
+            properties:
+              displacement:
+                type: object
+                required:
+                  - id
+                  - currentPosition
+                  - name
+                properties:
+                  id:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
+                  currentPosition:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+                  name:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/name'
+    400:
+      $ref: '../../../specifications/components.yaml#/components/responses/400'
+    500:
+      $ref: '../../../specifications/components.yaml#/components/responses/500'
+    502:
+      $ref: '../../../specifications/components.yaml#/components/responses/502'

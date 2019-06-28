@@ -26,10 +26,12 @@ components:
       description: This application OpenAPI specification
       example: { foo: 'bar' }
       type: object
-    username:
-      description: A user unique name identifier
-      example: warlordz123
+    name:
+      description: A common string identifier (usually unique)
+      example: myownname
       type: string
+    username:
+      $ref: '#/components/schemas/name'
 
     # Complex schemas
 

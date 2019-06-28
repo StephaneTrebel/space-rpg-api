@@ -19,7 +19,7 @@ export const MOCK_ENTITY: BaseEntity = {
 type CreateEntity = (
   type: EntityType,
 ) => (params: {
-  currentPosition: Position;
+  currentPosition?: Position;
   id?: Id;
   name?: string;
   username?: string;
@@ -31,25 +31,26 @@ export const createEntity: CreateEntity = type => ({
   username,
 }) => {
   const newId: Id = id || generateId();
+  const newCurrentPosition: Position = currentPosition || { x: 0, y: 0, z: 0 };
   switch (type) {
     case EntityType.NONE:
       throw new Error('No entity of type None can be created');
     case EntityType.MOCK:
       return {
-        currentPosition,
+        currentPosition: newCurrentPosition,
         id: newId,
         type,
       } as BaseEntity;
     case EntityType.PLANET:
       return {
-        currentPosition,
+        currentPosition: newCurrentPosition,
         id: newId,
         name,
         type,
       } as Planet;
     case EntityType.PLAYER:
       return {
-        currentPosition,
+        currentPosition: newCurrentPosition,
         id: newId,
         type,
         username,

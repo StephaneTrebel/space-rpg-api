@@ -24,6 +24,8 @@ paths:
     $ref: 'src/handlers/player/create/openapi.yaml'
   /displacement/{id}:
     $ref: 'src/handlers/displacement/details/openapi.yaml'
+  /entity/{id}:
+    $ref: 'src/handlers/entity/details/openapi.yaml'
   /self-health/ping:
     $ref: 'src/handlers/miscellaneous/self-health/openapi.yaml'
   /specification:

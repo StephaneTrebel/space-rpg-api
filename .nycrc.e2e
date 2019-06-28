@@ -11,7 +11,7 @@
   "per-file": false,
   "statements": 96,
   "branches": 80,
-  "functions": 96,
+  "functions": 97,
   "lines": 96,
   "report-dir": "./coverage-e2e",
   "reporter": [

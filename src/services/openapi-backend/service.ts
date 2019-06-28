@@ -8,24 +8,25 @@ import { Context, Request } from 'openapi-backend';
 import { getDisplacement } from '../../handlers/displacement/details/handler';
 import { travelToEntity } from '../../handlers/displacement/travelToEntity/handler';
 import { travelToPosition } from '../../handlers/displacement/travelToPosition/handler';
-import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
+import { getEntityDetails } from '../../handlers/entity/details/handler';
 import {
   notFound,
   validationFail,
 } from '../../handlers/miscellaneous/openapi-validators/handler';
+import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
+import { getSpecification } from '../../handlers/miscellaneous/specification/handler';
+import { getVersions } from '../../handlers/miscellaneous/versions/handler';
 import { addNewPlayer } from '../../handlers/player/create/handler';
 import { getPlayerDetails } from '../../handlers/player/details/handler';
 import { root } from '../../handlers/root/handler';
-import { getSpecification } from '../../handlers/miscellaneous/specification/handler';
 
+import { ConfigService } from '../config/types';
 import { LoggerService } from '../logger/types';
 import { StateService } from '../state/types';
 import { TimeService } from '../time/types';
 import { Link } from '../webserver/types';
 
 import { Handler } from './types';
-import { getVersions } from "../../handlers/miscellaneous/versions/handler";
-import { ConfigService } from "../config/types";
 
 const loadSpecification = () => {
   return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -124,6 +125,7 @@ export const createBackend: CreateBackend = deps => specification =>
       apiBackend.register({
         addNewPlayer: addNewPlayer(deps),
         getDisplacement: getDisplacement(deps),
+        getEntityDetails: getEntityDetails(deps),
         getPlayerDetails: getPlayerDetails(deps),
         getSpecification: getSpecification(apiBackend),
         getVersions: getVersions(deps),
