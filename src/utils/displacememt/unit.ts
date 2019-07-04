@@ -11,9 +11,9 @@ import { timeServiceFactory } from '../../services/time/service';
 import { ActionType } from '../../services/time/types';
 
 import { Displacement } from '../displacememt/types';
+import { EntityType } from '../entity/types';
+import { createEntity } from '../entity/utils';
 import { Id } from '../id/types';
-import { Player } from '../player/types';
-import { MOCK_PLAYER } from '../player/utils';
 import { Position } from '../position/types';
 
 import * as testedModule from './utils';
@@ -85,7 +85,12 @@ tape('Displacement handler', (functions: tape.Test) => {
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
-              entityList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+              entityList: [
+                createEntity(EntityType.MOCK)({
+                  currentPosition,
+                  id: entityId,
+                }),
+              ],
             });
             const timeService = timeServiceFactory({
               configService,
@@ -145,7 +150,12 @@ tape('Displacement handler', (functions: tape.Test) => {
             const loggerService = loggerServiceFactory();
             const stateService = stateServiceFactory({ loggerService })({
               ...EMPTY_STATE,
-              entityList: [{ ...MOCK_PLAYER, currentPosition, id: entityId }],
+              entityList: [
+                createEntity(EntityType.MOCK)({
+                  currentPosition,
+                  id: entityId,
+                }),
+              ],
             });
             const timeService = timeServiceFactory({
               configService,
@@ -201,12 +211,16 @@ tape('Displacement handler', (functions: tape.Test) => {
       (test: tape.Test) => {
         test.plan(1);
         const entityId: Id = 'foo';
-        const playerA: Player = { ...MOCK_PLAYER, id: entityId + 'A' };
-        const playerB: Player = { ...MOCK_PLAYER, id: entityId };
-        const playerC: Player = { ...MOCK_PLAYER, id: entityId + 'C' };
+        const entityA = createEntity(EntityType.MOCK)({
+          id: entityId + 'A',
+        });
+        const entityB = createEntity(EntityType.MOCK)({ id: entityId });
+        const entityC = createEntity(EntityType.MOCK)({
+          id: entityId + 'C',
+        });
         const initalState: State = {
           ...EMPTY_STATE,
-          entityList: [playerA, playerB, playerC],
+          entityList: [entityA, entityB, entityC],
         };
         const newPosition: Position = { x: 1, y: 2, z: 3 };
         test.deepEqual(
@@ -217,9 +231,9 @@ tape('Displacement handler', (functions: tape.Test) => {
           {
             ...initalState,
             entityList: [
-              playerA,
-              { ...playerB, currentPosition: newPosition },
-              playerC,
+              entityA,
+              { ...entityB, currentPosition: newPosition },
+              entityC,
             ],
           },
           'SHOULD return an appropriately mutated state',

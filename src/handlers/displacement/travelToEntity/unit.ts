@@ -11,7 +11,7 @@ import {
 } from '../../../services/state/service';
 import { timeServiceFactory } from '../../../services/time/service';
 
-import { MOCK_PLAYER, createPlayer } from '../../../utils/player/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 import * as testedModule from './handler';
 
@@ -23,7 +23,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const source = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: {
             x: 0,
             y: 0,
@@ -74,7 +73,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const target = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: {
             x: 0,
             y: 0,
@@ -125,7 +123,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const source = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: {
             x: 0,
             y: 0,
@@ -134,7 +131,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
           id: 'entity',
         });
         const target = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: {
             x: 0,
             y: 0,

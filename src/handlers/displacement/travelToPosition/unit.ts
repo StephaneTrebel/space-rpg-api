@@ -12,7 +12,7 @@ import {
 import { timeServiceFactory } from '../../../services/time/service';
 
 import { Id } from '../../../utils/id/types';
-import { MOCK_PLAYER, createPlayer } from '../../../utils/player/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 import * as testedModule from './handler';
 
@@ -65,7 +65,6 @@ tape('Displacement handler', (functionTest: tape.Test) => {
         test.plan(3);
         const testId: Id = 'travelToPosition';
         const entity = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: {
             x: 271,
             y: 923,

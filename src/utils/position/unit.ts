@@ -4,7 +4,7 @@ import { loggerServiceFactory } from '../../services/logger/service';
 import { stateServiceFactory, EMPTY_STATE } from '../../services/state/service';
 
 import { Id } from '../id/types';
-import { createPlayer, MOCK_PLAYER } from '../player/utils';
+import { createPlayer } from '../player/utils';
 
 import { Position } from './types';
 
@@ -142,7 +142,6 @@ tape('Displacement handler', (functions: tape.Test) => {
           z: 789,
         };
         const entity = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition,
           id,
         });

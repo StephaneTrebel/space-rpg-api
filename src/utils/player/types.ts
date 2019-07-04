@@ -2,12 +2,6 @@ import { EntityType } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { Position } from '../../utils/position/types';
 
-export interface PlayerCreationParams {
-  currentPosition: Position;
-  id?: Id;
-  username: string;
-}
-
 export interface Player {
   currentPosition: Position;
   id: Id;

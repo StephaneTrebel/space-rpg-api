@@ -42,6 +42,17 @@ tape('Entity utils', (functions: tape.Test) => {
       },
     );
 
+    cases.test('WHEN called without an id parametes', (test: tape.Test) => {
+      test.plan(1);
+      const result = testedModule.createEntity(EntityType.MOCK)({});
+      test.deepEqual(
+        typeof result.id,
+        'string',
+        'SHOULD return an entity with a string id',
+      );
+      test.end();
+    });
+
     cases.test(
       'WHEN called with a Planet entity parameters',
       (test: tape.Test) => {

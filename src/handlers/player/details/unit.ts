@@ -1,6 +1,9 @@
 import tape from 'tape';
 
+import { EntityType } from '../../../utils/entity/types';
 import { Id } from '../../../utils/id/types';
+import { createEntity } from '../../../utils/entity/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 import { loggerServiceFactory } from '../../../services/logger/service';
 import {
@@ -9,9 +12,6 @@ import {
 } from '../../../services/state/service';
 
 import * as testedModule from './handler';
-import { MOCK_PLAYER, createPlayer } from '../../../utils/player/utils';
-import { EntityType } from '../../../utils/entity/types';
-import { createEntity } from '../../../utils/entity/utils';
 
 tape('Player handler', (functions: tape.Test) => {
   functions.test('getPlayerDetails()', (given: tape.Test) => {
@@ -64,7 +64,6 @@ tape('Player handler', (functions: tape.Test) => {
             test.plan(2);
             const id: Id = 'getPlayer';
             const player = createPlayer({
-              ...MOCK_PLAYER,
               id,
             });
             const loggerService = loggerServiceFactory();
@@ -97,7 +96,6 @@ tape('Player handler', (functions: tape.Test) => {
       (when: tape.Test) => {
         const id: Id = 'foo';
         const player = createPlayer({
-          ...MOCK_PLAYER,
           currentPosition: { x: 0, y: 0, z: 0 },
           id,
         });

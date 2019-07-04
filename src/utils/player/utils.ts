@@ -3,22 +3,24 @@ import { State, StateService } from '../../services/state/types';
 
 import { EntityType } from '../../utils/entity/types';
 import { createEntity } from '../entity/utils';
+import { Position } from '../position/types';
 import { Id } from '../../utils/id/types';
-import { Player, PlayerCreationParams } from '../../utils/player/types';
+import { Player } from '../../utils/player/types';
 
-export const MOCK_PLAYER: Player = {
-  currentPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-  id: 'mockPlayer',
-  type: EntityType.PLAYER,
-  username: 'foo',
-};
-
-export const createPlayer = (params: PlayerCreationParams) =>
-  createEntity(EntityType.PLAYER)(params) as Player;
+export const createPlayer = (params: {
+  currentPosition?: Position;
+  id?: Id;
+  username?: string;
+}) =>
+  createEntity(EntityType.PLAYER)({
+    currentPosition: params.currentPosition || {
+      x: 0,
+      y: 0,
+      z: 0,
+    },
+    id: params.id || 'mockPlayer',
+    username: params.username || 'foo',
+  }) as Player;
 
 export const createPlayerMutator = (currentState: State) => (
   newPlayer: Player,

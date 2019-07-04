@@ -1,10 +1,10 @@
 import tape from 'tape';
 
-import { MOCK_PLAYER, createPlayer } from '../../utils/player/utils';
+import { EntityType } from '../../utils/entity/types';
+import { createEntity } from '../../utils/entity/utils';
 import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
-
 import * as testedModule from './service';
 
 tape('State Service', (functionTest: tape.Test) => {
@@ -15,8 +15,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
+          const entity = createEntity(EntityType.MOCK)({
             id,
           });
           const loggerService = loggerServiceFactory();
@@ -43,8 +42,7 @@ tape('State Service', (functionTest: tape.Test) => {
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
+          const entity = createEntity(EntityType.MOCK)({
             currentPosition: { x: 0, y: 0, z: 0 },
             id,
           });
@@ -70,57 +68,55 @@ tape('State Service', (functionTest: tape.Test) => {
     given.test(
       'GIVEN a State service internal that has entities',
       (when: tape.Test) => {
-        when.test('WHEN called with one of the entities Id', (test: tape.Test) => {
-          test.plan(1);
-          const id: Id = 'myEntity';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: 0, y: 0, z: 0 },
-            id,
-          });
-          const neighbourA = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: 1, y: 1, z: 1 },
-            id: 'neighbourA',
-          });
-          const neighbourB = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: -1, y: -1, z: -1 },
-            id: 'neighbourB',
-          });
-          const neighbourC = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: 6, y: 6, z: 6 },
-            id: 'neighbourC',
-          });
-          const neighbourD = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: -6, y: -6, z: -6 },
-            id: 'neighbourD',
-          });
-          const loggerService = loggerServiceFactory();
-          test.deepEqual(
-            testedModule.getNearbyEntities({
-              loggerService,
-            })({
-              state: {
-                ...testedModule.EMPTY_STATE,
-                entityList: [
-                  entity,
-                  neighbourA,
-                  neighbourB,
-                  neighbourC,
-                  neighbourD,
-                ],
-              },
-            })({
+        when.test(
+          'WHEN called with one of the entities Id',
+          (test: tape.Test) => {
+            test.plan(1);
+            const id: Id = 'myEntity';
+            const entity = createEntity(EntityType.MOCK)({
+              currentPosition: { x: 0, y: 0, z: 0 },
               id,
-            }),
-            [neighbourA, neighbourB],
-            'SHOULD return the entities that are near this entity',
-          );
-          test.end();
-        });
+            });
+            const neighbourA = createEntity(EntityType.MOCK)({
+              currentPosition: { x: 1, y: 1, z: 1 },
+              id: 'neighbourA',
+            });
+            const neighbourB = createEntity(EntityType.MOCK)({
+              currentPosition: { x: -1, y: -1, z: -1 },
+              id: 'neighbourB',
+            });
+            const neighbourC = createEntity(EntityType.MOCK)({
+              currentPosition: { x: 6, y: 6, z: 6 },
+              id: 'neighbourC',
+            });
+            const neighbourD = createEntity(EntityType.MOCK)({
+              currentPosition: { x: -6, y: -6, z: -6 },
+              id: 'neighbourD',
+            });
+            const loggerService = loggerServiceFactory();
+            test.deepEqual(
+              testedModule.getNearbyEntities({
+                loggerService,
+              })({
+                state: {
+                  ...testedModule.EMPTY_STATE,
+                  entityList: [
+                    entity,
+                    neighbourA,
+                    neighbourB,
+                    neighbourC,
+                    neighbourD,
+                  ],
+                },
+              })({
+                id,
+              }),
+              [neighbourA, neighbourB],
+              'SHOULD return the entities that are near this entity',
+            );
+            test.end();
+          },
+        );
       },
     );
   });

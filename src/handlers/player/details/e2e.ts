@@ -6,7 +6,7 @@ import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
 import { Id } from '../../../utils/id/types';
-import { MOCK_PLAYER, createPlayer } from '../../../utils/player/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 const ENDPOINT = '/player';
 const URL = (id: Id) => getURL(DEFAULT_CONFIG)(`${ENDPOINT}/${id}`);
@@ -38,9 +38,9 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
   given.test(
     'GIVEN an application state with an existing player',
     (when: tape.Test) => {
-      const playerA = createPlayer({ ...MOCK_PLAYER, id: 'A' });
-      const playerB = createPlayer({ ...MOCK_PLAYER, id: 'B' });
-      const playerC = createPlayer({ ...MOCK_PLAYER, id: 'C' });
+      const playerA = createPlayer({ id: 'A' });
+      const playerB = createPlayer({ id: 'B' });
+      const playerC = createPlayer({ id: 'C' });
       when.test(
         'WHEN request has a valid id referencing this player',
         (cases: tape.Test) => {
