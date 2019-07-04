@@ -18,6 +18,7 @@ get:
             type: object
             required:
               - player
+              - nearby
             properties:
               player:
                 type: object
@@ -32,6 +33,18 @@ get:
                     $ref: '../../../specifications/components.yaml#/components/schemas/id'
                   username:
                     $ref: '../../../specifications/components.yaml#/components/schemas/username'
+              nearby:
+                type: array
+                items:
+                  type: object
+                  required:
+                    - currentPosition
+                    - id
+                  properties:
+                    currentPosition:
+                      $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+                    id:
+                      $ref: '../../../specifications/components.yaml#/components/schemas/id'
     400:
       $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:

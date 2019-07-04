@@ -9,9 +9,9 @@ import * as testedModule from './service';
 
 tape('State Service', (functionTest: tape.Test) => {
   functionTest.test('findEntity()', (given: tape.Test) => {
-    given.test('GIVEN a State that has an entity', (when: tape.Test) => {
+    given.test('GIVEN a State service internal', (when: tape.Test) => {
       when.test(
-        'WHEN called with an entity id that does not exist in State',
+        'WHEN called with an entity id that does not exist in this State',
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
@@ -25,8 +25,10 @@ tape('State Service', (functionTest: tape.Test) => {
               testedModule.findEntity({
                 loggerService,
               })({
-                ...testedModule.EMPTY_STATE,
-                entityList: [entity],
+                state: {
+                  ...testedModule.EMPTY_STATE,
+                  entityList: [entity],
+                },
               })({
                 id: 'qux',
               }),
@@ -37,7 +39,7 @@ tape('State Service', (functionTest: tape.Test) => {
       );
 
       when.test(
-        'WHEN called with an entity id that exists in State',
+        'WHEN called with an entity id that exists in this State',
         (test: tape.Test) => {
           test.plan(1);
           const id: Id = 'bar';
@@ -50,7 +52,9 @@ tape('State Service', (functionTest: tape.Test) => {
           test.equal(
             testedModule.findEntity({
               loggerService,
-            })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
+            })({
+              state: { ...testedModule.EMPTY_STATE, entityList: [entity] },
+            })({
               id,
             }),
             entity,
@@ -60,30 +64,64 @@ tape('State Service', (functionTest: tape.Test) => {
         },
       );
     });
+  });
 
-    given.test('findEntity()', (when: tape.Test) => {
-      when.test(
-        'WHEN given an entity id and a State having this entity',
-        (test: tape.Test) => {
+  functionTest.test('getNearbyEntities()', (given: tape.Test) => {
+    given.test(
+      'GIVEN a State service internal that has entities',
+      (when: tape.Test) => {
+        when.test('WHEN called with one of the entities Id', (test: tape.Test) => {
           test.plan(1);
-          const id: Id = 'bar';
+          const id: Id = 'myEntity';
           const entity = createPlayer({
             ...MOCK_PLAYER,
+            currentPosition: { x: 0, y: 0, z: 0 },
             id,
           });
+          const neighbourA = createPlayer({
+            ...MOCK_PLAYER,
+            currentPosition: { x: 1, y: 1, z: 1 },
+            id: 'neighbourA',
+          });
+          const neighbourB = createPlayer({
+            ...MOCK_PLAYER,
+            currentPosition: { x: -1, y: -1, z: -1 },
+            id: 'neighbourB',
+          });
+          const neighbourC = createPlayer({
+            ...MOCK_PLAYER,
+            currentPosition: { x: 6, y: 6, z: 6 },
+            id: 'neighbourC',
+          });
+          const neighbourD = createPlayer({
+            ...MOCK_PLAYER,
+            currentPosition: { x: -6, y: -6, z: -6 },
+            id: 'neighbourD',
+          });
           const loggerService = loggerServiceFactory();
-          test.equal(
-            testedModule.findEntity({
+          test.deepEqual(
+            testedModule.getNearbyEntities({
               loggerService,
-            })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
+            })({
+              state: {
+                ...testedModule.EMPTY_STATE,
+                entityList: [
+                  entity,
+                  neighbourA,
+                  neighbourB,
+                  neighbourC,
+                  neighbourD,
+                ],
+              },
+            })({
               id,
             }),
-            entity,
-            'SHOULD return the entity',
+            [neighbourA, neighbourB],
+            'SHOULD return the entities that are near this entity',
           );
           test.end();
-        },
-      );
-    });
+        });
+      },
+    );
   });
 });

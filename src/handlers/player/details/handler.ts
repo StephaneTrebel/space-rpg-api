@@ -16,11 +16,18 @@ export const getPlayerDetails: GetPlayerDetails = ({
 }) =>
   wrapHandler({ loggerService })((context: any) => {
     loggerService.debug('Entering getPlayerDetails handler…');
-    const player = getPlayerFromStateService({
-      loggerService,
-      stateService,
-    })({
-      id: getPropertyFromContextRequest('id')(context),
-    });
-    return { json: { links: [], player }, status: 200 };
+    const id = getPropertyFromContextRequest('id')(context);
+    return {
+      json: {
+        links: [],
+        nearby: stateService.getNearbyEntities({ id }),
+        player: getPlayerFromStateService({
+          loggerService,
+          stateService,
+        })({
+          id,
+        }),
+      },
+      status: 200,
+    };
   });

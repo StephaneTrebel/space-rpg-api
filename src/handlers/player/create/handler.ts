@@ -18,7 +18,10 @@ export const addNewPlayer: AddPlayer = ({ loggerService, stateService }) =>
       currentPosition: { x: 0, y: 0, z: 0 },
       username,
     });
-    stateService.mutate(StateMutation.CREATE_PLAYER)(newPlayer);
+    stateService.mutate({
+      mutation: StateMutation.CREATE_PLAYER,
+      payload: newPlayer,
+    });
     return {
       json: {
         links: [SELF_HEALTH_LINK],

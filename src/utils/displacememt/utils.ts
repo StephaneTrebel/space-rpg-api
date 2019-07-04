@@ -10,7 +10,13 @@ import {
 } from '../../utils/displacememt/types';
 import { Id } from '../../utils/id/types';
 import { Position } from '../../utils/position/types';
+
 import { isId } from '../id/utils';
+import {
+  getEntityCurrentPosition,
+  movePosition,
+  isSamePosition,
+} from '../position/utils';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -35,80 +41,6 @@ export const createDisplacementMock = ({
   },
   type: ActionType.DISPLACEMENT,
 });
-
-type MovePosition = (deps: {
-  loggerService: LoggerService;
-}) => (params: {
-  currentPosition: Position;
-  distancePerTick: number;
-  targetPosition: Position;
-}) => Position;
-export const movePosition: MovePosition = ({ loggerService }) => ({
-  currentPosition,
-  distancePerTick,
-  targetPosition,
-}): Position => {
-  const distanceX = targetPosition.x - currentPosition.x;
-  const distanceY = targetPosition.y - currentPosition.y;
-  const distanceZ = targetPosition.z - currentPosition.z;
-  loggerService.debug('Entering movePosition…');
-  loggerService.debug(
-    `Distances: X-axis=${distanceX}, Y-axis=${distanceY}, Z-axis=${distanceZ}`,
-  );
-  const distanceBetweenTargetAndCurrent = Math.sqrt(
-    distanceX ** 2 + distanceY ** 2 + distanceZ ** 2,
-  );
-  loggerService.debug(`Total distance ${distanceBetweenTargetAndCurrent}`);
-  if (distanceBetweenTargetAndCurrent === 0) {
-    return currentPosition;
-  }
-  const deltaX =
-    (distancePerTick * distanceX) / distanceBetweenTargetAndCurrent;
-  const deltaY =
-    (distancePerTick * distanceY) / distanceBetweenTargetAndCurrent;
-  const deltaZ =
-    (distancePerTick * distanceZ) / distanceBetweenTargetAndCurrent;
-  loggerService.debug(
-    `Delta per tick: X-axis=${deltaX}, Y-axis=${deltaY}, Z-axis=${deltaZ}`,
-  );
-  const newX = currentPosition.x + deltaX;
-  const newY = currentPosition.y + deltaY;
-  const newZ = currentPosition.z + deltaZ;
-  loggerService.debug(
-    `New coordinates (before cut-off): X-axis=${newX}, Y-axis=${newY}, Z-axis=${newZ}`,
-  );
-  return {
-    x:
-      deltaX > 0
-        ? newX > targetPosition.x
-          ? targetPosition.x
-          : newX
-        : newX < targetPosition.x
-        ? targetPosition.x
-        : newX,
-    y:
-      deltaY > 0
-        ? newY > targetPosition.y
-          ? targetPosition.y
-          : newY
-        : newY < targetPosition.y
-        ? targetPosition.y
-        : newY,
-    z:
-      deltaZ > 0
-        ? newZ > targetPosition.z
-          ? targetPosition.z
-          : newZ
-        : newZ < targetPosition.z
-        ? targetPosition.z
-        : newZ,
-  };
-};
-
-export const isSamePosition = (positionA: Position, positionB: Position) =>
-  positionA.x === positionB.x &&
-  positionA.y === positionB.y &&
-  positionA.z === positionB.z;
 
 // Higher Order Function, hence the dependencies are the second step (they will
 // be the first call in the generated function)
@@ -142,9 +74,12 @@ export const createExecutor: CreateExecutor = ({
   // Returning a promise here because it's needed but stateService.mutate
   // is not async yet.
   return Promise.resolve(
-    stateService.mutate(StateMutation.DISPLACE_ENTITY)({
-      entityId,
-      newPosition,
+    stateService.mutate({
+      mutation: StateMutation.DISPLACE_ENTITY,
+      payload: {
+        entityId,
+        newPosition,
+      },
     }),
   ).then(() => {
     if (!isSamePosition(currentPosition, targetCoordinates)) {
@@ -193,19 +128,6 @@ export const createDisplacement: CreateDisplacement = ({
     type: ActionType.DISPLACEMENT,
   };
   return newDisplacement;
-};
-
-export const getEntityCurrentPosition = ({
-  id,
-  loggerService,
-  stateService,
-}: {
-  id: Id;
-  loggerService: LoggerService;
-  stateService: StateService;
-}): Position => {
-  loggerService.debug('Entering getEntityCurrentPosition…');
-  return stateService.findEntity({ id }).currentPosition;
 };
 
 export const displaceEntityMutator = (currentState: State) => ({

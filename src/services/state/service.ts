@@ -1,64 +1,78 @@
 import { LoggerService } from '../logger/types';
 
 import { displaceEntityMutator } from '../../utils/displacememt/utils';
-import { Entity } from '../../utils/entity/types';
+import { Entity, EntityList } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { createPlayerMutator } from '../../utils/player/utils';
+import { areNearby } from '../../utils/position/utils';
 
 import { State, StateMutation, StateService } from './types';
 
-const mutations = {
-  [StateMutation.CREATE_PLAYER]: createPlayerMutator,
-  [StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
-};
+export const EMPTY_STATE: State = { entityList: [] };
+
+interface StateServiceInternal {
+  state: State;
+}
 
 type FindEntity = (deps: {
   loggerService: LoggerService;
-}) => (state: State) => (params: { id: Id }) => Entity;
-export const findEntity: FindEntity = ({ loggerService }) => state => ({
-  id,
-}) => {
-  loggerService.debug('Entering stateService.findEntity…');
-  const maybeEntity = state.entityList.find(entity => entity.id === id);
+}) => (internal: StateServiceInternal) => (params: { id: Id }) => Entity;
+export const findEntity: FindEntity = deps => internal => params => {
+  deps.loggerService.debug('Entering stateService.findEntity…');
+  const maybeEntity = internal.state.entityList.find(
+    entity => entity.id === params.id,
+  );
   if (!maybeEntity) {
-    throw new Error(`No entity with id "${id}"`);
+    throw new Error(`No entity with id "${params.id}"`);
   }
   return maybeEntity;
 };
 
-type GetMutatedState = (deps: {
+type GetNearbyEntities = (deps: {
   loggerService: LoggerService;
-}) => (state: State) => (mutation: StateMutation) => (payload: any) => State;
-const getMutatedState: GetMutatedState = ({ loggerService }) => (
-  state: State,
-) => (mutation: StateMutation) => (payload: any) => {
-  loggerService.debug('Entering stateService.getMutatedState…');
-  return mutations[mutation](state)(payload);
+}) => (internal: StateServiceInternal) => (params: { id: Id }) => EntityList;
+export const getNearbyEntities: GetNearbyEntities = deps => internal => params => {
+  const RANGE = 10; // This will be made variable later
+  deps.loggerService.debug('Entering getNearbyEntities…');
+  const currEntity = findEntity(deps)(internal)(params);
+  return internal.state.entityList.filter(
+    entity =>
+      entity.id !== currEntity.id &&
+      areNearby(RANGE)(entity.currentPosition, currEntity.currentPosition),
+  );
 };
 
-export const EMPTY_STATE: State = { entityList: [] };
+type Mutate = (deps: {
+  loggerService: LoggerService;
+}) => (
+  internal: StateServiceInternal,
+) => (params: { mutation: StateMutation; payload: any }) => void;
+export const mutate: Mutate = deps => internal => params => {
+  deps.loggerService.debug('Entering stateService.mutate…');
+  const mutations = {
+    [StateMutation.CREATE_PLAYER]: createPlayerMutator,
+    [StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
+  };
+  deps.loggerService.debug(
+    `Mutating state with mutation '${
+      params.mutation
+    }' and payload '${JSON.stringify(params.payload)}'`,
+  );
+  internal.state = mutations[params.mutation](internal.state)(params.payload);
+  deps.loggerService.debug('Mutation complete');
+  return;
+};
 
 type StateServiceFactory = (deps: {
   loggerService: LoggerService;
 }) => (initialState: State) => StateService;
-export const stateServiceFactory: StateServiceFactory = ({ loggerService }) => (
+export const stateServiceFactory: StateServiceFactory = deps => (
   initialState: State,
 ): StateService => {
   const internal: { state: State } = { state: { ...initialState } };
   return {
-    findEntity: ({ id }) =>
-      findEntity({ loggerService })(internal.state)({ id }),
-    mutate: (mutation: StateMutation) => (payload: any) => {
-      loggerService.debug(
-        `Mutating state with mutation '${mutation}' and payload '${JSON.stringify(
-          payload,
-        )}'`,
-      );
-      internal.state = getMutatedState({ loggerService })(internal.state)(
-        mutation,
-      )(payload);
-      loggerService.debug('Mutation complete');
-      return internal.state;
-    },
+    findEntity: findEntity(deps)(internal),
+    getNearbyEntities: getNearbyEntities(deps)(internal),
+    mutate: mutate(deps)(internal),
   };
 };
