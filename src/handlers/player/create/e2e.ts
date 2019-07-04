@@ -29,11 +29,11 @@ tape(ENDPOINT, (subTest: tape.Test) => {
     ),
   );
   subTest.test('WHEN request has a valid body', (t: tape.Test) => {
-    const MOCK_USERNAME = 'mock_username';
+    const MOCK_NAME = 'mock_name';
     runE2ETest({})(t)((test, assets) =>
       postPromisified({
         assets,
-        body: { username: MOCK_USERNAME },
+        body: { name: MOCK_NAME },
         json: true,
         url: URL,
       }).then(response => {
@@ -55,9 +55,9 @@ tape(ENDPOINT, (subTest: tape.Test) => {
           'SHOULD return a player having a string id',
         );
         test.equal(
-          response.body.player.username,
-          MOCK_USERNAME,
-          'SHOULD return a player having the expected username',
+          response.body.player.name,
+          MOCK_NAME,
+          'SHOULD return a player having the expected name',
         );
         test.deepEqual(
           response.body.links,

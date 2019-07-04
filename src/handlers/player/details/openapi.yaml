@@ -25,14 +25,14 @@ get:
                 required:
                   - currentPosition
                   - id
-                  - username
+                  - name
                 properties:
                   currentPosition:
                     $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
                   id:
                     $ref: '../../../specifications/components.yaml#/components/schemas/id'
-                  username:
-                    $ref: '../../../specifications/components.yaml#/components/schemas/username'
+                  name:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/name'
               nearby:
                 type: array
                 items:

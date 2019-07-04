@@ -19,8 +19,8 @@ tape('Player utils', (functions: tape.Test) => {
         {
           currentPosition: { x: 0, y: 0, z: 0 },
           id: 'mockPlayer',
+          name: 'foo',
           type: EntityType.PLAYER,
-          username: 'foo',
         },
         'SHOULD return a Player with mock values',
       );
@@ -33,13 +33,13 @@ tape('Player utils', (functions: tape.Test) => {
         testedModule.createPlayer({
           currentPosition: { x: 1, y: 2, z: 3 },
           id: 'myPlayerId',
-          username: 'toto',
+          name: 'toto',
         }),
         {
           currentPosition: { x: 1, y: 2, z: 3 },
           id: 'myPlayerId',
+          name: 'toto',
           type: EntityType.PLAYER,
-          username: 'toto',
         },
         'SHOULD return a Player with passed values',
       );
@@ -55,7 +55,7 @@ tape('Player utils', (functions: tape.Test) => {
         const newPlayer: Player = testedModule.createPlayer({
           currentPosition: { x: 2, y: 3, z: 4 },
           id: 'bar',
-          username: 'foo',
+          name: 'foo',
         });
         test.deepEqual(
           testedModule.createPlayerMutator(EMPTY_STATE)(newPlayer),

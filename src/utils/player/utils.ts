@@ -10,7 +10,7 @@ import { Player } from '../../utils/player/types';
 export const createPlayer = (params: {
   currentPosition?: Position;
   id?: Id;
-  username?: string;
+  name?: string;
 }) =>
   createEntity(EntityType.PLAYER)({
     currentPosition: params.currentPosition || {
@@ -19,7 +19,7 @@ export const createPlayer = (params: {
       z: 0,
     },
     id: params.id || 'mockPlayer',
-    username: params.username || 'foo',
+    name: params.name || 'foo',
   }) as Player;
 
 export const createPlayerMutator = (currentState: State) => (

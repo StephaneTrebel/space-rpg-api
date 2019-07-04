@@ -10,7 +10,7 @@ import * as testedModule from './handler';
 
 tape('Player creation handler', (functionTest: tape.Test) => {
   functionTest.test('addNewPlayer()', (test: tape.Test) => {
-    const MOCK_USERNAME = Symbol('username');
+    const MOCK_NAME = Symbol('name');
     const loggerService = loggerServiceFactory();
     const handlerResponse = testedModule.addNewPlayer({
       loggerService: loggerServiceFactory(),
@@ -18,7 +18,7 @@ tape('Player creation handler', (functionTest: tape.Test) => {
         ...EMPTY_STATE,
       }),
     })({
-      request: { requestBody: { username: MOCK_USERNAME } },
+      request: { requestBody: { name: MOCK_NAME } },
     } as any);
     test.plan(5);
     test.equal(handlerResponse.status, 201, 'SHOULD return a 201 status');
@@ -28,9 +28,9 @@ tape('Player creation handler', (functionTest: tape.Test) => {
       'SHOULD return a string id',
     );
     test.equal(
-      handlerResponse.json.player.username,
-      MOCK_USERNAME,
-      'SHOULD return the expected username',
+      handlerResponse.json.player.name,
+      MOCK_NAME,
+      'SHOULD return the expected name',
     );
     test.deepEqual(
       handlerResponse.json.player.currentPosition,

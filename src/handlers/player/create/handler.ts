@@ -13,10 +13,10 @@ type AddPlayer = (deps: {
 }) => Handler;
 export const addNewPlayer: AddPlayer = ({ loggerService, stateService }) =>
   wrapHandler({ loggerService })((context: any) => {
-    const username = context.request && context.request.requestBody.username;
+    const name = context.request && context.request.requestBody.name;
     const newPlayer = createPlayer({
       currentPosition: { x: 0, y: 0, z: 0 },
-      username,
+      name,
     });
     stateService.mutate({
       mutation: StateMutation.CREATE_PLAYER,

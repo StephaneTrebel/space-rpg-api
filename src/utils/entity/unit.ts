@@ -83,13 +83,13 @@ tape('Entity utils', (functions: tape.Test) => {
           testedModule.createEntity(EntityType.PLAYER)({
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewPlayerEntity',
-            username: 'toto',
+            name: 'toto',
           }),
           {
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewPlayerEntity',
+            name: 'toto',
             type: EntityType.PLAYER,
-            username: 'toto',
           },
           'SHOULD return a new Player Entity',
         );

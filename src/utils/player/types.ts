@@ -5,7 +5,7 @@ import { Position } from '../../utils/position/types';
 export interface Player {
   currentPosition: Position;
   id: Id;
-  username: string;
+  name: string;
   type: EntityType.PLAYER;
 }
 export type PlayerList = Array<Player>;

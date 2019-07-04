@@ -22,13 +22,11 @@ type CreateEntity = (
   currentPosition?: Position;
   id?: Id;
   name?: string;
-  username?: string;
 }) => Entity;
 export const createEntity: CreateEntity = type => ({
   currentPosition,
   id,
   name,
-  username,
 }) => {
   const newId: Id = id || generateId();
   const newCurrentPosition: Position = currentPosition || { x: 0, y: 0, z: 0 };
@@ -52,8 +50,8 @@ export const createEntity: CreateEntity = type => ({
       return {
         currentPosition: newCurrentPosition,
         id: newId,
+        name,
         type,
-        username,
       } as Player;
   }
 };

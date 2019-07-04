@@ -13,15 +13,15 @@ import {
   EMPTY_STATE,
   stateServiceFactory,
 } from '../../../services/state/service';
+import { State } from '../../../services/state/types';
 
 import {
   createDisplacement,
   createDisplacementMock,
 } from '../../../utils/displacememt/utils';
+import { EntityType } from '../../../utils/entity/types';
+import { createEntity } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
-import { createPlayer } from '../../../utils/player/utils';
-
-import { State } from '../../../services/state/types';
 
 const ENDPOINT = '/displacement';
 const URL = (id: Id) => getURL(DEFAULT_CONFIG)(`${ENDPOINT}/${id}`);
@@ -134,14 +134,14 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
           const initialState: State = {
             ...EMPTY_STATE,
             entityList: [
-              createPlayer({
+              createEntity(EntityType.MOCK)({
                 currentPosition: {
                   x: 271,
                   y: 923,
                   z: 391,
                 },
                 id: entityId,
-                username: 'osef',
+                name: 'osef',
               }),
             ],
           };
@@ -246,14 +246,14 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
           const initialState: State = {
             ...EMPTY_STATE,
             entityList: [
-              createPlayer({
+              createEntity(EntityType.MOCK)({
                 currentPosition: {
                   x: 124,
                   y: 455,
                   z: 788,
                 },
                 id: entityId,
-                username: 'osef',
+                name: 'osef',
               }),
             ],
           };

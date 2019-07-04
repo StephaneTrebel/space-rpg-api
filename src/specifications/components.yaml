@@ -30,8 +30,6 @@ components:
       description: A common string identifier (usually unique)
       example: myownname
       type: string
-    username:
-      $ref: '#/components/schemas/name'
 
     # Complex schemas
 

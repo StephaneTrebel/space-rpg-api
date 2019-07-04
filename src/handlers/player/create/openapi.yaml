@@ -1,5 +1,5 @@
 post:
-  summary: Spawn a new player with given username
+  summary: Spawn a new player with given name
   operationId: addNewPlayer
   tags:
     - Player
@@ -11,10 +11,10 @@ post:
         schema:
           type: object
           required:
-            - username
+            - name
           properties:
-            username:
-              $ref: '../../../specifications/components.yaml#/components/schemas/username'
+            name:
+              $ref: '../../../specifications/components.yaml#/components/schemas/name'
   responses:
     201:
       description: New player entity
@@ -30,14 +30,14 @@ post:
                 required:
                   - currentPosition
                   - id
-                  - username
+                  - name
                 properties:
                   currentPosition:
                     $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
                   id:
                     $ref: '../../../specifications/components.yaml#/components/schemas/id'
-                  username:
-                    $ref: '../../../specifications/components.yaml#/components/schemas/username'
+                  name:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/name'
       links:
         Ping:
           $ref: '../../../specifications/components.yaml#/components/links/Ping'
