@@ -18,9 +18,9 @@ import { Position } from '../position/types';
 
 import * as testedModule from './utils';
 
-tape('Displacement handler', (functions: tape.Test) => {
+tape('Displacement utils', (functions: tape.Test) => {
   functions.test('createDisplacementMock()', (cases: tape.Test) => {
-    cases.test('WHEN given no parameters', (test: tape.Test) => {
+    cases.test('WHEN called with no parameters', (test: tape.Test) => {
       test.plan(4);
       const displacement = testedModule.createDisplacementMock({});
       test.equal(

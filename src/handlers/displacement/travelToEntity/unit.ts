@@ -15,7 +15,7 @@ import { createPlayer } from '../../../utils/player/utils';
 
 import * as testedModule from './handler';
 
-tape('Displacement handler', (functionTest: tape.Test) => {
+tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
   functionTest.test('travelToEntity()', (cases: tape.Test) => {
     cases.test(
       `GIVEN a State that has two entities

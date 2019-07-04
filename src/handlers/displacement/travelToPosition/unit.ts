@@ -16,7 +16,7 @@ import { createPlayer } from '../../../utils/player/utils';
 
 import * as testedModule from './handler';
 
-tape('Displacement handler', (functionTest: tape.Test) => {
+tape('Displacement TravelToPosition handler', (functionTest: tape.Test) => {
   functionTest.test('travelToPosition()', (when: tape.Test) => {
     when.test(
       'WHEN given an entity and a State lacking this entity',
