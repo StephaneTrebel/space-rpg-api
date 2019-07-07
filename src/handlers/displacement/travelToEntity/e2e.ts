@@ -35,10 +35,10 @@ tape(ENDPOINT, (subTest: tape.Test) => {
     givenClause.test(
       'WHEN request has a valid body referencing both entities as source and target',
       (caseTest: tape.Test) => {
-        const source = createEntity(EntityType.MOCK)({
+        const source = createEntity(EntityType.SPACESHIP)({
           id: `${ENDPOINT} Success Source`,
         });
-        const target = createEntity(EntityType.MOCK)({
+        const target = createEntity(EntityType.PLANET)({
           id: `${ENDPOINT} Success Target`,
         });
         return runE2ETest({
