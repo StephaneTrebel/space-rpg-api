@@ -5,13 +5,18 @@ import { EntityType } from '../../utils/entity/types';
 import { createEntity } from '../entity/utils';
 import { Position } from '../position/types';
 import { Id } from '../../utils/id/types';
-import { Spaceship } from '../../utils/spaceship/types';
+import {
+  BoardableEntity,
+  BoardableEntityList,
+  Spaceship,
+} from '../../utils/spaceship/types';
 
 export const createSpaceship = (params: {
   currentPosition?: Position;
   fuel?: number;
   id?: Id;
   name?: string;
+  onBoard?: BoardableEntityList;
 }): Spaceship => createEntity(EntityType.SPACESHIP)(params) as Spaceship;
 
 export const createSpaceshipMutator = (currentState: State) => (
@@ -37,4 +42,19 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
     `Spaceship retrieved for id '${id}': ${JSON.stringify(entity)}`,
   );
   return entity;
+};
+
+type BoardSpaceship = (
+  spaceship: Spaceship,
+) => (entity: BoardableEntity) => Spaceship;
+export const boardSpaceship: BoardSpaceship = spaceship => entity => {
+  if (spaceship.onBoard.find(e => e.id === entity.id)) {
+    throw new Error(
+      `Entity '${entity.id}' in already on board spaceship '${spaceship.id}'`,
+    );
+  }
+  return {
+    ...spaceship,
+    onBoard: [...spaceship.onBoard, entity],
+  };
 };

@@ -8,45 +8,8 @@ import { Id } from '../id/types';
 import { Player } from './types';
 
 import * as testedModule from './utils';
-import { EntityType } from '../entity/types';
 
 tape('Player utils', (functions: tape.Test) => {
-  functions.test('createPlayer()', (cases: tape.Test) => {
-    cases.test('WHEN called without parameters', (test: tape.Test) => {
-      test.plan(1);
-      test.deepEqual(
-        testedModule.createPlayer({}),
-        {
-          currentPosition: { x: 0, y: 0, z: 0 },
-          id: 'mockPlayer',
-          name: 'foo',
-          type: EntityType.PLAYER,
-        },
-        'SHOULD return a Player with mock values',
-      );
-      test.end();
-    });
-
-    cases.test('WHEN called with parameters', (test: tape.Test) => {
-      test.plan(1);
-      test.deepEqual(
-        testedModule.createPlayer({
-          currentPosition: { x: 1, y: 2, z: 3 },
-          id: 'myPlayerId',
-          name: 'toto',
-        }),
-        {
-          currentPosition: { x: 1, y: 2, z: 3 },
-          id: 'myPlayerId',
-          name: 'toto',
-          type: EntityType.PLAYER,
-        },
-        'SHOULD return a Player with passed values',
-      );
-      test.end();
-    });
-  });
-
   functions.test('createPlayerMutator()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a state AND a newPlayer',

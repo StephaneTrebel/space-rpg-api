@@ -3,7 +3,7 @@ import { generateId } from '../id/utils';
 import { Position } from '../position/types';
 
 import { Entity, EntityType, MockEntity } from './types';
-import { Spaceship } from '../spaceship/types';
+import { BoardableEntityList, Spaceship } from '../spaceship/types';
 import { Player } from '../player/types';
 import { Planet } from '../planet/types';
 
@@ -14,6 +14,7 @@ type CreateEntity = (
   fuel?: number;
   id?: Id;
   name?: string;
+  onBoard?: BoardableEntityList;
 }) => Entity;
 export const createEntity: CreateEntity = type => params => {
   const commonEntityProps = {
@@ -45,6 +46,7 @@ export const createEntity: CreateEntity = type => params => {
       const spaceship: Spaceship = {
         ...commonEntityProps,
         fuel: params.fuel || 1000,
+        onBoard: params.onBoard || [],
         type,
       };
       return spaceship;

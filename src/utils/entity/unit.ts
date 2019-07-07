@@ -1,5 +1,7 @@
 import tape from 'tape';
 
+import { createPlayer } from '../player/utils';
+
 import { EntityType } from './types';
 
 import * as testedModule from './utils';
@@ -87,18 +89,21 @@ tape('Entity utils', (functions: tape.Test) => {
       'WHEN called with a Spaceship entity parameters',
       (test: tape.Test) => {
         test.plan(1);
+        const player = createPlayer({});
         test.deepEqual(
           testedModule.createEntity(EntityType.SPACESHIP)({
             currentPosition: { x: 1, y: 2, z: 3 },
             fuel: 123,
             id: 'myNewSpaceshipEntity',
             name: 'toto',
+            onBoard: [player],
           }),
           {
             currentPosition: { x: 1, y: 2, z: 3 },
             fuel: 123,
             id: 'myNewSpaceshipEntity',
             name: 'toto',
+            onBoard: [player],
             type: EntityType.SPACESHIP,
           },
           'SHOULD return a new Spaceship Entity',
