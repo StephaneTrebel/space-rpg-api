@@ -1,57 +1,52 @@
 import { Id } from '../id/types';
 import { generateId } from '../id/utils';
-import { Planet } from '../planet/types';
-import { Player } from '../player/types';
 import { Position } from '../position/types';
 
-import { Entity, EntityType, BaseEntity } from './types';
-
-export const MOCK_ENTITY: BaseEntity = {
-  currentPosition: {
-    x: 0,
-    y: 0,
-    z: 0,
-  },
-  id: 'mockEntity',
-  type: EntityType.MOCK,
-};
+import { Entity, EntityType, MockEntity } from './types';
+import { Spaceship } from '../spaceship/types';
+import { Player } from '../player/types';
+import { Planet } from '../planet/types';
 
 type CreateEntity = (
   type: EntityType,
 ) => (params: {
   currentPosition?: Position;
+  fuel?: number;
   id?: Id;
   name?: string;
 }) => Entity;
-export const createEntity: CreateEntity = type => ({
-  currentPosition,
-  id,
-  name,
-}) => {
-  const newId: Id = id || generateId();
-  const newCurrentPosition: Position = currentPosition || { x: 0, y: 0, z: 0 };
+export const createEntity: CreateEntity = type => params => {
+  const commonEntityProps = {
+    currentPosition: { x: 0, y: 0, z: 0 },
+    id: generateId(),
+    name: 'unknown',
+    ...params,
+  };
   switch (type) {
-    case EntityType.NONE:
-      throw new Error('No entity of type None can be created');
     case EntityType.MOCK:
-      return {
-        currentPosition: newCurrentPosition,
-        id: newId,
+      const baseEntity: MockEntity = {
+        ...commonEntityProps,
         type,
-      } as BaseEntity;
+      };
+      return baseEntity;
     case EntityType.PLANET:
-      return {
-        currentPosition: newCurrentPosition,
-        id: newId,
-        name,
+      const planet: Planet = {
+        ...commonEntityProps,
         type,
-      } as Planet;
+      };
+      return planet;
     case EntityType.PLAYER:
-      return {
-        currentPosition: newCurrentPosition,
-        id: newId,
-        name,
+      const player: Player = {
+        ...commonEntityProps,
         type,
-      } as Player;
+      };
+      return player;
+    case EntityType.SPACESHIP:
+      const spaceship: Spaceship = {
+        ...commonEntityProps,
+        fuel: params.fuel || 1000,
+        type,
+      };
+      return spaceship;
   }
 };

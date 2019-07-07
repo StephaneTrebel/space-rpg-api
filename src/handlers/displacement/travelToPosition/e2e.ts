@@ -5,7 +5,7 @@ import { runE2ETest, postPromisified } from '../../../e2e-utils';
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
-import { createEntity, MOCK_ENTITY } from '../../../utils/entity/utils';
+import { createEntity } from '../../../utils/entity/utils';
 import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
 import { EntityType } from '../../../utils/entity/types';
@@ -46,9 +46,7 @@ tape(ENDPOINT, (given: tape.Test) => {
           return runE2ETest({
             initialState: {
               ...EMPTY_STATE,
-              entityList: [
-                createEntity(EntityType.MOCK)({ ...MOCK_ENTITY, id: entityId }),
-              ],
+              entityList: [createEntity(EntityType.MOCK)({ id: entityId })],
             },
           })(caseTest)((test, assets) =>
             postPromisified({
@@ -100,9 +98,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             initialActionQueue: [createDisplacementMock({ entityId })],
             initialState: {
               ...EMPTY_STATE,
-              entityList: [
-                createEntity(EntityType.MOCK)({ ...MOCK_ENTITY, id: entityId }),
-              ],
+              entityList: [createEntity(EntityType.MOCK)({ id: entityId })],
             },
           })(caseTest)((test, assets) =>
             postPromisified({

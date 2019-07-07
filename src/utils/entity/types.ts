@@ -2,19 +2,21 @@ import { Id } from '../id/types';
 import { Planet } from '../planet/types';
 import { Player } from '../player/types';
 import { Position } from '../position/types';
+import { Spaceship } from '../spaceship/types';
 
 export enum EntityType {
-  NONE = 'none', // No entity should ever have this type. For tests only
-  MOCK = 'mock', // Mock entities only
+  MOCK = 'mock', // For tests only
   PLANET = 'planet',
   PLAYER = 'player',
+  SPACESHIP = 'spaceship',
 }
 
-export interface BaseEntity {
+export interface MockEntity {
   currentPosition: Position;
   id: Id;
+  name: string;
   type: EntityType.MOCK;
 }
 
-export type Entity = BaseEntity | Planet | Player;
+export type Entity = MockEntity | Planet | Player | Spaceship;
 export type EntityList = Array<Entity>;

@@ -5,7 +5,7 @@ import { runE2ETest, postPromisified } from '../../../e2e-utils';
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
-import { createEntity, MOCK_ENTITY } from '../../../utils/entity/utils';
+import { createEntity } from '../../../utils/entity/utils';
 import { EntityType } from '../../../utils/entity/types';
 
 const ENDPOINT = '/displacement/travelToEntity';
@@ -36,11 +36,9 @@ tape(ENDPOINT, (subTest: tape.Test) => {
       'WHEN request has a valid body referencing both entities as source and target',
       (caseTest: tape.Test) => {
         const source = createEntity(EntityType.MOCK)({
-          ...MOCK_ENTITY,
           id: `${ENDPOINT} Success Source`,
         });
         const target = createEntity(EntityType.MOCK)({
-          ...MOCK_ENTITY,
           id: `${ENDPOINT} Success Target`,
         });
         return runE2ETest({
