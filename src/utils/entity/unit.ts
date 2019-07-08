@@ -74,6 +74,7 @@ tape('Entity utils', (functions: tape.Test) => {
             name: 'toto',
           }),
           {
+            boardedIn: null,
             currentPosition: { x: 1, y: 2, z: 3 },
             id: 'myNewPlayerEntity',
             name: 'toto',

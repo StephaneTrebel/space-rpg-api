@@ -52,15 +52,24 @@ export const hasBoarded: HasBoarded = spaceship => entity =>
 
 type BoardSpaceship = (
   spaceship: Spaceship,
-) => (entity: BoardableEntity) => Spaceship;
+) => (
+  entity: BoardableEntity,
+) => { spaceship: Spaceship; entity: BoardableEntity };
 export const boardSpaceship: BoardSpaceship = spaceship => entity => {
   if (hasBoarded(spaceship)(entity)) {
     throw new Error(
       `Entity '${entity.id}' has already boarded spaceship '${spaceship.id}'`,
     );
   }
-  return {
+  const newSpaceship: Spaceship = {
     ...spaceship,
     onBoard: [...spaceship.onBoard, entity],
+  };
+  return {
+    entity: {
+      ...entity,
+      boardedIn: newSpaceship,
+    },
+    spaceship: newSpaceship,
   };
 };

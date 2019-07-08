@@ -39,6 +39,7 @@ export const createEntity: CreateEntity = type => params => {
     case EntityType.PLAYER:
       const player: Player = {
         ...commonEntityProps,
+        boardedIn: null,
         type,
       };
       return player;

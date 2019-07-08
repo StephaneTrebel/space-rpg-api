@@ -7,6 +7,7 @@ import { Id } from '../id/types';
 import { createPlayer } from '../player/utils';
 
 import * as testedModule from './utils';
+import { PlayerCarryingEntity } from '../player/types';
 
 tape('Spaceship utils', (functions: tape.Test) => {
   functions.test('createSpaceshipMutator()', (cases: tape.Test) => {
@@ -143,17 +144,28 @@ tape('Spaceship utils', (functions: tape.Test) => {
     cases.test(
       'WHEN called with a spaceship and an player not already in this spaceship',
       (test: tape.Test) => {
-        test.plan(1);
+        test.plan(3);
         const playerA = createPlayer({ id: 'foo' });
         const playerB = createPlayer({ id: 'bar' });
         const playerC = createPlayer({ id: 'qux' });
         const spaceship = testedModule.createSpaceship({
           onBoard: [playerA, playerB],
         });
+        const couple = testedModule.boardSpaceship(spaceship)(playerC);
         test.deepEqual(
-          testedModule.boardSpaceship(spaceship)(playerC).onBoard,
+          couple.spaceship.onBoard,
           [playerA, playerB, playerC],
-          'SHOULD return a spaceship with the player added to its onBoard property',
+          'SHOULD return an object having a spaceship property that has the player added to its onboard list',
+        );
+        test.equal(
+          couple.entity.id,
+          playerC.id,
+          'SHOULD return an object having an entity property that has the same id as the player',
+        );
+        test.equal(
+          (couple.entity.boardedIn as PlayerCarryingEntity).id,
+          spaceship.id,
+          'SHOULD return an object having an entity property that is boarded in the spaceship',
         );
         test.end();
       },
