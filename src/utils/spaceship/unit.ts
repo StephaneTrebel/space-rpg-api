@@ -87,6 +87,42 @@ tape('Spaceship utils', (functions: tape.Test) => {
     );
   });
 
+  functions.test('hasBoarded()', (cases: tape.Test) => {
+    cases.test(
+      'WHEN called with a spaceship and an entity not already on this spaceship',
+      (test: tape.Test) => {
+        test.plan(1);
+        const player = createPlayer({});
+        const spaceship = testedModule.createSpaceship({
+          onBoard: [],
+        });
+        test.equal(
+          testedModule.hasBoarded(spaceship)(player),
+          false,
+          'SHOULD return false',
+        );
+        test.end();
+      },
+    );
+
+    cases.test(
+      'WHEN called with a spaceship and an player already on this spaceship',
+      (test: tape.Test) => {
+        test.plan(1);
+        const player = createPlayer({ id: 'foo' });
+        const spaceship = testedModule.createSpaceship({
+          onBoard: [player],
+        });
+        test.deepEqual(
+          testedModule.hasBoarded(spaceship)(player),
+          true,
+          'SHOULD return true',
+        );
+        test.end();
+      },
+    );
+  });
+
   functions.test('boardSpaceship()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a spaceship and an player already in this spaceship',
@@ -94,10 +130,6 @@ tape('Spaceship utils', (functions: tape.Test) => {
         test.plan(1);
         const player = createPlayer({ id: 'foo' });
         const spaceship = testedModule.createSpaceship({
-          currentPosition: { x: 2, y: 3, z: 4 },
-          fuel: 123,
-          id: 'bar',
-          name: 'foo',
           onBoard: [player],
         });
         test.throws(
@@ -116,10 +148,6 @@ tape('Spaceship utils', (functions: tape.Test) => {
         const playerB = createPlayer({ id: 'bar' });
         const playerC = createPlayer({ id: 'qux' });
         const spaceship = testedModule.createSpaceship({
-          currentPosition: { x: 2, y: 3, z: 4 },
-          fuel: 123,
-          id: 'bar',
-          name: 'foo',
           onBoard: [playerA, playerB],
         });
         test.deepEqual(

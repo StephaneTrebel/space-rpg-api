@@ -44,13 +44,19 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
   return entity;
 };
 
+type HasBoarded = (
+  spaceship: Spaceship,
+) => (entity: BoardableEntity) => boolean;
+export const hasBoarded: HasBoarded = spaceship => entity =>
+  !!spaceship.onBoard.find(e => e.id === entity.id);
+
 type BoardSpaceship = (
   spaceship: Spaceship,
 ) => (entity: BoardableEntity) => Spaceship;
 export const boardSpaceship: BoardSpaceship = spaceship => entity => {
-  if (spaceship.onBoard.find(e => e.id === entity.id)) {
+  if (hasBoarded(spaceship)(entity)) {
     throw new Error(
-      `Entity '${entity.id}' in already on board spaceship '${spaceship.id}'`,
+      `Entity '${entity.id}' has already boarded spaceship '${spaceship.id}'`,
     );
   }
   return {

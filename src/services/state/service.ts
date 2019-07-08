@@ -7,6 +7,7 @@ import { createPlayerMutator } from '../../utils/player/utils';
 import { areNearby } from '../../utils/position/utils';
 
 import { State, StateMutation, StateService } from './types';
+import { createSpaceshipMutator } from "../../utils/spaceship/utils";
 
 export const EMPTY_STATE: State = { entityList: [] };
 
@@ -51,6 +52,7 @@ export const mutate: Mutate = deps => internal => params => {
   deps.loggerService.debug('Entering stateService.mutate…');
   const mutations = {
     [StateMutation.CREATE_PLAYER]: createPlayerMutator,
+    [StateMutation.CREATE_SPACESHIP]: createSpaceshipMutator,
     [StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
   };
   deps.loggerService.debug(

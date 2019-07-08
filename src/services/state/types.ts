@@ -11,6 +11,7 @@ export interface State {
 
 export enum StateMutation {
   CREATE_PLAYER = 'CREATE_PLAYER',
+  CREATE_SPACESHIP = 'CREATE_SPACESHIP',
   DISPLACE_ENTITY = 'DISPLACE_ENTITY',
 }
 
