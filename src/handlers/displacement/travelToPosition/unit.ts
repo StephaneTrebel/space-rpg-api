@@ -12,8 +12,7 @@ import {
 import { timeServiceFactory } from '../../../services/time/service';
 
 import { Id } from '../../../utils/id/types';
-import { createPlayer } from '../../../utils/player/utils';
-
+import { createPlanet } from '../../../utils/planet/utils';
 import * as testedModule from './handler';
 
 tape('Displacement TravelToPosition handler', (functionTest: tape.Test) => {
@@ -64,7 +63,7 @@ tape('Displacement TravelToPosition handler', (functionTest: tape.Test) => {
       (test: tape.Test) => {
         test.plan(3);
         const testId: Id = 'travelToPosition';
-        const entity = createPlayer({
+        const entity = createPlanet({
           currentPosition: {
             x: 271,
             y: 923,

@@ -4,12 +4,64 @@ import { loggerServiceFactory } from '../../services/logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../../services/state/service';
 
 import { Id } from '../id/types';
+import { PlayerCarryingEntity } from '../player/types';
 import { createPlayer } from '../player/utils';
 
 import * as testedModule from './utils';
-import { PlayerCarryingEntity } from '../player/types';
+import { EntityType } from '../entity/types';
 
 tape('Spaceship utils', (functions: tape.Test) => {
+  functions.test('createSpaceship()', (cases: tape.Test) => {
+    cases.test('WHEN called without parameters', (test: tape.Test) => {
+      test.plan(1);
+      const newSpaceship = testedModule.createSpaceship({});
+      test.deepEqual(
+        newSpaceship,
+        {
+          currentPosition: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          fuel: 1000,
+          id: newSpaceship.id,
+          name: 'unknown',
+          onBoard: [],
+          type: EntityType.SPACESHIP,
+        },
+        'SHOULD return a Spaceship with mocked values',
+      );
+    });
+
+    cases.test('WHEN called with parameters', (test: tape.Test) => {
+      test.plan(1);
+      test.deepEqual(
+        testedModule.createSpaceship({
+          currentPosition: {
+            x: 1,
+            y: 2,
+            z: 3,
+          },
+          id: 'foo',
+          name: 'bar',
+        }),
+        {
+          currentPosition: {
+            x: 1,
+            y: 2,
+            z: 3,
+          },
+          fuel: 1000,
+          id: 'foo',
+          name: 'bar',
+          onBoard: [],
+          type: EntityType.SPACESHIP,
+        },
+        'SHOULD return a Spaceship with specified values',
+      );
+    });
+  });
+
   functions.test('createSpaceshipMutator()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a state AND a spaceship',

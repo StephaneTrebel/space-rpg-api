@@ -17,6 +17,7 @@ import {
   movePosition,
   isSamePosition,
 } from '../position/utils';
+import { EntityType } from '../entity/types';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -108,26 +109,29 @@ export const createDisplacement: CreateDisplacement = ({
 }) => ({ entityId, displacementId, target }) => {
   loggerService.debug('Entering createDisplacement…');
   const entity = stateService.findEntity({ id: entityId });
-  const id: Id = displacementId || uuid.v4();
-  const targetCoordinates: Position = isId(target)
-    ? getEntityCurrentPosition({
-        id: target as Id,
-        loggerService,
-        stateService,
-      })
-    : (target as Position);
-  const newDisplacement: Displacement = {
-    entityId,
-    executor: createExecutor({
-      displacementId: id,
-      entityId: entity.id,
+  if ([EntityType.PLANET, EntityType.SPACESHIP].includes(entity.type)) {
+    const id: Id = displacementId || uuid.v4();
+    const targetCoordinates: Position = isId(target)
+      ? getEntityCurrentPosition({
+          id: target as Id,
+          loggerService,
+          stateService,
+        })
+      : (target as Position);
+    const newDisplacement: Displacement = {
+      entityId,
+      executor: createExecutor({
+        displacementId: id,
+        entityId: entity.id,
+        targetCoordinates,
+      }),
+      id,
       targetCoordinates,
-    }),
-    id,
-    targetCoordinates,
-    type: ActionType.DISPLACEMENT,
-  };
-  return newDisplacement;
+      type: ActionType.DISPLACEMENT,
+    };
+    return newDisplacement;
+  }
+  throw new Error(`Entity type '${entity.type}' cannot be displaced`);
 };
 
 export const displaceEntityMutator = (currentState: State) => ({

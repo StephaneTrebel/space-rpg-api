@@ -3,6 +3,7 @@ import tape from 'tape';
 import { loggerServiceFactory } from '../../services/logger/service';
 import { EMPTY_STATE, stateServiceFactory } from '../../services/state/service';
 
+import { EntityType } from '../entity/types';
 import { Id } from '../id/types';
 
 import { Player } from './types';
@@ -10,6 +11,55 @@ import { Player } from './types';
 import * as testedModule from './utils';
 
 tape('Player utils', (functions: tape.Test) => {
+  functions.test('createPlayer()', (cases: tape.Test) => {
+    cases.test('WHEN called without parameters', (test: tape.Test) => {
+      test.plan(1);
+      const newPlayer = testedModule.createPlayer({});
+      test.deepEqual(
+        newPlayer,
+        {
+          boardedIn: null,
+          currentPosition: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          id: newPlayer.id,
+          name: 'foo',
+          type: EntityType.PLAYER,
+        },
+        'SHOULD return a Player with mocked values',
+      );
+    });
+
+    cases.test('WHEN called with parameters', (test: tape.Test) => {
+      test.plan(1);
+      test.deepEqual(
+        testedModule.createPlayer({
+          currentPosition: {
+            x: 1,
+            y: 2,
+            z: 3,
+          },
+          id: 'foo',
+          name: 'bar',
+        }),
+        {
+          boardedIn: null,
+          currentPosition: {
+            x: 1,
+            y: 2,
+            z: 3,
+          },
+          id: 'foo',
+          name: 'bar',
+          type: EntityType.PLAYER,
+        },
+        'SHOULD return a Player with specified values',
+      );
+    });
+  });
+
   functions.test('createPlayerMutator()', (cases: tape.Test) => {
     cases.test(
       'WHEN called with a state AND a newPlayer',

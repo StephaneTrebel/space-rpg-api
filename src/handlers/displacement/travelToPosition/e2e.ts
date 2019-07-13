@@ -46,7 +46,7 @@ tape(ENDPOINT, (given: tape.Test) => {
           return runE2ETest({
             initialState: {
               ...EMPTY_STATE,
-              entityList: [createEntity(EntityType.MOCK)({ id: entityId })],
+              entityList: [createEntity(EntityType.PLANET)({ id: entityId })],
             },
           })(caseTest)((test, assets) =>
             postPromisified({
@@ -98,7 +98,7 @@ tape(ENDPOINT, (given: tape.Test) => {
             initialActionQueue: [createDisplacementMock({ entityId })],
             initialState: {
               ...EMPTY_STATE,
-              entityList: [createEntity(EntityType.MOCK)({ id: entityId })],
+              entityList: [createEntity(EntityType.PLANET)({ id: entityId })],
             },
           })(caseTest)((test, assets) =>
             postPromisified({

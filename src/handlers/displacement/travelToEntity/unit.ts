@@ -11,7 +11,8 @@ import {
 } from '../../../services/state/service';
 import { timeServiceFactory } from '../../../services/time/service';
 
-import { createPlayer } from '../../../utils/player/utils';
+import { createPlanet } from '../../../utils/planet/utils';
+import { createSpaceship } from '../../../utils/spaceship/utils';
 
 import * as testedModule from './handler';
 
@@ -22,7 +23,7 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
     WHEN called with an unknown target entity id`,
       (test: tape.Test) => {
         test.plan(3);
-        const source = createPlayer({
+        const source = createPlanet({
           currentPosition: {
             x: 0,
             y: 0,
@@ -72,7 +73,7 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
     WHEN called with an unknown source entity id`,
       (test: tape.Test) => {
         test.plan(3);
-        const target = createPlayer({
+        const target = createPlanet({
           currentPosition: {
             x: 0,
             y: 0,
@@ -122,7 +123,7 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
     WHEN called with both entities as source and target`,
       (test: tape.Test) => {
         test.plan(3);
-        const source = createPlayer({
+        const source = createSpaceship({
           currentPosition: {
             x: 0,
             y: 0,
@@ -130,7 +131,7 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
           },
           id: 'entity',
         });
-        const target = createPlayer({
+        const target = createPlanet({
           currentPosition: {
             x: 0,
             y: 0,

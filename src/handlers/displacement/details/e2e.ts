@@ -134,7 +134,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
           const initialState: State = {
             ...EMPTY_STATE,
             entityList: [
-              createEntity(EntityType.MOCK)({
+              createEntity(EntityType.SPACESHIP)({
                 currentPosition: {
                   x: 271,
                   y: 923,
@@ -246,7 +246,7 @@ tape(`${ENDPOINT}/:id`, (given: tape.Test) => {
           const initialState: State = {
             ...EMPTY_STATE,
             entityList: [
-              createEntity(EntityType.MOCK)({
+              createEntity(EntityType.SPACESHIP)({
                 currentPosition: {
                   x: 124,
                   y: 455,
