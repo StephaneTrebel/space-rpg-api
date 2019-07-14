@@ -11,38 +11,38 @@ import { StateService } from '../../../services/state/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
 
 type TravelToPosition = (deps: {
-  loggerService: LoggerService;
-  stateService: StateService;
-  testId?: Id;
-  timeService: TimeService;
+	loggerService: LoggerService;
+	stateService: StateService;
+	testId?: Id;
+	timeService: TimeService;
 }) => Handler;
 export const travelToPosition: TravelToPosition = ({
-  loggerService,
-  stateService,
-  testId,
-  timeService,
+	loggerService,
+	stateService,
+	testId,
+	timeService,
 }) =>
-  wrapHandler({ loggerService })((context: any) => {
-    loggerService.debug('Entering travelToPosition…');
-    const entityId = getPropertyFromContextBody('entityId')(context);
-    const displacement = createDisplacement({ loggerService, stateService })({
-      displacementId: testId,
-      entityId,
-      target: getPropertyFromContextBody('targetCoordinates')(
-        context,
-      ) as Position,
-    });
-    timeService.addAction(displacement);
-    return {
-      json: {
-        displacementId: displacement.id,
-        links: [
-          {
-            href: `/displacement/${displacement.id}`,
-            rel: 'details',
-          },
-        ],
-      },
-      status: 201,
-    };
-  });
+	wrapHandler({ loggerService })((context: any) => {
+		loggerService.debug('Entering travelToPosition…');
+		const entityId = getPropertyFromContextBody('entityId')(context);
+		const displacement = createDisplacement({ loggerService, stateService })({
+			displacementId: testId,
+			entityId,
+			target: getPropertyFromContextBody('targetCoordinates')(
+				context,
+			) as Position,
+		});
+		timeService.addAction(displacement);
+		return {
+			json: {
+				displacementId: displacement.id,
+				links: [
+					{
+						href: `/displacement/${displacement.id}`,
+						rel: 'details',
+					},
+				],
+			},
+			status: 201,
+		};
+	});

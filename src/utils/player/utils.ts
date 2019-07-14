@@ -8,41 +8,41 @@ import { Id } from '../../utils/id/types';
 import { Player } from '../../utils/player/types';
 
 export const createPlayer = (params: {
-  currentPosition?: Position;
-  id?: Id;
-  name?: string;
+	currentPosition?: Position;
+	id?: Id;
+	name?: string;
 }) =>
-  createEntity(EntityType.PLAYER)({
-    currentPosition: params.currentPosition || {
-      x: 0,
-      y: 0,
-      z: 0,
-    },
-    id: params.id || 'mockPlayer',
-    name: params.name || 'foo',
-  }) as Player;
+	createEntity(EntityType.PLAYER)({
+		currentPosition: params.currentPosition || {
+			x: 0,
+			y: 0,
+			z: 0,
+		},
+		id: params.id || 'mockPlayer',
+		name: params.name || 'foo',
+	}) as Player;
 
 export const createPlayerMutator = (currentState: State) => (
-  newPlayer: Player,
+	newPlayer: Player,
 ): State => ({
-  ...currentState,
-  entityList: [...currentState.entityList, newPlayer],
+	...currentState,
+	entityList: [...currentState.entityList, newPlayer],
 });
 
 type GetPlayerFromStateService = (deps: {
-  loggerService: LoggerService;
-  stateService: StateService;
+	loggerService: LoggerService;
+	stateService: StateService;
 }) => (params: { id: Id }) => Player;
 export const getPlayerFromStateService: GetPlayerFromStateService = ({
-  loggerService,
-  stateService,
+	loggerService,
+	stateService,
 }) => ({ id }) => {
-  loggerService.debug('Entering getPlayerFromStateService…');
-  const entity = stateService.findEntity({
-    id,
-  }) as Player;
-  loggerService.debug(
-    `Player retrieved for id '${id}': ${JSON.stringify(entity)}`,
-  );
-  return entity;
+	loggerService.debug('Entering getPlayerFromStateService…');
+	const entity = stateService.findEntity({
+		id,
+	}) as Player;
+	loggerService.debug(
+		`Player retrieved for id '${id}': ${JSON.stringify(entity)}`,
+	);
+	return entity;
 };

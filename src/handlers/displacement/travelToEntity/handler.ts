@@ -10,34 +10,34 @@ import { Id } from '../../../utils/id/types';
 import { generateId } from '../../../utils/id/utils';
 
 type TravelToEntity = (deps: {
-  loggerService: LoggerService;
-  stateService: StateService;
-  timeService: TimeService;
+	loggerService: LoggerService;
+	stateService: StateService;
+	timeService: TimeService;
 }) => Handler;
 export const travelToEntity: TravelToEntity = ({
-  loggerService,
-  stateService,
-  timeService,
+	loggerService,
+	stateService,
+	timeService,
 }) =>
-  wrapHandler({ loggerService })((context: any) => {
-    loggerService.debug('Entering travelToEntity…');
-    const entityId = getPropertyFromContextBody('entityId')(context) as Id;
-    const displacement = createDisplacement({ loggerService, stateService })({
-      displacementId: generateId(),
-      entityId,
-      target: getPropertyFromContextBody('targetId')(context) as Id,
-    });
-    timeService.addAction(displacement);
-    return {
-      json: {
-        displacementId: displacement.id,
-        links: [
-          {
-            href: `/displacement/${displacement.id}`,
-            rel: 'details',
-          },
-        ],
-      },
-      status: 201,
-    };
-  });
+	wrapHandler({ loggerService })((context: any) => {
+		loggerService.debug('Entering travelToEntity…');
+		const entityId = getPropertyFromContextBody('entityId')(context) as Id;
+		const displacement = createDisplacement({ loggerService, stateService })({
+			displacementId: generateId(),
+			entityId,
+			target: getPropertyFromContextBody('targetId')(context) as Id,
+		});
+		timeService.addAction(displacement);
+		return {
+			json: {
+				displacementId: displacement.id,
+				links: [
+					{
+						href: `/displacement/${displacement.id}`,
+						rel: 'details',
+					},
+				],
+			},
+			status: 201,
+		};
+	});

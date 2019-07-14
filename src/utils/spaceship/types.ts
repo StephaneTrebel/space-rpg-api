@@ -8,11 +8,11 @@ export type BoardableEntity = Player;
 export type BoardableEntityList = Array<BoardableEntity>;
 
 export interface Spaceship {
-  currentPosition: Position;
-  fuel: number;
-  id: Id;
-  name: string;
-  onBoard: BoardableEntityList;
-  type: EntityType.SPACESHIP;
+	currentPosition: Position;
+	fuel: number;
+	id: Id;
+	name: string;
+	onBoard: BoardableEntityList;
+	type: EntityType.SPACESHIP;
 }
 export type SpaceshipList = Array<Spaceship>;

@@ -1,3 +1,3 @@
 export interface Versions {
-  'space-rpg-api': string;
+	'space-rpg-api': string;
 }

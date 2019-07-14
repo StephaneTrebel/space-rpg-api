@@ -8,36 +8,36 @@ import { wrapHandler } from '../../../services/openapi-backend/service';
 import { getPropertyFromContextRequest } from '../../../utils/context/utils';
 
 type GetDisplacementFromTimeService = (deps: {
-  loggerService: LoggerService;
-  timeService: TimeService;
+	loggerService: LoggerService;
+	timeService: TimeService;
 }) => (params: { id: Id }) => Displacement;
 export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
-  loggerService,
-  timeService,
+	loggerService,
+	timeService,
 }) => ({ id }) => {
-  loggerService.debug('Entering getDisplacementFromTimeService…');
-  const action = timeService.findAction(id);
-  loggerService.debug(
-    `Displacement retrieved for id '${id}': ${JSON.stringify(action)}`,
-  );
-  return action as Displacement;
+	loggerService.debug('Entering getDisplacementFromTimeService…');
+	const action = timeService.findAction(id);
+	loggerService.debug(
+		`Displacement retrieved for id '${id}': ${JSON.stringify(action)}`,
+	);
+	return action as Displacement;
 };
 
 type GetDisplacement = (deps: {
-  loggerService: LoggerService;
-  timeService: TimeService;
+	loggerService: LoggerService;
+	timeService: TimeService;
 }) => Handler;
 export const getDisplacement: GetDisplacement = ({
-  loggerService,
-  timeService,
+	loggerService,
+	timeService,
 }) =>
-  wrapHandler({ loggerService })(context => {
-    loggerService.debug('Entering getDisplacement handler…');
-    const displacement = getDisplacementFromTimeService({
-      loggerService,
-      timeService,
-    })({
-      id: getPropertyFromContextRequest('id')(context) as Id,
-    });
-    return { json: { links: [], displacement }, status: 200 };
-  });
+	wrapHandler({ loggerService })(context => {
+		loggerService.debug('Entering getDisplacement handler…');
+		const displacement = getDisplacementFromTimeService({
+			loggerService,
+			timeService,
+		})({
+			id: getPropertyFromContextRequest('id')(context) as Id,
+		});
+		return { json: { links: [], displacement }, status: 200 };
+	});
