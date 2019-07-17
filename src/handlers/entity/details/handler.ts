@@ -1,6 +1,6 @@
 import { LoggerService } from '../../../services/logger/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-import { Handler } from '../../../services/openapi-backend/types';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
 import { StateService } from '../../../services/state/types';
 
 import { getPropertyFromContextRequest } from '../../../utils/context/utils';
@@ -26,12 +26,12 @@ export const getEntityFromStateService: GetEntityFromStateService = ({
 type GetEntityDetails = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
-}) => Handler;
+}) => AsyncHandler;
 export const getEntityDetails: GetEntityDetails = ({
 	loggerService,
 	stateService,
 }) =>
-	wrapHandler({ loggerService })(context => {
+	wrapHandler({ loggerService })((context: any) => {
 		loggerService.debug('Entering getEntity handler…');
 		const entity = getEntityFromStateService({
 			loggerService,

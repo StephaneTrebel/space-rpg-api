@@ -1,5 +1,5 @@
 import { LoggerService } from '../../../services/logger/types';
-import { Handler } from '../../../services/openapi-backend/types';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
 import { TimeService } from '../../../services/time/types';
 
 import { Displacement } from '../../../utils/displacememt/types';
@@ -26,12 +26,12 @@ export const getDisplacementFromTimeService: GetDisplacementFromTimeService = ({
 type GetDisplacement = (deps: {
 	loggerService: LoggerService;
 	timeService: TimeService;
-}) => Handler;
+}) => AsyncHandler;
 export const getDisplacement: GetDisplacement = ({
 	loggerService,
 	timeService,
 }) =>
-	wrapHandler({ loggerService })(context => {
+	wrapHandler({ loggerService })((context: any) => {
 		loggerService.debug('Entering getDisplacement handler…');
 		const displacement = getDisplacementFromTimeService({
 			loggerService,

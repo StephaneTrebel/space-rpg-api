@@ -26,7 +26,7 @@ import { StateService } from '../state/types';
 import { TimeService } from '../time/types';
 import { Link } from '../webserver/types';
 
-import { Handler } from './types';
+import { AsyncHandler, Handler } from './types';
 
 const loadSpecification = () => {
 	return yaml.safeLoad(fs.readFileSync('src/openapi.yaml', 'utf8'));
@@ -37,23 +37,33 @@ export const SWAGGER_UI_LINK: Link = {
 	rel: 'specification-ui',
 };
 
+export const isPromise = <T>(arg: any): arg is Promise<T> =>
+	arg.then !== undefined;
+
 type WrapHandler = (deps: {
 	loggerService: LoggerService;
-}) => (handler: Handler) => Handler;
-export const wrapHandler: WrapHandler = ({
-	loggerService,
-}) => handler => context => {
-	try {
-		return handler(context);
-	} catch (error) {
+}) => (handler: Handler | AsyncHandler) => AsyncHandler;
+export const wrapHandler: WrapHandler = ({ loggerService }) => handler => (
+	context: any,
+) => {
+	const errorHandler = (error: Error) => {
 		loggerService.error(`Error encountered in handler: ${error.message}`);
-		return {
+		return Promise.resolve({
 			json: {
 				code: 'HandlerError',
 				message: `Error encountered: ${error.message}`,
 			},
 			status: 400,
-		};
+		});
+	};
+	try {
+		const result = handler(context);
+		if (isPromise(result)) {
+			return result.catch(errorHandler);
+		}
+		return Promise.resolve(result);
+	} catch (error) {
+		return errorHandler(error);
 	}
 };
 

@@ -14,24 +14,27 @@ tape('Versions handler', (functions: tape.Test) => {
 		const versions: Versions = {
 			'space-rpg-api': '4.3.2',
 		};
-		const handlerResponse = testedModule.getVersions({
-			configService: configServiceFactory({
-				...DEFAULT_CONFIG,
-				versions,
-			}),
-			loggerService: loggerServiceFactory(),
-		})(undefined as any);
-		test.plan(2);
-		test.equal(
-			handlerResponse.status,
-			200,
-			'SHOULD sucessfully return a 200 response',
-		);
-		test.deepEqual(
-			handlerResponse.json,
-			versions,
-			'SHOULD sucessfully return a body having the expected versions property',
-		);
-		test.end();
+		return testedModule
+			.getVersions({
+				configService: configServiceFactory({
+					...DEFAULT_CONFIG,
+					versions,
+				}),
+				loggerService: loggerServiceFactory(),
+			})(undefined as any)
+			.then(handlerResponse => {
+				test.plan(2);
+				test.equal(
+					handlerResponse.status,
+					200,
+					'SHOULD sucessfully return a 200 response',
+				);
+				test.deepEqual(
+					handlerResponse.json,
+					versions,
+					'SHOULD sucessfully return a body having the expected versions property',
+				);
+				test.end();
+			});
 	});
 });

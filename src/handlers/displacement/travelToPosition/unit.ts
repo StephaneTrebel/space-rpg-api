@@ -33,28 +33,31 @@ tape('Displacement TravelToPosition handler', (functionTest: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.travelToPosition({
-					loggerService,
-					stateService,
-					testId,
-					timeService,
-				})({ request: { requestBody: { entityId: testId } } } as any);
-				test.equal(
-					handlerResponse.status,
-					400,
-					'SHOULD sucessfully return a 400 response',
-				);
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD sucessfully return a body having a code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD sucessfully return a body having a message property',
-				);
-				test.end();
+				return testedModule
+					.travelToPosition({
+						loggerService,
+						stateService,
+						testId,
+						timeService,
+					})({ request: { requestBody: { entityId: testId } } } as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD sucessfully return a 400 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD sucessfully return a body having a code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD sucessfully return a body having a message property',
+						);
+						test.end();
+					});
 			},
 		);
 
@@ -82,40 +85,43 @@ tape('Displacement TravelToPosition handler', (functionTest: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.travelToPosition({
-					loggerService,
-					stateService,
-					testId,
-					timeService,
-				})({
-					request: {
-						requestBody: {
-							entityId: testId,
-							targetCoordinates: { x: 0, y: 1, z: 2 },
+				return testedModule
+					.travelToPosition({
+						loggerService,
+						stateService,
+						testId,
+						timeService,
+					})({
+						request: {
+							requestBody: {
+								entityId: testId,
+								targetCoordinates: { x: 0, y: 1, z: 2 },
+							},
 						},
-					},
-				} as any);
-				test.equal(
-					handlerResponse.status,
-					201,
-					'SHOULD sucessfully return a 201 response',
-				);
-				test.equal(
-					typeof handlerResponse.json.displacementId,
-					'string',
-					'SHOULD sucessfully return a body having a displacementId property',
-				);
-				test.deepEqual(
-					handlerResponse.json.links,
-					[
-						{
-							href: `/displacement/${testId}`,
-							rel: 'details',
-						},
-					],
-					'SHOULD sucessfully return a body having a link to /displacement endpoint',
-				);
-				test.end();
+					} as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							201,
+							'SHOULD sucessfully return a 201 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.displacementId,
+							'string',
+							'SHOULD sucessfully return a body having a displacementId property',
+						);
+						test.deepEqual(
+							handlerResponse.json.links,
+							[
+								{
+									href: `/displacement/${testId}`,
+									rel: 'details',
+								},
+							],
+							'SHOULD sucessfully return a body having a link to /displacement endpoint',
+						);
+						test.end();
+					});
 			},
 		);
 	});

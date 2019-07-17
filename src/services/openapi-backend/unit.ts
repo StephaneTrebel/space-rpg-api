@@ -12,45 +12,106 @@ import * as testedModule from './service';
 tape('OpenAPI Backend', (functions: tape.Test) => {
 	functions.test('wrapHandler()', (cases: tape.Test) => {
 		cases.test(
-			'WHEN called with a handler and a context that makes it crash',
+			'WHEN called with an sync handler and a context that makes it crash',
 			(test: tape.Test) => {
 				test.plan(3);
 				const loggerService = loggerServiceFactory();
-				const handlerResponse = testedModule.wrapHandler({
-					loggerService,
-				})(() => {
-					throw new Error(':(');
-				})('osef' as any);
-				test.equal(
-					handlerResponse.status,
-					400,
-					'SHOULD return a 400 handler response',
-				);
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD return a handler response body having a code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD return a handler response body having a message property',
-				);
-				test.end();
+				return testedModule
+					.wrapHandler({
+						loggerService,
+					})(() => {
+						throw new Error(':(');
+					})('osef' as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD return a 400 handler response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD return a handler response body having a code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD return a handler response body having a message property',
+						);
+						test.end();
+					});
 			},
 		);
 
 		cases.test(
-			'WHEN called with a handler and a context that does not make it crash',
+			'WHEN called with an sync handler and a context that does not make it crash',
 			(test: tape.Test) => {
 				test.plan(1);
-				const result: any = 'wrapHandler success';
+				const result: any = 'wrapHandler sync success';
 				const loggerService = loggerServiceFactory();
-				const handlerResponse = testedModule.wrapHandler({
-					loggerService,
-				})(() => result)('osef' as any);
-				test.equal(handlerResponse, result, 'SHOULD return the handler result');
-				test.end();
+				return testedModule
+					.wrapHandler({
+						loggerService,
+					})(() => result)('osef' as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse,
+							result,
+							'SHOULD return the handler result',
+						);
+						test.end();
+					});
+			},
+		);
+
+		cases.test(
+			'WHEN called with an async handler and a context that makes it crash',
+			(test: tape.Test) => {
+				test.plan(3);
+				const loggerService = loggerServiceFactory();
+				return testedModule
+					.wrapHandler({
+						loggerService,
+					})(() => Promise.reject(new Error(':(')))('osef' as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD return a 400 handler response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD return a handler response body having a code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD return a handler response body having a message property',
+						);
+						test.end();
+					});
+			},
+		);
+
+		cases.test(
+			'WHEN called with an async handler and a context that does not make it crash',
+			(test: tape.Test) => {
+				test.plan(1);
+				const result: any = 'wrapHandler async success';
+				const loggerService = loggerServiceFactory();
+				return testedModule
+					.wrapHandler({
+						loggerService,
+					})(() => Promise.resolve(result))('osef' as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse,
+							result,
+							'SHOULD return the handler result',
+						);
+						test.end();
+					});
 			},
 		);
 	});

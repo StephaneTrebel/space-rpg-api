@@ -47,23 +47,35 @@ type Mutate = (deps: {
 	loggerService: LoggerService;
 }) => (
 	internal: StateServiceInternal,
-) => (params: { mutation: StateMutation; payload: any }) => void;
-export const mutate: Mutate = deps => internal => params => {
-	deps.loggerService.debug('Entering stateService.mutate…');
-	const mutations = {
-		[StateMutation.CREATE_PLAYER]: createPlayerMutator,
-		[StateMutation.CREATE_SPACESHIP]: createSpaceshipMutator,
-		[StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
-	};
-	deps.loggerService.debug(
-		`Mutating state with mutation '${
-			params.mutation
-		}' and payload '${JSON.stringify(params.payload)}'`,
-	);
-	internal.state = mutations[params.mutation](internal.state)(params.payload);
-	deps.loggerService.debug('Mutation complete');
-	return;
-};
+) => (params: { mutation: StateMutation; payload: any }) => Promise<void>;
+export const mutate: Mutate = deps => internal => params =>
+	new Promise((resolve, reject) => {
+		try {
+			deps.loggerService.debug('Entering stateService.mutate…');
+			const mutations = {
+				[StateMutation.CREATE_PLAYER]: createPlayerMutator,
+				[StateMutation.CREATE_SPACESHIP]: createSpaceshipMutator,
+				[StateMutation.DISPLACE_ENTITY]: displaceEntityMutator,
+			};
+			deps.loggerService.debug(
+				`Mutating state with mutation '${
+					params.mutation
+				}' and payload '${JSON.stringify(params.payload)}'`,
+			);
+			internal.state = mutations[params.mutation](internal.state)(
+				params.payload,
+			);
+			deps.loggerService.debug('Mutation complete');
+			return resolve();
+		} catch (error) {
+			deps.loggerService.error(
+				`Error while mutating service. Params were ${JSON.stringify(
+					params,
+				)}, Error was: ${error.message}`,
+			);
+			return reject(error);
+		}
+	});
 
 type StateServiceFactory = (deps: {
 	loggerService: LoggerService;

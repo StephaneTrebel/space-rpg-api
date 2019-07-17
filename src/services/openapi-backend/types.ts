@@ -4,3 +4,4 @@ export interface HandlerResponse {
 }
 
 export type Handler = (context: any) => HandlerResponse;
+export type AsyncHandler = (context: any) => Promise<HandlerResponse>;

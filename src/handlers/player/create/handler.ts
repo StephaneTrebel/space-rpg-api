@@ -1,6 +1,6 @@
 import { LoggerService } from '../../../services/logger/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-import { Handler } from '../../../services/openapi-backend/types';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
 import { StateMutation, StateService } from '../../../services/state/types';
 
 import { SELF_HEALTH_LINK } from '../../miscellaneous/self-health/handler';
@@ -14,7 +14,7 @@ import {
 type AddPlayer = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
-}) => Handler;
+}) => AsyncHandler;
 export const addNewPlayer: AddPlayer = ({ loggerService, stateService }) =>
 	wrapHandler({ loggerService })((context: any) => {
 		const name = context.request && context.request.requestBody.name;
@@ -29,19 +29,20 @@ export const addNewPlayer: AddPlayer = ({ loggerService, stateService }) =>
 				onBoard: [],
 			}),
 		)(newPlayer);
-		stateService.mutate({
-			mutation: StateMutation.CREATE_PLAYER,
-			payload: newPlayer,
-		});
-		stateService.mutate({
-			mutation: StateMutation.CREATE_SPACESHIP,
-			payload: newSpaceship,
-		});
-		return {
+		return Promise.all([
+			stateService.mutate({
+				mutation: StateMutation.CREATE_PLAYER,
+				payload: newPlayer,
+			}),
+			stateService.mutate({
+				mutation: StateMutation.CREATE_SPACESHIP,
+				payload: newSpaceship,
+			}),
+		]).then(() => ({
 			json: {
 				links: [SELF_HEALTH_LINK],
 				player: newPlayer,
 			},
 			status: 201,
-		};
+		}));
 	});

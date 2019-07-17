@@ -81,7 +81,7 @@ tape('Displacement handler', (functions: tape.Test) => {
 
 	functions.test('getDisplacement()', (cases: tape.Test) => {
 		cases.test(
-			'WHEN given an displacement and a TimeService lacking this displacement',
+			'WHEN given a displacement and a TimeService lacking this displacement',
 			(test: tape.Test) => {
 				test.plan(3);
 				const id: Id = 'getDisplacement';
@@ -95,22 +95,29 @@ tape('Displacement handler', (functions: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.getDisplacement({
-					loggerService,
-					timeService,
-				})({ request: { params: { id } } } as any);
-				test.equal(handlerResponse.status, 400, 'SHOULD return a 400 response');
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD return a body having a string code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD return a body having a string message property',
-				);
-				test.end();
+				return testedModule
+					.getDisplacement({
+						loggerService,
+						timeService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD return a 400 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD return a body having a string code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD return a body having a string message property',
+						);
+						test.end();
+					});
 			},
 		);
 
@@ -132,22 +139,29 @@ tape('Displacement handler', (functions: tape.Test) => {
 					loggerService,
 					stateService,
 				})([displacement]);
-				const handlerResponse = testedModule.getDisplacement({
-					loggerService,
-					timeService,
-				})({ request: { params: { id } } } as any);
-				test.equal(handlerResponse.status, 200, 'SHOULD return a 200 response');
-				test.deepEqual(
-					handlerResponse.json.displacement,
-					displacement,
-					'SHOULD return a body having a displacement object',
-				);
-				test.deepEqual(
-					handlerResponse.json.links,
-					[],
-					'SHOULD return a body having an empty link list',
-				);
-				test.end();
+				return testedModule
+					.getDisplacement({
+						loggerService,
+						timeService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							200,
+							'SHOULD return a 200 response',
+						);
+						test.deepEqual(
+							handlerResponse.json.displacement,
+							displacement,
+							'SHOULD return a body having a displacement object',
+						);
+						test.deepEqual(
+							handlerResponse.json.links,
+							[],
+							'SHOULD return a body having an empty link list',
+						);
+						test.end();
+					});
 			},
 		);
 	});

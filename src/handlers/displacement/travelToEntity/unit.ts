@@ -42,29 +42,32 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.travelToEntity({
-					loggerService,
-					stateService,
-					timeService,
-				})({
-					request: { requestBody: { entityId: source.id, targetId: 'lol' } },
-				} as any);
-				test.equal(
-					handlerResponse.status,
-					400,
-					'SHOULD sucessfully return a 400 response',
-				);
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD sucessfully return a body having a code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD sucessfully return a body having a message property',
-				);
-				test.end();
+				return testedModule
+					.travelToEntity({
+						loggerService,
+						stateService,
+						timeService,
+					})({
+						request: { requestBody: { entityId: source.id, targetId: 'lol' } },
+					} as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD sucessfully return a 400 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD sucessfully return a body having a code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD sucessfully return a body having a message property',
+						);
+						test.end();
+					});
 			},
 		);
 
@@ -92,29 +95,32 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.travelToEntity({
-					loggerService,
-					stateService,
-					timeService,
-				})({
-					request: { requestBody: { entityId: 'lol', targetId: target.id } },
-				} as any);
-				test.equal(
-					handlerResponse.status,
-					400,
-					'SHOULD sucessfully return a 400 response',
-				);
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD sucessfully return a body having a code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD sucessfully return a body having a message property',
-				);
-				test.end();
+				return testedModule
+					.travelToEntity({
+						loggerService,
+						stateService,
+						timeService,
+					})({
+						request: { requestBody: { entityId: 'lol', targetId: target.id } },
+					} as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD sucessfully return a 400 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD sucessfully return a body having a code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD sucessfully return a body having a message property',
+						);
+						test.end();
+					});
 			},
 		);
 
@@ -150,36 +156,39 @@ tape('Displacement TravelToEntity handler', (functionTest: tape.Test) => {
 					loggerService,
 					stateService,
 				})();
-				const handlerResponse = testedModule.travelToEntity({
-					loggerService,
-					stateService,
-					timeService,
-				})({
-					request: {
-						requestBody: { entityId: source.id, targetId: target.id },
-					},
-				} as any);
-				test.equal(
-					handlerResponse.status,
-					201,
-					'SHOULD sucessfully return a 201 response',
-				);
-				test.equal(
-					typeof handlerResponse.json.displacementId,
-					'string',
-					'SHOULD sucessfully return a body having a displacementId property',
-				);
-				test.deepEqual(
-					handlerResponse.json.links,
-					[
-						{
-							href: `/displacement/${handlerResponse.json.displacementId}`,
-							rel: 'details',
+				return testedModule
+					.travelToEntity({
+						loggerService,
+						stateService,
+						timeService,
+					})({
+						request: {
+							requestBody: { entityId: source.id, targetId: target.id },
 						},
-					],
-					'SHOULD sucessfully return a body having a link to /displacement endpoint',
-				);
-				test.end();
+					} as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							201,
+							'SHOULD sucessfully return a 201 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.displacementId,
+							'string',
+							'SHOULD sucessfully return a body having a displacementId property',
+						);
+						test.deepEqual(
+							handlerResponse.json.links,
+							[
+								{
+									href: `/displacement/${handlerResponse.json.displacementId}`,
+									rel: 'details',
+								},
+							],
+							'SHOULD sucessfully return a body having a link to /displacement endpoint',
+						);
+						test.end();
+					});
 			},
 		);
 	});

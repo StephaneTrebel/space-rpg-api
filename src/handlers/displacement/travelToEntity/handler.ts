@@ -1,6 +1,6 @@
 import { LoggerService } from '../../../services/logger/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-import { Handler } from '../../../services/openapi-backend/types';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
 import { StateService } from '../../../services/state/types';
 import { TimeService } from '../../../services/time/types';
 
@@ -13,7 +13,7 @@ type TravelToEntity = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
 	timeService: TimeService;
-}) => Handler;
+}) => AsyncHandler;
 export const travelToEntity: TravelToEntity = ({
 	loggerService,
 	stateService,

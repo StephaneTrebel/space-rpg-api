@@ -14,25 +14,23 @@ import {
 import * as testedModule from './handler';
 
 tape('Player handler', (functions: tape.Test) => {
-	functions.test('getPlayerDetails()', (given: tape.Test) => {
-		given.test(
-			`GIVEN given a player
-    AND a StateService lacking this player`,
-			(when: tape.Test) =>
-				when.test(
-					`WHEN called with a Context having this player id
-    as a request path parameter`,
-					(test: tape.Test) => {
-						test.plan(3);
-						const id: Id = 'getPlayerDetailsFailure';
-						const loggerService = loggerServiceFactory();
-						const stateService = stateServiceFactory({ loggerService })(
-							EMPTY_STATE,
-						);
-						const handlerResponse = testedModule.getPlayerDetails({
-							loggerService,
-							stateService,
-						})({ request: { params: { id } } } as any);
+	functions.test('getPlayerDetails()', (cases: tape.Test) => {
+		cases.test(
+			`GIVEN given a player and a StateService lacking this player
+	WHEN called with a Context having this player id as a request path parameter`,
+			(test: tape.Test) => {
+				test.plan(3);
+				const id: Id = 'getPlayerDetailsFailure';
+				const loggerService = loggerServiceFactory();
+				const stateService = stateServiceFactory({ loggerService })(
+					EMPTY_STATE,
+				);
+				return testedModule
+					.getPlayerDetails({
+						loggerService,
+						stateService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
 						test.equal(
 							handlerResponse.status,
 							400,
@@ -49,32 +47,31 @@ tape('Player handler', (functions: tape.Test) => {
 							'SHOULD sucessfully return a body having a string message property',
 						);
 						test.end();
-					},
-				),
+					});
+			},
 		);
 
-		given.test(
+		cases.test(
 			`GIVEN given a player that has no entity nearby
-    AND a StateService having this player`,
-			(when: tape.Test) =>
-				when.test(
-					`WHEN called with a Context having this player id
-    as a request path parameter`,
-					(test: tape.Test) => {
-						test.plan(2);
-						const id: Id = 'getPlayer';
-						const player = createPlayer({
-							id,
-						});
-						const loggerService = loggerServiceFactory();
-						const stateService = stateServiceFactory({ loggerService })({
-							...EMPTY_STATE,
-							entityList: [player],
-						});
-						const handlerResponse = testedModule.getPlayerDetails({
-							loggerService,
-							stateService,
-						})({ request: { params: { id } } } as any);
+	AND a StateService having this player
+	WHEN called with a Context having this player id as a request path parameter`,
+			(test: tape.Test) => {
+				test.plan(2);
+				const id: Id = 'getPlayer';
+				const player = createPlayer({
+					id,
+				});
+				const loggerService = loggerServiceFactory();
+				const stateService = stateServiceFactory({ loggerService })({
+					...EMPTY_STATE,
+					entityList: [player],
+				});
+				return testedModule
+					.getPlayerDetails({
+						loggerService,
+						stateService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
 						test.equal(
 							handlerResponse.status,
 							200,
@@ -86,11 +83,11 @@ tape('Player handler', (functions: tape.Test) => {
 							'SHOULD sucessfully return the expected (player, links) body',
 						);
 						test.end();
-					},
-				),
+					});
+			},
 		);
 
-		given.test(
+		cases.test(
 			`GIVEN a StateService having a player and at least two other entities
       AND that player is near two of them`,
 			(when: tape.Test) => {
@@ -133,21 +130,24 @@ tape('Player handler', (functions: tape.Test) => {
     as a request path parameter`,
 					(test: tape.Test) => {
 						test.plan(2);
-						const handlerResponse = testedModule.getPlayerDetails({
-							loggerService,
-							stateService,
-						})({ request: { params: { id } } });
-						test.equal(
-							handlerResponse.status,
-							200,
-							'SHOULD sucessfully return a 200 response',
-						);
-						test.deepEqual(
-							handlerResponse.json,
-							{ nearby: [nearbyEntity1, nearbyEntity2], player, links: [] },
-							'SHOULD sucessfully return a body with the expected properties',
-						);
-						test.end();
+						return testedModule
+							.getPlayerDetails({
+								loggerService,
+								stateService,
+							})({ request: { params: { id } } })
+							.then(handlerResponse => {
+								test.equal(
+									handlerResponse.status,
+									200,
+									'SHOULD sucessfully return a 200 response',
+								);
+								test.deepEqual(
+									handlerResponse.json,
+									{ nearby: [nearbyEntity1, nearbyEntity2], player, links: [] },
+									'SHOULD sucessfully return a body with the expected properties',
+								);
+								test.end();
+							});
 					},
 				);
 			},

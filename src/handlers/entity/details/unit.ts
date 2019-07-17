@@ -77,22 +77,29 @@ tape('Entity handler', (functions: tape.Test) => {
 				const stateService = stateServiceFactory({ loggerService })(
 					EMPTY_STATE,
 				);
-				const handlerResponse = testedModule.getEntityDetails({
-					loggerService,
-					stateService,
-				})({ request: { params: { id } } } as any);
-				test.equal(handlerResponse.status, 400, 'SHOULD return a 400 response');
-				test.equal(
-					typeof handlerResponse.json.code,
-					'string',
-					'SHOULD return a body having a string code property',
-				);
-				test.equal(
-					typeof handlerResponse.json.message,
-					'string',
-					'SHOULD return a body having a string message property',
-				);
-				test.end();
+				return testedModule
+					.getEntityDetails({
+						loggerService,
+						stateService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							400,
+							'SHOULD return a 400 response',
+						);
+						test.equal(
+							typeof handlerResponse.json.code,
+							'string',
+							'SHOULD return a body having a string code property',
+						);
+						test.equal(
+							typeof handlerResponse.json.message,
+							'string',
+							'SHOULD return a body having a string message property',
+						);
+						test.end();
+					});
 			},
 		);
 
@@ -109,22 +116,29 @@ tape('Entity handler', (functions: tape.Test) => {
 					...EMPTY_STATE,
 					entityList: [entity],
 				});
-				const handlerResponse = testedModule.getEntityDetails({
-					loggerService,
-					stateService,
-				})({ request: { params: { id } } } as any);
-				test.equal(handlerResponse.status, 200, 'SHOULD return a 200 response');
-				test.deepEqual(
-					handlerResponse.json.entity,
-					entity,
-					'SHOULD return a body having a entity object',
-				);
-				test.deepEqual(
-					handlerResponse.json.links,
-					[],
-					'SHOULD return a body having an empty link list',
-				);
-				test.end();
+				return testedModule
+					.getEntityDetails({
+						loggerService,
+						stateService,
+					})({ request: { params: { id } } } as any)
+					.then(handlerResponse => {
+						test.equal(
+							handlerResponse.status,
+							200,
+							'SHOULD return a 200 response',
+						);
+						test.deepEqual(
+							handlerResponse.json.entity,
+							entity,
+							'SHOULD return a body having a entity object',
+						);
+						test.deepEqual(
+							handlerResponse.json.links,
+							[],
+							'SHOULD return a body having an empty link list',
+						);
+						test.end();
+					});
 			},
 		);
 	});

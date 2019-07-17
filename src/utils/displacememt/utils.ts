@@ -72,27 +72,25 @@ export const createExecutor: CreateExecutor = ({
 	loggerService.debug(
 		`New position for entity '${entityId}': ${JSON.stringify(newPosition)}`,
 	);
-	// Returning a promise here because it's needed but stateService.mutate
-	// is not async yet.
-	return Promise.resolve(
-		stateService.mutate({
+	return stateService
+		.mutate({
 			mutation: StateMutation.DISPLACE_ENTITY,
 			payload: {
 				entityId,
 				newPosition,
 			},
-		}),
-	).then(() => {
-		if (!isSamePosition(currentPosition, targetCoordinates)) {
-			return timeService.addAction(
-				createDisplacement({ loggerService, stateService })({
-					displacementId,
-					entityId,
-					target: targetCoordinates,
-				}),
-			);
-		}
-	});
+		})
+		.then(() => {
+			if (!isSamePosition(currentPosition, targetCoordinates)) {
+				return timeService.addAction(
+					createDisplacement({ loggerService, stateService })({
+						displacementId,
+						entityId,
+						target: targetCoordinates,
+					}),
+				);
+			}
+		});
 };
 
 export type CreateDisplacement = (deps: {

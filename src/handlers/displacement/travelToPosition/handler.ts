@@ -1,21 +1,20 @@
 import { LoggerService } from '../../../services/logger/types';
-import { Handler } from '../../../services/openapi-backend/types';
+import { wrapHandler } from '../../../services/openapi-backend/service';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
+import { StateService } from '../../../services/state/types';
 import { TimeService } from '../../../services/time/types';
-
-import { Id } from '../../../utils/id/types';
 
 import { getPropertyFromContextBody } from '../../../utils/context/utils';
 import { createDisplacement } from '../../../utils/displacememt/utils';
+import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
-import { StateService } from '../../../services/state/types';
-import { wrapHandler } from '../../../services/openapi-backend/service';
 
 type TravelToPosition = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
 	testId?: Id;
 	timeService: TimeService;
-}) => Handler;
+}) => AsyncHandler;
 export const travelToPosition: TravelToPosition = ({
 	loggerService,
 	stateService,
