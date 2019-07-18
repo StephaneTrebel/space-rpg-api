@@ -6,6 +6,7 @@ import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
 import * as testedModule from './service';
+import { StateMutation } from './types';
 
 tape('State Service', (functionTest: tape.Test) => {
 	functionTest.test('findEntity()', (cases: tape.Test) => {
@@ -113,6 +114,51 @@ tape('State Service', (functionTest: tape.Test) => {
 					'SHOULD return the entities that are near this entity',
 				);
 				test.end();
+			},
+		);
+	});
+
+	functionTest.test('mutate()', (cases: tape.Test) => {
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with a (mutation, payload) couple that throw an error`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const loggerService = loggerServiceFactory();
+				testedModule
+					.mutate({
+						loggerService,
+					})({
+						state: testedModule.EMPTY_STATE,
+					})({
+						mutation: 'this unknown mutation will make mutate() crash HARD',
+					} as any)
+					.catch(() => {
+						test.pass('SHOULD eventually throw an error');
+						test.end();
+					});
+			},
+		);
+
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with a (mutation, payload) couple that does not throw an error`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const loggerService = loggerServiceFactory();
+				testedModule
+					.mutate({
+						loggerService,
+					})({
+						state: testedModule.EMPTY_STATE,
+					})({
+						mutation: StateMutation.CREATE_PLAYER,
+						payload: 'it does not really matter',
+					})
+					.then(() => {
+						test.pass('SHOULD eventually return nothing');
+						test.end();
+					});
 			},
 		);
 	});

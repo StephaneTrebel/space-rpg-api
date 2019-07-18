@@ -9,6 +9,7 @@ import { createPlayer } from '../player/utils';
 
 import * as testedModule from './utils';
 import { EntityType } from '../entity/types';
+import { createPlanet } from '../planet/utils';
 
 tape('Spaceship utils', (functions: tape.Test) => {
 	functions.test('createSpaceship()', (cases: tape.Test) => {
@@ -86,9 +87,40 @@ tape('Spaceship utils', (functions: tape.Test) => {
 		);
 	});
 
+	functions.test('isEntityASpaceShip()', (cases: tape.Test) => {
+		cases.test('WHEN called with a Player entity', (test: tape.Test) => {
+			test.plan(1);
+			test.equal(
+				testedModule.isEntityASpaceShip(createPlayer({})),
+				false,
+				'SHOULD return false',
+			);
+			test.end();
+		});
+		cases.test('WHEN called with a Planet entity', (test: tape.Test) => {
+			test.plan(1);
+			test.equal(
+				testedModule.isEntityASpaceShip(createPlanet({})),
+				false,
+				'SHOULD return false',
+			);
+			test.end();
+		});
+
+		cases.test('WHEN called with a Spaceship', (test: tape.Test) => {
+			test.plan(1);
+			test.equal(
+				testedModule.isEntityASpaceShip(testedModule.createSpaceship({})),
+				true,
+				'SHOULD return true',
+			);
+			test.end();
+		});
+	});
+
 	functions.test('getSpaceshipFromStateService()', (cases: tape.Test) => {
 		cases.test(
-			'WHEN given an spaceship id and a StateService lacking this spaceship',
+			'WHEN called with an spaceship id and a StateService lacking this spaceship',
 			(test: tape.Test) => {
 				test.plan(1);
 				const id: Id = 'bar';
@@ -115,7 +147,7 @@ tape('Spaceship utils', (functions: tape.Test) => {
 		);
 
 		cases.test(
-			'WHEN given an spaceship id and a StateService having this spaceship',
+			'WHEN called with an spaceship id and a StateService having this spaceship',
 			(test: tape.Test) => {
 				test.plan(1);
 				const id: Id = 'bar';
@@ -134,6 +166,35 @@ tape('Spaceship utils', (functions: tape.Test) => {
 					})({ id }),
 					spaceship,
 					'SHOULD return the spaceship details',
+				);
+				test.end();
+			},
+		);
+	});
+
+	functions.test('getBoardedEntities()', (cases: tape.Test) => {
+		cases.test(
+			'WHEN called with an spaceship id and a StateService having this spaceship',
+			(test: tape.Test) => {
+				test.plan(1);
+				const id: Id = 'bar';
+				const boardedList = [createPlayer({}), createPlayer({})];
+				const spaceship = testedModule.createSpaceship({
+					id,
+					onBoard: boardedList,
+				});
+				const loggerService = loggerServiceFactory();
+				const stateService = stateServiceFactory({ loggerService })({
+					...EMPTY_STATE,
+					entityList: [spaceship],
+				});
+				test.equal(
+					testedModule.getBoardedEntities({
+						loggerService,
+						stateService,
+					})({ id }),
+					boardedList,
+					'SHOULD return the entities list currently on board the spaceship',
 				);
 				test.end();
 			},

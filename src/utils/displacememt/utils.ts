@@ -4,20 +4,18 @@ import { LoggerService } from '../../services/logger/types';
 import { StateService, StateMutation, State } from '../../services/state/types';
 import { TimeService, ActionType, Executor } from '../../services/time/types';
 
-import {
-	Displacement,
-	DisplaceEntityPayload,
-} from '../../utils/displacememt/types';
-import { Id } from '../../utils/id/types';
-import { Position } from '../../utils/position/types';
-
+import { EntityType } from '../entity/types';
+import { Id } from '../id/types';
 import { isId } from '../id/utils';
+import { Position } from '../position/types';
 import {
 	getEntityCurrentPosition,
 	movePosition,
 	isSamePosition,
 } from '../position/utils';
-import { EntityType } from '../entity/types';
+import { getBoardedEntities } from '../spaceship/utils';
+
+import { Displacement, DisplaceEntityPayload } from './types';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -72,25 +70,38 @@ export const createExecutor: CreateExecutor = ({
 	loggerService.debug(
 		`New position for entity '${entityId}': ${JSON.stringify(newPosition)}`,
 	);
-	return stateService
-		.mutate({
+	return Promise.all([
+		stateService.mutate({
 			mutation: StateMutation.DISPLACE_ENTITY,
 			payload: {
 				entityId,
 				newPosition,
 			},
-		})
-		.then(() => {
-			if (!isSamePosition(currentPosition, targetCoordinates)) {
-				return timeService.addAction(
-					createDisplacement({ loggerService, stateService })({
-						displacementId,
-						entityId,
-						target: targetCoordinates,
-					}),
-				);
-			}
-		});
+		}),
+		...(
+			getBoardedEntities({ loggerService, stateService })({
+				id: entityId,
+			})
+		).map(entity =>
+			stateService.mutate({
+				mutation: StateMutation.DISPLACE_ENTITY,
+				payload: {
+					entityId: entity.id,
+					newPosition,
+				},
+			}),
+		),
+	]).then(() => {
+		if (!isSamePosition(currentPosition, targetCoordinates)) {
+			return timeService.addAction(
+				createDisplacement({ loggerService, stateService })({
+					displacementId,
+					entityId,
+					target: targetCoordinates,
+				}),
+			);
+		}
+	});
 };
 
 export type CreateDisplacement = (deps: {

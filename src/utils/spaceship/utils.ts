@@ -10,6 +10,7 @@ import {
 	BoardableEntityList,
 	Spaceship,
 } from '../../utils/spaceship/types';
+import { Entity } from '../entity/types';
 
 export const createSpaceship = (params: {
 	currentPosition?: Position;
@@ -26,6 +27,9 @@ export const createSpaceshipMutator = (currentState: State) => (
 	entityList: [...currentState.entityList, newSpaceship],
 });
 
+export const isEntityASpaceShip = (entity: Entity): entity is Spaceship =>
+	entity.type === EntityType.SPACESHIP;
+
 type GetSpaceshipFromStateService = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
@@ -37,11 +41,36 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
 	loggerService.debug('Entering getSpaceshipFromStateService…');
 	const entity = stateService.findEntity({
 		id,
-	}) as Spaceship;
-	loggerService.debug(
-		`Spaceship retrieved for id '${id}': ${JSON.stringify(entity)}`,
+	});
+	if (isEntityASpaceShip(entity)) {
+		loggerService.debug(
+			`Spaceship retrieved for id '${id}': ${JSON.stringify(entity)}`,
+		);
+		return entity;
+	}
+	throw new Error(
+		`Expected entity with '${id}' to be a spaceship, but it is a '${
+			entity.type
+		}'`,
 	);
-	return entity;
+};
+
+type GetBoardedEntities = (deps: {
+	loggerService: LoggerService;
+	stateService: StateService;
+}) => (params: { id: Id }) => BoardableEntityList;
+export const getBoardedEntities: GetBoardedEntities = ({
+	loggerService,
+	stateService,
+}) => ({ id }) => {
+	loggerService.debug('Entering getBoardedEntities…');
+	try {
+		return getSpaceshipFromStateService({ loggerService, stateService })({ id })
+			.onBoard;
+	} catch (error) {
+		loggerService.warning(error.message);
+		return [];
+	}
 };
 
 type HasBoarded = (

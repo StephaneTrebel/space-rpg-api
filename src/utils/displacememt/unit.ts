@@ -14,7 +14,9 @@ import { Displacement } from '../displacememt/types';
 import { EntityType } from '../entity/types';
 import { createEntity } from '../entity/utils';
 import { Id } from '../id/types';
+import { createPlayer } from '../player/utils';
 import { Position } from '../position/types';
+import { createSpaceship } from '../spaceship/utils';
 
 import * as testedModule from './utils';
 
@@ -178,9 +180,10 @@ tape('Displacement utils', (functions: tape.Test) => {
 				const stateService = stateServiceFactory({ loggerService })({
 					...EMPTY_STATE,
 					entityList: [
-						createEntity(EntityType.PLANET)({
+						createSpaceship({
 							currentPosition,
 							id: entityId,
+							onBoard: [createPlayer({})],
 						}),
 					],
 				});
