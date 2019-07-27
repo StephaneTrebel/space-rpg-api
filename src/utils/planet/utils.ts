@@ -1,7 +1,7 @@
-import { EntityType } from '../../utils/entity/types';
+import { Entity, EntityType } from '../entity/types';
 import { createEntity } from '../entity/utils';
+import { Id } from '../id/types';
 import { Position } from '../position/types';
-import { Id } from '../../utils/id/types';
 
 import { Planet } from './types';
 
@@ -19,3 +19,6 @@ export const createPlanet = (params: {
 		id: params.id || 'mockPlanet',
 		name: params.name || 'foo',
 	}) as Planet;
+
+export const isEntityAPlanet = (entity: Entity): entity is Planet =>
+	entity.type === EntityType.PLANET;

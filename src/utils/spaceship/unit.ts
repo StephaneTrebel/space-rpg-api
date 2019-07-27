@@ -87,11 +87,11 @@ tape('Spaceship utils', (functions: tape.Test) => {
 		);
 	});
 
-	functions.test('isEntityASpaceShip()', (cases: tape.Test) => {
+	functions.test('isEntityASpaceship()', (cases: tape.Test) => {
 		cases.test('WHEN called with a Player entity', (test: tape.Test) => {
 			test.plan(1);
 			test.equal(
-				testedModule.isEntityASpaceShip(createPlayer({})),
+				testedModule.isEntityASpaceship(createPlayer({})),
 				false,
 				'SHOULD return false',
 			);
@@ -100,7 +100,7 @@ tape('Spaceship utils', (functions: tape.Test) => {
 		cases.test('WHEN called with a Planet entity', (test: tape.Test) => {
 			test.plan(1);
 			test.equal(
-				testedModule.isEntityASpaceShip(createPlanet({})),
+				testedModule.isEntityASpaceship(createPlanet({})),
 				false,
 				'SHOULD return false',
 			);
@@ -110,7 +110,7 @@ tape('Spaceship utils', (functions: tape.Test) => {
 		cases.test('WHEN called with a Spaceship', (test: tape.Test) => {
 			test.plan(1);
 			test.equal(
-				testedModule.isEntityASpaceShip(testedModule.createSpaceship({})),
+				testedModule.isEntityASpaceship(testedModule.createSpaceship({})),
 				true,
 				'SHOULD return true',
 			);

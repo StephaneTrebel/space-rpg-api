@@ -13,9 +13,9 @@ import {
 	movePosition,
 	isSamePosition,
 } from '../position/utils';
-import { getBoardedEntities } from '../spaceship/utils';
+import { getBoardedEntities, isEntityASpaceship } from '../spaceship/utils';
 
-import { Displacement, DisplaceEntityPayload } from './types';
+import { Displacement } from './types';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -78,11 +78,9 @@ export const createExecutor: CreateExecutor = ({
 				newPosition,
 			},
 		}),
-		...(
-			getBoardedEntities({ loggerService, stateService })({
-				id: entityId,
-			})
-		).map(entity =>
+		...getBoardedEntities({ loggerService, stateService })({
+			id: entityId,
+		}).map(entity =>
 			stateService.mutate({
 				mutation: StateMutation.DISPLACE_ENTITY,
 				payload: {
@@ -143,14 +141,25 @@ export const createDisplacement: CreateDisplacement = ({
 	throw new Error(`Entity type '${entity.type}' cannot be displaced`);
 };
 
+const CONSUMPTION = 1;
+
 export const displaceEntityMutator = (currentState: State) => ({
 	entityId,
 	newPosition,
-}: DisplaceEntityPayload): State => ({
+}: {
+	entityId: Id;
+	newPosition: Position;
+}): State => ({
 	...currentState,
 	entityList: currentState.entityList.map(entity =>
 		entity.id === entityId
-			? { ...entity, currentPosition: newPosition }
+			? {
+					...entity,
+					currentPosition: newPosition,
+					...(isEntityASpaceship(entity)
+						? { fuel: entity.fuel - CONSUMPTION }
+						: {}),
+			  }
 			: entity,
 	),
 });

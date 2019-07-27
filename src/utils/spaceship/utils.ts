@@ -27,7 +27,7 @@ export const createSpaceshipMutator = (currentState: State) => (
 	entityList: [...currentState.entityList, newSpaceship],
 });
 
-export const isEntityASpaceShip = (entity: Entity): entity is Spaceship =>
+export const isEntityASpaceship = (entity: Entity): entity is Spaceship =>
 	entity.type === EntityType.SPACESHIP;
 
 type GetSpaceshipFromStateService = (deps: {
@@ -42,7 +42,7 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
 	const entity = stateService.findEntity({
 		id,
 	});
-	if (isEntityASpaceShip(entity)) {
+	if (isEntityASpaceship(entity)) {
 		loggerService.debug(
 			`Spaceship retrieved for id '${id}': ${JSON.stringify(entity)}`,
 		);
