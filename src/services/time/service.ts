@@ -18,7 +18,6 @@ type CreateTimer = (deps: {
 }) => (params: { timeConfig: TimeConfig; fn: () => void }) => Subscription;
 export const createTimer: CreateTimer = ({ timerFn }) => ({ timeConfig, fn }) =>
 	timerFn(timeConfig.startDelay, timeConfig.period).subscribe(fn);
-
 interface TimeServiceInternal {
 	actionQueue: ActionList;
 	processQueue: ActionList;
@@ -69,7 +68,7 @@ type Start = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
 	timeService: TimeService;
-	createTimerFn: typeof createTimer;
+	createTimerFn: CreateTimer;
 	timerFn: typeof timer;
 }) => (internal: TimeServiceInternal) => () => void;
 export const start: Start = ({
@@ -83,6 +82,7 @@ export const start: Start = ({
 	loggerService.debug(`Starting time service`);
 	internal.timer = createTimerFn({ timerFn })({
 		fn: () => {
+			loggerService.debug(`Tick ! Timestamp is ${Date.now()}`);
 			internal.processQueue = [...internal.actionQueue];
 			internal.actionQueue = [];
 			return Promise.all(

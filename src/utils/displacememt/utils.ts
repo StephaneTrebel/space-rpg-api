@@ -57,13 +57,12 @@ export const createExecutor: CreateExecutor = ({
 	entityId,
 	displacementId,
 }) => ({ loggerService, stateService, timeService }) => {
-	const currentPosition: Position = getEntityCurrentPosition({
-		id: entityId,
-		loggerService,
-		stateService,
-	});
 	const newPosition: Position = movePosition({ loggerService })({
-		currentPosition,
+		currentPosition: getEntityCurrentPosition({
+			id: entityId,
+			loggerService,
+			stateService,
+		}),
 		distancePerTick: DISTANCE_PER_TICK,
 		targetPosition: targetCoordinates,
 	});
@@ -89,17 +88,24 @@ export const createExecutor: CreateExecutor = ({
 				},
 			}),
 		),
-	]).then(() => {
-		if (!isSamePosition(currentPosition, targetCoordinates)) {
-			return timeService.addAction(
-				createDisplacement({ loggerService, stateService })({
-					displacementId,
-					entityId,
-					target: targetCoordinates,
-				}),
-			);
-		}
-	});
+	]).then(() =>
+		!isSamePosition(
+			getEntityCurrentPosition({
+				id: entityId,
+				loggerService,
+				stateService,
+			}),
+			targetCoordinates,
+		)
+			? timeService.addAction(
+					createDisplacement({ loggerService, stateService })({
+						displacementId,
+						entityId,
+						target: targetCoordinates,
+					}),
+			  )
+			: undefined,
+	);
 };
 
 export type CreateDisplacement = (deps: {

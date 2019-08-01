@@ -49,6 +49,7 @@ export const instanciateApplication = ({
 			const assets: MainAssets = {
 				loggerService,
 				server,
+				stateService,
 				teardown: () => {
 					timeService.stop();
 					server.close();
