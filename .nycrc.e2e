@@ -10,7 +10,7 @@
   "check-coverage": true,
   "per-file": false,
   "statements": 96,
-  "branches": 82,
+  "branches": 83,
   "functions": 96,
   "lines": 96,
   "report-dir": "./coverage-e2e",
