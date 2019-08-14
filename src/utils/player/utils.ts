@@ -38,7 +38,7 @@ export const getPlayerFromStateService: GetPlayerFromStateService = ({
 	stateService,
 }) => ({ id }) => {
 	loggerService.debug('Entering getPlayerFromStateService…');
-	const entity = stateService.findEntity({
+	const entity = stateService.findEntityById({
 		id,
 	}) as Player;
 	loggerService.debug(

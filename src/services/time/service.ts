@@ -26,15 +26,12 @@ interface TimeServiceInternal {
 
 type FindAction = (deps: {
 	loggerService: LoggerService;
-}) => (internal: TimeServiceInternal) => (id: Id) => Action;
+}) => (internal: TimeServiceInternal) => (id: Id) => Action | undefined;
 export const findAction: FindAction = ({ loggerService }) => (
 	internal: TimeServiceInternal,
 ) => (id: Id) => {
 	loggerService.debug(`Looking for action having id: ${JSON.stringify(id)}`);
 	const maybeAction = internal.actionQueue.find(action => action.id === id);
-	if (!maybeAction) {
-		throw new Error(`Cannot find action with id '${id}'`);
-	}
 	return maybeAction;
 };
 

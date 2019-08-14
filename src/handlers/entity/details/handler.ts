@@ -16,7 +16,7 @@ export const getEntityFromStateService: GetEntityFromStateService = ({
 	stateService,
 }) => ({ id }) => {
 	loggerService.debug('Entering getEntityFromStateService…');
-	const action = stateService.findEntity({ id });
+	const action = stateService.findEntityById({ id });
 	loggerService.debug(
 		`Entity retrieved for id '${id}': ${JSON.stringify(action)}`,
 	);

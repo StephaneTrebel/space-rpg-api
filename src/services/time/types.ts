@@ -28,7 +28,7 @@ export interface TimeConfig {
 export interface TimeService {
 	addAction: (action: Action) => void;
 	cancelAction: (id: Id) => void;
-	findAction: (id: Id) => Action;
+	findAction: (id: Id) => Action | undefined;
 	start: () => void;
 	stop: () => void;
 }

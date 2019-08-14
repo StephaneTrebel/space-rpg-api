@@ -13,9 +13,10 @@ import {
 	movePosition,
 	isSamePosition,
 } from '../position/utils';
-import { getBoardedEntities, isEntityASpaceship } from '../spaceship/utils';
+import { getBoardedEntities } from '../spaceship/utils';
 
 import { Displacement } from './types';
+import { isThereAPlanetHere } from '../planet/utils';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -41,6 +42,72 @@ export const createDisplacementMock = ({
 	type: ActionType.DISPLACEMENT,
 });
 
+type DisplaceEntity = (deps: {
+	stateService: StateService;
+}) => (params: { entityId: Id; newPosition: Position }) => Promise<void>;
+export const displaceEntity: DisplaceEntity = ({ stateService }) => ({
+	entityId,
+	newPosition,
+}) =>
+	stateService.mutate({
+		mutation: StateMutation.DISPLACE_ENTITY,
+		payload: {
+			entityId,
+			newPosition,
+		},
+	});
+
+type DisplaceAllBoardedEntities = (deps: {
+	loggerService: LoggerService;
+	stateService: StateService;
+}) => (params: { entityId: Id; newPosition: Position }) => Promise<Array<void>>;
+export const displaceAllBoardedEntities: DisplaceAllBoardedEntities = ({
+	loggerService,
+	stateService,
+}) => ({ entityId, newPosition }) =>
+	Promise.all([
+		...getBoardedEntities({ loggerService, stateService })({
+			id: entityId,
+		}).map(entity =>
+			displaceEntity({ stateService })({ entityId: entity.id, newPosition }),
+		),
+	]);
+
+type ConsumeFuelOnEntity = (deps: {
+	stateService: StateService;
+}) => (params: { entityId: Id }) => Promise<void>;
+export const consumeFuelOnEntity: ConsumeFuelOnEntity = ({ stateService }) => ({
+	entityId,
+}) =>
+	stateService.mutate({
+		mutation: StateMutation.CONSUME_FUEL,
+		payload: {
+			entityId,
+		},
+	});
+
+type ExecutePostArrivalTriggers = (deps: {
+	loggerService: LoggerService;
+	stateService: StateService;
+}) => (params: {
+	entityId: Id;
+	targetCoordinates: Position;
+}) => Promise<Array<void>>;
+export const executePostArrivalTriggers: ExecutePostArrivalTriggers = ({
+	loggerService,
+	stateService,
+}) => ({ entityId, targetCoordinates }) =>
+	Promise.all([
+		isThereAPlanetHere({ loggerService, stateService })(targetCoordinates)
+			? stateService.mutate({
+					mutation: StateMutation.REFUEL_ENTITY,
+					payload: {
+						entityId,
+					},
+			  })
+			: undefined,
+	]);
+
 // Higher Order Function, hence the dependencies are the second step (they will
 // be the first call in the generated function)
 type CreateExecutor = (params: {
@@ -51,7 +118,7 @@ type CreateExecutor = (params: {
 	loggerService: LoggerService;
 	stateService: StateService;
 	timeService: TimeService;
-}) => Promise<void>;
+}) => Promise<Array<void>>;
 export const createExecutor: CreateExecutor = ({
 	targetCoordinates,
 	entityId,
@@ -66,30 +133,15 @@ export const createExecutor: CreateExecutor = ({
 		distancePerTick: DISTANCE_PER_TICK,
 		targetPosition: targetCoordinates,
 	});
-	loggerService.debug(
-		`New position for entity '${entityId}': ${JSON.stringify(newPosition)}`,
-	);
 	return Promise.all([
-		stateService.mutate({
-			mutation: StateMutation.DISPLACE_ENTITY,
-			payload: {
-				entityId,
-				newPosition,
-			},
+		consumeFuelOnEntity({ stateService })({ entityId }),
+		displaceEntity({ stateService })({ entityId, newPosition }),
+		displaceAllBoardedEntities({ loggerService, stateService })({
+			entityId,
+			newPosition,
 		}),
-		...getBoardedEntities({ loggerService, stateService })({
-			id: entityId,
-		}).map(entity =>
-			stateService.mutate({
-				mutation: StateMutation.DISPLACE_ENTITY,
-				payload: {
-					entityId: entity.id,
-					newPosition,
-				},
-			}),
-		),
 	]).then(() =>
-		!isSamePosition(
+		isSamePosition(
 			getEntityCurrentPosition({
 				id: entityId,
 				loggerService,
@@ -97,14 +149,19 @@ export const createExecutor: CreateExecutor = ({
 			}),
 			targetCoordinates,
 		)
-			? timeService.addAction(
-					createDisplacement({ loggerService, stateService })({
-						displacementId,
-						entityId,
-						target: targetCoordinates,
-					}),
-			  )
-			: undefined,
+			? executePostArrivalTriggers({ loggerService, stateService })({
+					entityId,
+					targetCoordinates,
+			  })
+			: [
+					timeService.addAction(
+						createDisplacement({ loggerService, stateService })({
+							displacementId,
+							entityId,
+							target: targetCoordinates,
+						}),
+					),
+			  ],
 	);
 };
 
@@ -121,7 +178,7 @@ export const createDisplacement: CreateDisplacement = ({
 	stateService,
 }) => ({ entityId, displacementId, target }) => {
 	loggerService.debug('Entering createDisplacement…');
-	const entity = stateService.findEntity({ id: entityId });
+	const entity = stateService.findEntityById({ id: entityId });
 	if ([EntityType.PLANET, EntityType.SPACESHIP].includes(entity.type)) {
 		const id: Id = displacementId || uuid.v4();
 		const targetCoordinates: Position = isId(target)
@@ -147,8 +204,6 @@ export const createDisplacement: CreateDisplacement = ({
 	throw new Error(`Entity type '${entity.type}' cannot be displaced`);
 };
 
-const CONSUMPTION = 1;
-
 export const displaceEntityMutator = (currentState: State) => ({
 	entityId,
 	newPosition,
@@ -162,9 +217,6 @@ export const displaceEntityMutator = (currentState: State) => ({
 			? {
 					...entity,
 					currentPosition: newPosition,
-					...(isEntityASpaceship(entity)
-						? { fuel: entity.fuel - CONSUMPTION }
-						: {}),
 			  }
 			: entity,
 	),

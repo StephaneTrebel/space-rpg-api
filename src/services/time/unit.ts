@@ -47,8 +47,7 @@ tape('Time Service', (functions: tape.Test) => {
 				test.plan(1);
 				const id = 'myUnknownId';
 				const loggerService = loggerServiceFactory();
-				test.throws(
-					() =>
+				test.equal(
 						testedModule.findAction({ loggerService })({
 							actionQueue: [
 								createDisplacementMock({
@@ -56,8 +55,8 @@ tape('Time Service', (functions: tape.Test) => {
 								}),
 							],
 							processQueue: [],
-						})(id + 'lol'),
-					'SHOULD throw an error',
+						})(id + 'lol'), undefined,
+					'SHOULD return undefined',
 				);
 				test.end();
 			},

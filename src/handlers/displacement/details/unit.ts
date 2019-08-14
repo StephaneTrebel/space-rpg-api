@@ -17,7 +17,7 @@ import { createDisplacementMock } from '../../../utils/displacememt/utils';
 
 import * as testedModule from './handler';
 
-tape('Displacement handler', (functions: tape.Test) => {
+tape('Displacement details handler', (functions: tape.Test) => {
 	functions.test('getDisplacementFromTimeService()', (cases: tape.Test) => {
 		cases.test(
 			'WHEN given an displacement id and a TimeService lacking this displacement',

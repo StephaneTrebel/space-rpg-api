@@ -39,7 +39,7 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
 	stateService,
 }) => ({ id }) => {
 	loggerService.debug('Entering getSpaceshipFromStateService…');
-	const entity = stateService.findEntity({
+	const entity = stateService.findEntityById({
 		id,
 	});
 	if (isEntityASpaceship(entity)) {

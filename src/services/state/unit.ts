@@ -22,7 +22,7 @@ tape('State Service', (functionTest: tape.Test) => {
 				const loggerService = loggerServiceFactory();
 				test.throws(
 					() =>
-						testedModule.findEntity({
+						testedModule.findEntityById({
 							loggerService,
 						})({
 							state: {
@@ -50,7 +50,7 @@ tape('State Service', (functionTest: tape.Test) => {
 				});
 				const loggerService = loggerServiceFactory();
 				test.equal(
-					testedModule.findEntity({
+					testedModule.findEntityById({
 						loggerService,
 					})({
 						state: { ...testedModule.EMPTY_STATE, entityList: [entity] },

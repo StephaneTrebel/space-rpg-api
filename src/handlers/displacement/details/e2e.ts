@@ -136,7 +136,7 @@ tape(
 				'SHOULD return a JSON body having the displacement id',
 			);
 			test.equals(
-				(stateSvc.findEntity({ id: spaceship.id }) as Spaceship).fuel,
+				(stateSvc.findEntityById({ id: spaceship.id }) as Spaceship).fuel,
 				expectedFuel,
 				'SHOULD update the spaceship fuel value',
 			);
@@ -249,7 +249,7 @@ tape(
 				'SHOULD return a JSON body having the displacement id',
 			);
 			test.equals(
-				(stateSvc.findEntity({ id: spaceship.id }) as Spaceship).fuel,
+				(stateSvc.findEntityById({ id: spaceship.id }) as Spaceship).fuel,
 				expectedFuel,
 				'SHOULD update the spaceship fuel value',
 			);

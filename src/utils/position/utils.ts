@@ -60,32 +60,34 @@ export const movePosition: MovePosition = ({ loggerService }) => ({
 	loggerService.debug(
 		`New coordinates (before cut-off): X-axis=${newX}, Y-axis=${newY}, Z-axis=${newZ}`,
 	);
-	return {
-		x:
-			incrementX > 0
-				? newX > targetPosition.x
-					? targetPosition.x
-					: newX
-				: newX < targetPosition.x
+	const finalX =
+		incrementX > 0
+			? newX > targetPosition.x
 				? targetPosition.x
-				: newX,
-		y:
-			incrementY > 0
-				? newY > targetPosition.y
-					? targetPosition.y
-					: newY
-				: newY < targetPosition.y
+				: newX
+			: newX < targetPosition.x
+			? targetPosition.x
+			: newX;
+	const finalY =
+		incrementY > 0
+			? newY > targetPosition.y
 				? targetPosition.y
-				: newY,
-		z:
-			incrementZ > 0
-				? newZ > targetPosition.z
-					? targetPosition.z
-					: newZ
-				: newZ < targetPosition.z
+				: newY
+			: newY < targetPosition.y
+			? targetPosition.y
+			: newY;
+	const finalZ =
+		incrementZ > 0
+			? newZ > targetPosition.z
 				? targetPosition.z
-				: newZ,
-	};
+				: newZ
+			: newZ < targetPosition.z
+			? targetPosition.z
+			: newZ;
+	loggerService.debug(
+		`Final coordinates : X-axis=${finalX}, Y-axis=${finalY}, Z-axis=${finalZ}`,
+	);
+	return { x: finalX, y: finalY, z: finalZ };
 };
 
 export const isSamePosition = (positionA: Position, positionB: Position) =>
@@ -103,5 +105,5 @@ export const getEntityCurrentPosition = ({
 	stateService: StateService;
 }): Position => {
 	loggerService.debug('Entering getEntityCurrentPosition…');
-	return stateService.findEntity({ id }).currentPosition;
+	return stateService.findEntityById({ id }).currentPosition;
 };
