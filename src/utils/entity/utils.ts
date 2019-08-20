@@ -46,8 +46,8 @@ export const createEntity: CreateEntity = type => params => {
 		case EntityType.SPACESHIP:
 			const spaceship: Spaceship = {
 				...commonEntityProps,
-				fuel: params.fuel || 1000,
-				onBoard: params.onBoard || [],
+				fuel: typeof params.fuel === 'undefined' ? 1000 : params.fuel,
+				onBoard: typeof params.onBoard === 'undefined' ? [] : params.onBoard,
 				type,
 			};
 			return spaceship;

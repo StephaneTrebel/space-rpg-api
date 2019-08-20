@@ -49,7 +49,7 @@ export const getSpaceshipFromStateService: GetSpaceshipFromStateService = ({
 		return entity;
 	}
 	throw new Error(
-		`Expected entity with '${id}' to be a spaceship, but it is a '${
+		`Expected entity with id '${id}' to be a spaceship, but it is a '${
 			entity.type
 		}'`,
 	);

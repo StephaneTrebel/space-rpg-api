@@ -5,11 +5,10 @@ import { runE2ETest, postPromisified } from '../../../e2e-utils';
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
-import { createEntity } from '../../../utils/entity/utils';
+import { createDisplacementMock } from '../../../utils/displacememt/utils';
 import { Id } from '../../../utils/id/types';
 import { Position } from '../../../utils/position/types';
-import { EntityType } from '../../../utils/entity/types';
-import { createDisplacementMock } from '../../../utils/displacememt/utils';
+import { createSpaceship } from "../../../utils/spaceship/utils";
 
 const ENDPOINT = '/displacement/travelToPosition';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
@@ -46,7 +45,7 @@ tape(ENDPOINT, (given: tape.Test) => {
 					return runE2ETest({
 						initialState: {
 							...EMPTY_STATE,
-							entityList: [createEntity(EntityType.PLANET)({ id: entityId })],
+							entityList: [createSpaceship({ id: entityId })],
 						},
 					})(caseTest)((test, assets) =>
 						postPromisified({
@@ -98,7 +97,7 @@ tape(ENDPOINT, (given: tape.Test) => {
 						initialActionQueue: [createDisplacementMock({ entityId })],
 						initialState: {
 							...EMPTY_STATE,
-							entityList: [createEntity(EntityType.PLANET)({ id: entityId })],
+							entityList: [createSpaceship({ id: entityId })],
 						},
 					})(caseTest)((test, assets) =>
 						postPromisified({

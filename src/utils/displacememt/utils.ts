@@ -5,18 +5,22 @@ import { StateService, StateMutation, State } from '../../services/state/types';
 import { TimeService, ActionType, Executor } from '../../services/time/types';
 
 import { EntityType } from '../entity/types';
+import { consumeFuelOnEntity, hasEnoughFuelForOneTick } from '../fuel/utils';
 import { Id } from '../id/types';
 import { isId } from '../id/utils';
+import { isThereAPlanetHere } from '../planet/utils';
 import { Position } from '../position/types';
 import {
 	getEntityCurrentPosition,
 	movePosition,
 	isSamePosition,
 } from '../position/utils';
-import { getBoardedEntities } from '../spaceship/utils';
+import {
+	getBoardedEntities,
+	getSpaceshipFromStateService,
+} from '../spaceship/utils';
 
 import { Displacement } from './types';
-import { isThereAPlanetHere } from '../planet/utils';
 
 const DISTANCE_PER_TICK = 1;
 
@@ -73,19 +77,6 @@ export const displaceAllBoardedEntities: DisplaceAllBoardedEntities = ({
 		),
 	]);
 
-type ConsumeFuelOnEntity = (deps: {
-	stateService: StateService;
-}) => (params: { entityId: Id }) => Promise<void>;
-export const consumeFuelOnEntity: ConsumeFuelOnEntity = ({ stateService }) => ({
-	entityId,
-}) =>
-	stateService.mutate({
-		mutation: StateMutation.CONSUME_FUEL,
-		payload: {
-			entityId,
-		},
-	});
-
 type ExecutePostArrivalTriggers = (deps: {
 	loggerService: LoggerService;
 	stateService: StateService;
@@ -124,45 +115,54 @@ export const createExecutor: CreateExecutor = ({
 	entityId,
 	displacementId,
 }) => ({ loggerService, stateService, timeService }) => {
-	const newPosition: Position = movePosition({ loggerService })({
-		currentPosition: getEntityCurrentPosition({
-			id: entityId,
-			loggerService,
-			stateService,
-		}),
-		distancePerTick: DISTANCE_PER_TICK,
-		targetPosition: targetCoordinates,
-	});
-	return Promise.all([
-		consumeFuelOnEntity({ stateService })({ entityId }),
-		displaceEntity({ stateService })({ entityId, newPosition }),
-		displaceAllBoardedEntities({ loggerService, stateService })({
-			entityId,
-			newPosition,
-		}),
-	]).then(() =>
-		isSamePosition(
-			getEntityCurrentPosition({
+	if (
+		hasEnoughFuelForOneTick(
+			getSpaceshipFromStateService({ loggerService, stateService })({
+				id: entityId,
+			}),
+		)
+	) {
+		const newPosition: Position = movePosition({ loggerService })({
+			currentPosition: getEntityCurrentPosition({
 				id: entityId,
 				loggerService,
 				stateService,
 			}),
-			targetCoordinates,
-		)
-			? executePostArrivalTriggers({ loggerService, stateService })({
-					entityId,
-					targetCoordinates,
-			  })
-			: [
-					timeService.addAction(
-						createDisplacement({ loggerService, stateService })({
-							displacementId,
-							entityId,
-							target: targetCoordinates,
-						}),
-					),
-			  ],
-	);
+			distancePerTick: DISTANCE_PER_TICK,
+			targetPosition: targetCoordinates,
+		});
+		return Promise.all([
+			consumeFuelOnEntity({ stateService })({ entityId }),
+			displaceEntity({ stateService })({ entityId, newPosition }),
+			displaceAllBoardedEntities({ loggerService, stateService })({
+				entityId,
+				newPosition,
+			}),
+		]).then(() =>
+			isSamePosition(
+				getEntityCurrentPosition({
+					id: entityId,
+					loggerService,
+					stateService,
+				}),
+				targetCoordinates,
+			)
+				? executePostArrivalTriggers({ loggerService, stateService })({
+						entityId,
+						targetCoordinates,
+				  })
+				: [
+						timeService.addAction(
+							createDisplacement({ loggerService, stateService })({
+								displacementId,
+								entityId,
+								target: targetCoordinates,
+							}),
+						),
+				  ],
+		);
+	}
+	return Promise.resolve([]);
 };
 
 export type CreateDisplacement = (deps: {

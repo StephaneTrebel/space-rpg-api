@@ -76,10 +76,8 @@ tape(
 			onBoard: [boardedEntityA, boardedEntityB],
 		});
 		const targetCoordinates: Position = { x: 999, y: 999, z: 999 };
-		const configService = configServiceFactory({
-			...DEFAULT_CONFIG,
-		});
-		const loggerService = loggerServiceFactory(DEFAULT_CONFIG.logger);
+		const configService = configServiceFactory(DEFAULT_CONFIG);
+		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })({
 			...EMPTY_STATE,
 			entityList: [entity, boardedEntityA, boardedEntityB],
@@ -167,10 +165,8 @@ tape(
 			onBoard: [],
 		});
 		const targetCoordinates: Position = { x: 0.1, y: 0.1, z: 0.1 };
-		const configService = configServiceFactory({
-			...DEFAULT_CONFIG,
-		});
-		const loggerService = loggerServiceFactory(DEFAULT_CONFIG.logger);
+		const configService = configServiceFactory(DEFAULT_CONFIG);
+		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })({
 			...EMPTY_STATE,
 			entityList: [entity],
@@ -218,7 +214,7 @@ tape(
 tape(
 	`${moduleName}
 	createExecutor()
-		GIVEN a displaceable entity having two boarded entities
+		GIVEN a displaceable entity
 		WHEN called with the displaceable entity id
 		AND a displacement id
 		AND a position that is reachable by the entity in a single tick
@@ -234,15 +230,13 @@ tape(
 			onBoard: [],
 		});
 		const targetCoordinates: Position = { x: 0.1, y: 0.1, z: 0.1 };
-		const configService = configServiceFactory({
-			...DEFAULT_CONFIG,
-		});
-		const loggerService = loggerServiceFactory(DEFAULT_CONFIG.logger);
+		const configService = configServiceFactory(DEFAULT_CONFIG);
+		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })({
 			...EMPTY_STATE,
 			entityList: [
 				entity,
-				createPlanet({ currentPosition: targetCoordinates }),
+				createPlanet({ currentPosition: targetCoordinates, id: 'any-planet' }),
 			],
 		});
 		const timeService = timeServiceFactory({
@@ -275,6 +269,77 @@ tape(
 					'SHOULD set entity position to the target coordinates',
 				);
 				test.deepEqual(resultEntity.fuel, 1000, 'SHOULD refuel entity');
+				const resultDisplacement = timeService.findAction(displacementId);
+				test.deepEqual(
+					resultDisplacement,
+					undefined,
+					'SHOULD not add another displacement in Time service',
+				);
+			});
+	},
+);
+
+tape(
+	`${moduleName}
+	createExecutor()
+		GIVEN a displaceable entity that has not enough fuel for even one tick
+		WHEN called with the displaceable entity id
+		AND a displacement id
+		AND any position`,
+	(test: tape.Test) => {
+		test.plan(4);
+		const displacementId: Id = 'foo';
+		const entityId: Id = 'bar';
+		const entity = createSpaceship({
+			currentPosition: { x: 0, y: 0, z: 0 },
+			fuel: 0,
+			id: entityId,
+			onBoard: [],
+		});
+		const targetCoordinates: Position = { x: 100, y: 100, z: 100 };
+		const configService = configServiceFactory(DEFAULT_CONFIG);
+		const loggerService = loggerServiceFactory();
+		const stateService = stateServiceFactory({ loggerService })({
+			...EMPTY_STATE,
+			entityList: [
+				entity,
+				createPlanet({ currentPosition: targetCoordinates, id: 'any-planet' }),
+			],
+		});
+		const timeService = timeServiceFactory({
+			configService,
+			loggerService,
+			stateService,
+		})();
+		return testedModule
+			.createExecutor({
+				displacementId,
+				entityId,
+				targetCoordinates,
+			})({
+				loggerService,
+				stateService,
+				timeService,
+			})
+			.then(() => {
+				test.pass('SHOULD return a function that returns a Promise');
+				const resultEntity = stateService.findEntityById({
+					id: entityId,
+				}) as Spaceship;
+				test.deepEqual(
+					resultEntity.currentPosition,
+					{
+						x: 0,
+						y: 0,
+						z: 0,
+					},
+					'SHOULD not change entity position',
+				);
+				test.deepEqual(
+					resultEntity.fuel,
+					0,
+					'SHOULD left the entity fuel untouched',
+				);
 				const resultDisplacement = timeService.findAction(displacementId);
 				test.deepEqual(
 					resultDisplacement,
@@ -355,14 +420,12 @@ tape(
 		test.plan(3);
 		const entityId: Id = 'foo';
 		const currentPosition: Position = { x: 0, y: 0, z: 0 };
-		const configService = configServiceFactory({
-			...DEFAULT_CONFIG,
-		});
+		const configService = configServiceFactory(DEFAULT_CONFIG);
 		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })({
 			...EMPTY_STATE,
 			entityList: [
-				createEntity(EntityType.PLANET)({
+				createSpaceship({
 					currentPosition,
 					id: entityId,
 				}),
@@ -412,13 +475,13 @@ tape(
 tape(
 	`${moduleName}
 	createDisplacement()
-		GIVEN an entity that is not located at its target coordinates
+		GIVEN a displaceable entity that is not located at its target coordinates
     WHEN called with this entity id and target coordinates`,
 	(test: tape.Test) => {
 		test.plan(3);
 		const entityId: Id = 'foo';
 		const currentPosition: Position = { x: 0, y: 0, z: 0 };
-		const configService = configServiceFactory({ ...DEFAULT_CONFIG });
+		const configService = configServiceFactory(DEFAULT_CONFIG);
 		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })({
 			...EMPTY_STATE,

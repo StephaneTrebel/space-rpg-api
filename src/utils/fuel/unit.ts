@@ -128,6 +128,66 @@ tape(
 
 tape(
 	`${moduleName}
+	hasEnoughFuelForOneTick()
+		GIVEN a fuel-able entity that has not enough fuel for one tick
+		WHEN called with this entity`,
+	(test: tape.Test) => {
+		test.plan(1);
+		test.deepEqual(
+			testedModule.hasEnoughFuelForOneTick(
+				createSpaceship({
+					fuel: testedModule.FUEL_CONSUMPTION - 1,
+				}),
+			),
+			false,
+			'SHOULD return false',
+		);
+	},
+);
+
+tape(
+	`${moduleName}
+	hasEnoughFuelForOneTick()
+		GIVEN a fuel-able entity that has enough fuel for one tick
+		WHEN called with this entity`,
+	(test: tape.Test) => {
+		test.plan(1);
+		test.deepEqual(
+			testedModule.hasEnoughFuelForOneTick(
+				createSpaceship({
+					fuel: testedModule.FUEL_CONSUMPTION + 1,
+				}),
+			),
+			true,
+			'SHOULD return true',
+		);
+	},
+);
+
+tape(
+	`${moduleName}
+	consumeFuelOnEntity()
+		GIVEN an entity
+		WHEN called with a State service and this entity`,
+	(test: tape.Test) => {
+		test.plan(2);
+		testedModule
+			.consumeFuelOnEntity({
+				stateService: {
+					mutate: () =>
+						Promise.resolve(
+							test.pass('SHOULD request a State update for this entity'),
+						),
+				},
+			} as any)({
+				entityId: 'foo',
+			})
+			.then(() => test.pass('SHOULD return a Promise'));
+	},
+);
+
+tape(
+	`${moduleName}
 	refuelEntityMutator()
 		GIVEN a state that has a non fuel-able entity
 		WHEN called with this state AND that entity id`,
