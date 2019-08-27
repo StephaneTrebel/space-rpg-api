@@ -5,11 +5,7 @@ import { EntityType } from '../../utils/entity/types';
 import { createEntity } from '../entity/utils';
 import { Position } from '../position/types';
 import { Id } from '../../utils/id/types';
-import {
-	BoardableEntity,
-	BoardableEntityList,
-	Spaceship,
-} from '../../utils/spaceship/types';
+import { BoardableEntityList, Spaceship } from '../../utils/spaceship/types';
 import { Entity } from '../entity/types';
 
 export const createSpaceship = (params: {
@@ -71,34 +67,4 @@ export const getBoardedEntities: GetBoardedEntities = ({
 		loggerService.warning(error.message);
 		return [];
 	}
-};
-
-type HasBoarded = (
-	spaceship: Spaceship,
-) => (entity: BoardableEntity) => boolean;
-export const hasBoarded: HasBoarded = spaceship => entity =>
-	!!spaceship.onBoard.find(e => e.id === entity.id);
-
-type BoardSpaceship = (
-	spaceship: Spaceship,
-) => (
-	entity: BoardableEntity,
-) => { spaceship: Spaceship; entity: BoardableEntity };
-export const boardSpaceship: BoardSpaceship = spaceship => entity => {
-	if (hasBoarded(spaceship)(entity)) {
-		throw new Error(
-			`Entity '${entity.id}' has already boarded spaceship '${spaceship.id}'`,
-		);
-	}
-	const newSpaceship: Spaceship = {
-		...spaceship,
-		onBoard: [...spaceship.onBoard, entity],
-	};
-	return {
-		entity: {
-			...entity,
-			boardedIn: newSpaceship,
-		},
-		spaceship: newSpaceship,
-	};
 };

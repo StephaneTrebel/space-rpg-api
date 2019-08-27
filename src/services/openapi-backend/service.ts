@@ -16,7 +16,7 @@ import {
 import { selfHealthPing } from '../../handlers/miscellaneous/self-health/handler';
 import { getSpecification } from '../../handlers/miscellaneous/specification/handler';
 import { getVersions } from '../../handlers/miscellaneous/versions/handler';
-import { addNewPlayer } from '../../handlers/player/create/handler';
+import { addNewPlayerHandler } from '../../handlers/player/create/handler';
 import { getPlayerDetails } from '../../handlers/player/details/handler';
 import { root } from '../../handlers/root/handler';
 
@@ -133,7 +133,7 @@ export const createBackend: CreateBackend = deps => specification =>
 				withContext: true,
 			});
 			apiBackend.register({
-				addNewPlayer: addNewPlayer(deps),
+				addNewPlayer: addNewPlayerHandler(deps),
 				getDisplacement: getDisplacement(deps),
 				getEntityDetails: getEntityDetails(deps),
 				getPlayerDetails: getPlayerDetails(deps),

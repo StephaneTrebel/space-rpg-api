@@ -24,8 +24,19 @@ post:
             type: object
             required:
               - player
+              - spaceship
             properties:
               player:
+                type: object
+                required:
+                  - id
+                  - name
+                properties:
+                  id:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/id'
+                  name:
+                    $ref: '../../../specifications/components.yaml#/components/schemas/name'
+              spaceship:
                 type: object
                 required:
                   - currentPosition
