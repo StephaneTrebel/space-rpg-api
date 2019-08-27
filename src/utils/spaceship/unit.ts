@@ -6,7 +6,6 @@ import { EMPTY_STATE, stateServiceFactory } from '../../services/state/service';
 import { EntityType } from '../entity/types';
 import { Id } from '../id/types';
 import { createPlanet } from '../planet/utils';
-import { PlayerCarryingEntity } from '../player/types';
 import { createPlayer } from '../player/utils';
 
 import * as testedModule from './utils';
@@ -280,98 +279,6 @@ tape(
 			})({ id }),
 			boardedList,
 			'SHOULD return the entities list currently on board the spaceship',
-		);
-		test.end();
-	},
-);
-
-tape(
-	`${moduleName}
-	hasBoarded()
-		GIVEN a spaceship and a player not already on this spaceship
-		WHEN called with this spaceship and this player`,
-	(test: tape.Test) => {
-		test.plan(1);
-		const player = createPlayer({});
-		const spaceship = testedModule.createSpaceship({
-			onBoard: [],
-		});
-		test.equal(
-			testedModule.hasBoarded(spaceship)(player),
-			false,
-			'SHOULD return false',
-		);
-		test.end();
-	},
-);
-
-tape(
-	`${moduleName}
-	hasBoarded()
-		GIVEN a spaceship and a player already on this spaceship
-		WHEN called with this spaceship and this player`,
-	(test: tape.Test) => {
-		test.plan(1);
-		const player = createPlayer({ id: 'foo' });
-		const spaceship = testedModule.createSpaceship({
-			onBoard: [player],
-		});
-		test.deepEqual(
-			testedModule.hasBoarded(spaceship)(player),
-			true,
-			'SHOULD return true',
-		);
-		test.end();
-	},
-);
-
-tape(
-	`${moduleName}
-	boardSpaceship()
-		GIVEN a spaceship and a player already on this spaceship
-		WHEN called with this spaceship and this entity`,
-	(test: tape.Test) => {
-		test.plan(1);
-		const player = createPlayer({ id: 'foo' });
-		const spaceship = testedModule.createSpaceship({
-			onBoard: [player],
-		});
-		test.throws(
-			() => testedModule.boardSpaceship(spaceship)(player),
-			'SHOULD throw an error',
-		);
-		test.end();
-	},
-);
-
-tape(
-	`${moduleName}
-	boardSpaceship()
-		GIVEN a spaceship and a player not already on this spaceship
-		WHEN called with this spaceship and this entity`,
-	(test: tape.Test) => {
-		test.plan(3);
-		const playerA = createPlayer({ id: 'foo' });
-		const playerB = createPlayer({ id: 'bar' });
-		const playerC = createPlayer({ id: 'qux' });
-		const spaceship = testedModule.createSpaceship({
-			onBoard: [playerA, playerB],
-		});
-		const couple = testedModule.boardSpaceship(spaceship)(playerC);
-		test.deepEqual(
-			couple.spaceship.onBoard,
-			[playerA, playerB, playerC],
-			'SHOULD return an object having a spaceship property that has the player added to its onboard list',
-		);
-		test.equal(
-			couple.entity.id,
-			playerC.id,
-			'SHOULD return an object having an entity property that has the same id as the player',
-		);
-		test.equal(
-			(couple.entity.boardedIn as PlayerCarryingEntity).id,
-			spaceship.id,
-			'SHOULD return an object having an entity property that is boarded in the spaceship',
 		);
 		test.end();
 	},
