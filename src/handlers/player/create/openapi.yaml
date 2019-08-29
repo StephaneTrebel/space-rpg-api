@@ -25,6 +25,7 @@ post:
             required:
               - player
               - spaceship
+              - text
             properties:
               player:
                 type: object
@@ -49,6 +50,8 @@ post:
                     $ref: '../../../specifications/components.yaml#/components/schemas/id'
                   name:
                     $ref: '../../../specifications/components.yaml#/components/schemas/name'
+              text:
+                $ref: '../../../specifications/components.yaml#/components/schemas/text'
       links:
         Ping:
           $ref: '../../../specifications/components.yaml#/components/links/Ping'

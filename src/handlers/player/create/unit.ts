@@ -7,7 +7,8 @@ import {
 } from '../../../services/state/service';
 
 import * as testedModule from './handler';
-import { DEFAULT_DEBUG_CONFIG } from '../../../services/config/service';
+import { createSpaceship } from '../../../utils/spaceship/utils';
+import { createPlayer } from '../../../utils/player/utils';
 
 const moduleName = 'Player creation handler';
 
@@ -22,7 +23,7 @@ tape(
 		const loggerService = loggerServiceFactory();
 		return testedModule
 			.addNewPlayer({
-				loggerService: loggerServiceFactory(DEFAULT_DEBUG_CONFIG.logger),
+				loggerService: loggerServiceFactory(),
 				stateService: stateServiceFactory({ loggerService })({
 					...EMPTY_STATE,
 				}),
@@ -65,16 +66,39 @@ tape(
 
 tape(
 	`${moduleName}
+	getNewPlayerText()
+		GIVEN a LoggerService
+		WHEN called with a new player and spaceship`,
+	(test: tape.Test) => {
+		test.plan(1);
+		const MOCK_PLAYER_NAME = 'newPlayer';
+		const MOCK_SPACESHIP_NAME = 'newSpaceship';
+		test.equal(
+			typeof testedModule.getNewPlayerText({
+				loggerService: loggerServiceFactory(),
+			})({
+				newPlayer: createPlayer({ name: MOCK_PLAYER_NAME }),
+				newSpaceship: createSpaceship({ name: MOCK_SPACESHIP_NAME }),
+			}),
+			'string',
+			'SHOULD return a string',
+		);
+		test.end();
+	},
+);
+
+tape(
+	`${moduleName}
 	addNewPlayerHandler()
 		GIVEN a StateService and a LoggerService
 		WHEN called with a request object that has a name property in its body`,
 	(test: tape.Test) => {
-		test.plan(2);
+		test.plan(5);
 		const MOCK_NAME = 'addNewPlayerHandler';
 		const loggerService = loggerServiceFactory();
 		return testedModule
 			.addNewPlayerHandler({
-				loggerService: loggerServiceFactory(DEFAULT_DEBUG_CONFIG.logger),
+				loggerService: loggerServiceFactory(),
 				stateService: stateServiceFactory({ loggerService })({
 					...EMPTY_STATE,
 				}),
@@ -84,6 +108,21 @@ tape(
 			.then((handlerResponse: any) => {
 				const body = handlerResponse.json;
 				test.equal(handlerResponse.status, 201, 'SHOULD return a 201 status');
+				test.equal(
+					!!body.player,
+					true,
+					'SHOULD have a truthy player body property',
+				);
+				test.equal(
+					!!body.spaceship,
+					true,
+					'SHOULD have a truthy spaceship body property',
+				);
+				test.equal(
+					!!body.text,
+					true,
+					'SHOULD have a truthy text body property',
+				);
 				test.deepEqual(
 					body.links,
 					[
