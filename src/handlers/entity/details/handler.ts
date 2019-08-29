@@ -33,11 +33,16 @@ export const getEntityDetails: GetEntityDetails = ({
 }) =>
 	wrapHandler({ loggerService })((context: any) => {
 		loggerService.debug('Entering getEntity handler…');
-		const entity = getEntityFromStateService({
-			loggerService,
-			stateService,
-		})({
-			id: getPropertyFromContextRequest('id')(context) as Id,
-		});
-		return { json: { links: [], entity }, status: 200 };
+		return {
+			json: {
+				entity: getEntityFromStateService({
+					loggerService,
+					stateService,
+				})({
+					id: getPropertyFromContextRequest('id')(context) as Id,
+				}),
+				links: [],
+			},
+			status: 200,
+		};
 	});
