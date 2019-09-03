@@ -53,3 +53,22 @@ export const createEntity: CreateEntity = type => params => {
 			return spaceship;
 	}
 };
+
+type GetEntityDetailsText = (params: { entity: Entity }) => string;
+export const getEntityDetailsText: GetEntityDetailsText = ({ entity }) => {
+	const dict: { [key in EntityType]: (entity: Entity) => string } = {
+		[EntityType.MOCK]: e => e.name,
+		[EntityType.PLANET]: e =>
+			`Planet ${e.name} is located at {x:${e.currentPosition.x}, y:${
+				e.currentPosition.y
+			}, z:${
+				e.currentPosition.z
+			} }. It is your average-sized chunk of rock that has been colonized by terrans long ago.`,
+		[EntityType.PLAYER]: e =>
+			`${
+				e.name
+			} is a player. Whether they are alive or dead is a matter of speculation, and you will have to see it yourself...`,
+		[EntityType.SPACESHIP]: e => `${e.name} is a flamboyant spaceship.`,
+	};
+	return dict[entity.type](entity);
+};
