@@ -21,7 +21,7 @@ tape(
 		WHEN called with an entity id and a StateService lacking this entity`,
 	(test: tape.Test) => {
 		test.plan(1);
-		const id: Id = 'bar';
+		const id: Id = 'getEntityFromStateServiceLacking';
 		const entity: Entity = createEntity(EntityType.MOCK)({
 			id,
 		});
@@ -51,7 +51,7 @@ tape(
 		WHEN called with an entity id and a StateService having this entity`,
 	(test: tape.Test) => {
 		test.plan(1);
-		const id: Id = 'bar';
+		const id: Id = 'getEntityFromStateServiceHaving';
 		const entity: Entity = createEntity(EntityType.MOCK)({
 			id,
 		});
@@ -83,19 +83,20 @@ tape(
 		const loggerService = loggerServiceFactory();
 		const stateService = stateServiceFactory({ loggerService })(EMPTY_STATE);
 		return testedModule
-			.getEntityDetails({
+			.getEntityDetailsHandler({
 				loggerService,
 				stateService,
 			})({ request: { params: { id } } } as any)
 			.then(handlerResponse => {
+				const body = handlerResponse.json;
 				test.equal(handlerResponse.status, 400, 'SHOULD return a 400 response');
 				test.equal(
-					typeof handlerResponse.json.code,
+					typeof body.code,
 					'string',
 					'SHOULD return a body having a string code property',
 				);
 				test.equal(
-					typeof handlerResponse.json.message,
+					typeof body.message,
 					'string',
 					'SHOULD return a body having a string message property',
 				);
@@ -110,7 +111,7 @@ tape(
 		GIVEN a StateService and a LoggerService
 		WHEN called with an entity and a StateService having this entity`,
 	(test: tape.Test) => {
-		test.plan(3);
+		test.plan(4);
 		const id: Id = 'getEntity';
 		const entity: Entity = createEntity(EntityType.MOCK)({
 			id,
@@ -121,21 +122,27 @@ tape(
 			entityList: [entity],
 		});
 		return testedModule
-			.getEntityDetails({
+			.getEntityDetailsHandler({
 				loggerService,
 				stateService,
 			})({ request: { params: { id } } } as any)
 			.then(handlerResponse => {
+				const body = handlerResponse.json;
 				test.equal(handlerResponse.status, 200, 'SHOULD return a 200 response');
 				test.deepEqual(
-					handlerResponse.json.entity,
+					body.entity,
 					entity,
 					'SHOULD return a body having a entity object',
 				);
 				test.deepEqual(
-					handlerResponse.json.links,
+					body.links,
 					[],
 					'SHOULD return a body having an empty link list',
+				);
+				test.equal(
+					typeof body.text,
+					'string',
+					'SHOULD return a body having a string text property',
 				);
 				test.end();
 			});

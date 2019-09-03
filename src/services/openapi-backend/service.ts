@@ -8,7 +8,7 @@ import { Context, Request } from 'openapi-backend';
 import { getDisplacement } from '../../handlers/displacement/details/handler';
 import { travelToEntity } from '../../handlers/displacement/travelToEntity/handler';
 import { travelToPosition } from '../../handlers/displacement/travelToPosition/handler';
-import { getEntityDetails } from '../../handlers/entity/details/handler';
+import { getEntityDetailsHandler } from '../../handlers/entity/details/handler';
 import {
 	notFound,
 	validationFail,
@@ -135,7 +135,7 @@ export const createBackend: CreateBackend = deps => specification =>
 			apiBackend.register({
 				addNewPlayer: addNewPlayerHandler(deps),
 				getDisplacement: getDisplacement(deps),
-				getEntityDetails: getEntityDetails(deps),
+				getEntityDetails: getEntityDetailsHandler(deps),
 				getPlayerDetails: getPlayerDetails(deps),
 				getSpecification: getSpecification(apiBackend),
 				getVersions: getVersions(deps),
