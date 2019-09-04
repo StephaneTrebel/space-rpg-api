@@ -17,7 +17,7 @@ tape(
 	GIVEN any configuration
 	WHEN request has an unknown player id`,
 	(test: tape.Test) => {
-		const id: Id = `${ENDPOINT}-unknown`;
+		const id: Id = `unknown`;
 		return runE2ETest({})(test)((t, assets) =>
 			getPromisified({
 				assets,
@@ -62,7 +62,7 @@ tape(
 					uri: URL(id),
 				},
 			}).then(response => {
-				t.plan(3);
+				t.plan(4);
 				const EXPECTED_RETURN_CODE = 200;
 				const body = JSON.parse(response.body);
 				t.equals(
@@ -74,6 +74,11 @@ tape(
 					body.player.id,
 					id,
 					'SHOULD return a JSON body having the player details',
+				);
+				t.equal(
+					typeof body.text,
+					"string",
+					'SHOULD return a descriptive text',
 				);
 				t.deepEqual(
 					body.links,
