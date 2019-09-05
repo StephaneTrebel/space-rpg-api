@@ -53,18 +53,19 @@ tape(
 				request: { requestBody: { entityId: source.id, targetId: 'lol' } },
 			} as any)
 			.then(handlerResponse => {
+				const body = handlerResponse.json;
 				test.equal(
 					handlerResponse.status,
 					400,
 					'SHOULD sucessfully return a 400 response',
 				);
 				test.equal(
-					typeof handlerResponse.json.code,
+					typeof body.code,
 					'string',
 					'SHOULD sucessfully return a body having a code property',
 				);
 				test.equal(
-					typeof handlerResponse.json.message,
+					typeof body.message,
 					'string',
 					'SHOULD sucessfully return a body having a message property',
 				);
@@ -108,18 +109,19 @@ tape(
 				request: { requestBody: { entityId: 'lol', targetId: target.id } },
 			} as any)
 			.then(handlerResponse => {
+				const body = handlerResponse.json;
 				test.equal(
 					handlerResponse.status,
 					400,
 					'SHOULD sucessfully return a 400 response',
 				);
 				test.equal(
-					typeof handlerResponse.json.code,
+					typeof body.code,
 					'string',
 					'SHOULD sucessfully return a body having a code property',
 				);
 				test.equal(
-					typeof handlerResponse.json.message,
+					typeof body.message,
 					'string',
 					'SHOULD sucessfully return a body having a message property',
 				);
@@ -134,7 +136,7 @@ tape(
 		GIVEN a State that has two entities
     WHEN called with both entities as source and target`,
 	(test: tape.Test) => {
-		test.plan(3);
+		test.plan(4);
 		const source = createSpaceship({
 			currentPosition: {
 				x: 0,
@@ -173,18 +175,19 @@ tape(
 				},
 			} as any)
 			.then(handlerResponse => {
+				const body = handlerResponse.json;
 				test.equal(
 					handlerResponse.status,
 					201,
 					'SHOULD sucessfully return a 201 response',
 				);
 				test.equal(
-					typeof handlerResponse.json.displacementId,
+					typeof body.displacementId,
 					'string',
 					'SHOULD sucessfully return a body having a displacementId property',
 				);
 				test.deepEqual(
-					handlerResponse.json.links,
+					body.links,
 					[
 						{
 							href: `/displacement/${handlerResponse.json.displacementId}`,
@@ -192,6 +195,11 @@ tape(
 						},
 					],
 					'SHOULD sucessfully return a body having a link to /displacement endpoint',
+				);
+				test.equal(
+					typeof body.text,
+					'string',
+					'SHOULD sucessfully return a body having a text property',
 				);
 				test.end();
 			});

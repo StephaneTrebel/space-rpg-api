@@ -102,7 +102,7 @@ tape(
 tape(
 	`${ENDPOINT}/:id
 	GIVEN an existing displacement in a started TimeService
-    AND this displacement will not be done after three ticks`,
+  AND this displacement will not be done after three ticks`,
 	(cases: tape.Test) => {
 		cases.plan(12);
 		const displacementId: Id = 'success_over_time_2';
@@ -215,7 +215,7 @@ tape(
 tape(
 	`${ENDPOINT}/:id
 	GIVEN an existing displacement in a started TimeService
-    AND this displacement will be done after two ticks`,
+  AND this displacement will be done after two ticks`,
 	(cases: tape.Test) => {
 		cases.plan(14);
 		const displacementId: Id = 'success_over_time';

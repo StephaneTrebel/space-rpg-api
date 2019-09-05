@@ -39,6 +39,7 @@ tape(
 	GIVEN two existing entities
 	WHEN request has a valid body referencing both entities as source and target`,
 	(test: tape.Test) => {
+		test.plan(4);
 		const source = createEntity(EntityType.SPACESHIP)({
 			id: `${ENDPOINT} Success Source`,
 		});
@@ -57,20 +58,20 @@ tape(
 				json: true,
 				url: URL,
 			}).then(response => {
-				t.plan(3);
 				const EXPECTED_RETURN_CODE = 201;
 				t.equals(
 					response.statusCode,
 					EXPECTED_RETURN_CODE,
 					`SHOULD return a ${EXPECTED_RETURN_CODE} response`,
 				);
+				const body = response.body;
 				t.equals(
-					typeof response.body.displacementId,
+					typeof body.displacementId,
 					'string',
 					'SHOULD return a JSON body having a string id property',
 				);
 				t.deepEqual(
-					response.body.links,
+					body.links,
 					[
 						{
 							href: `/displacement/${response.body.displacementId}`,
@@ -78,6 +79,11 @@ tape(
 						},
 					],
 					'SHOULD return a JSON body having a link to GET Displacement endpoint',
+				);
+				t.equals(
+					typeof body.text,
+					'string',
+					'SHOULD return a JSON body having a string text property',
 				);
 				t.end();
 			}),
