@@ -5,7 +5,10 @@ import { StateService } from '../../../services/state/types';
 import { TimeService } from '../../../services/time/types';
 
 import { getPropertyFromContextBody } from '../../../utils/context/utils';
-import { createDisplacement } from '../../../utils/displacememt/utils';
+import {
+	createDisplacement,
+	getDisplacementText,
+} from '../../../utils/displacememt/utils';
 import { Id } from '../../../utils/id/types';
 import { generateId } from '../../../utils/id/utils';
 
@@ -37,6 +40,7 @@ export const travelToEntity: TravelToEntity = ({
 						rel: 'details',
 					},
 				],
+				text: getDisplacementText({ loggerService })({ displacement }),
 			},
 			status: 201,
 		};
