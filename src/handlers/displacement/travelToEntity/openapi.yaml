@@ -30,9 +30,12 @@ post:
             type: object
             required:
               - displacementId
+              - text
             properties:
               displacementId:
                 $ref: '../../../specifications/components.yaml#/components/schemas/id'
+              text:
+                $ref: '../../../specifications/components.yaml#/components/schemas/text'
       links:
         Ping:
           operationRef: /displace/:displacementId
