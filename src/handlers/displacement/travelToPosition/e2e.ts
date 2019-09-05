@@ -105,20 +105,21 @@ tape(
 				json: true,
 				url: URL,
 			}).then(response => {
-				t.plan(3);
+				t.plan(4);
 				const EXPECTED_RETURN_CODE = 201;
+				const body = response.body;
 				t.equals(
 					response.statusCode,
 					EXPECTED_RETURN_CODE,
 					`status code SHOULD be ${EXPECTED_RETURN_CODE}`,
 				);
 				t.equals(
-					typeof response.body.displacementId,
+					typeof body.displacementId,
 					'string',
 					'SHOULD return a JSON body having a string id property',
 				);
 				t.deepEqual(
-					response.body.links,
+					body.links,
 					[
 						{
 							href: `/displacement/${response.body.displacementId}`,
@@ -127,6 +128,7 @@ tape(
 					],
 					'SHOULD return a JSON body having a link to GET Displacement endpoint',
 				);
+				t.equal(typeof body.text, 'string', 'SHOULD return a descriptive text');
 				t.end();
 			}),
 		);

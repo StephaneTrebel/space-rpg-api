@@ -12,6 +12,7 @@ import { isThereAPlanetHere } from '../planet/utils';
 import { Position } from '../position/types';
 import {
 	getEntityCurrentPosition,
+	getPositionText,
 	movePosition,
 	isSamePosition,
 } from '../position/utils';
@@ -221,3 +222,17 @@ export const displaceEntityMutator = (currentState: State) => ({
 			: entity,
 	),
 });
+
+type GetDisplacementText = (deps: {
+	loggerService: LoggerService;
+}) => (params: { displacement: Displacement }) => string;
+export const getDisplacementText: GetDisplacementText = ({
+	loggerService,
+}) => ({ displacement }) => {
+	loggerService.debug('Entering getDisplacementText...');
+	return `${
+		displacement.entityId
+	} is currently steadily moving towards ${getPositionText({ loggerService })({
+		position: displacement.targetCoordinates,
+	})}...`;
+};
