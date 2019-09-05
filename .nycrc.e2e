@@ -9,7 +9,7 @@
   "cache": false,
   "check-coverage": true,
   "per-file": false,
-  "statements": 95,
+  "statements": 96,
   "branches": 79,
   "functions": 95,
   "lines": 95,

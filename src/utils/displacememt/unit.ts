@@ -571,3 +571,35 @@ tape(
 		);
 	},
 );
+
+tape(
+	`${moduleName}
+	getDisplacementText()
+		WHEN called with a displacement`,
+	(test: tape.Test) => {
+		test.plan(1);
+		const entity = createSpaceship({});
+		const loggerService = loggerServiceFactory();
+		const stateService = stateServiceFactory({ loggerService })({
+			...EMPTY_STATE,
+			entityList: [entity],
+		});
+		const displacement: Displacement = testedModule.createDisplacement({
+			loggerService,
+			stateService,
+		})({
+			entityId: entity.id,
+			target: { x: 10, y: 10, z: 10 },
+		});
+		test.equal(
+			typeof testedModule.getDisplacementText({
+				loggerService: loggerServiceFactory(),
+			})({
+				displacement,
+			}),
+			'string',
+			'SHOULD return a string representation of the displacement',
+		);
+		test.end();
+	},
+);

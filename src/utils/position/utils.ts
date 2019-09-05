@@ -107,3 +107,13 @@ export const getEntityCurrentPosition = ({
 	loggerService.debug('Entering getEntityCurrentPosition…');
 	return stateService.findEntityById({ id }).currentPosition;
 };
+
+type GetPositionText = (deps: {
+	loggerService: LoggerService;
+}) => (params: { position: Position }) => string;
+export const getPositionText: GetPositionText = ({ loggerService }) => ({
+	position,
+}) => {
+	loggerService.debug('Entering getPositionText...');
+	return `{x: ${position.x}, y: ${position.y}, z: ${position.z}}`;
+};
