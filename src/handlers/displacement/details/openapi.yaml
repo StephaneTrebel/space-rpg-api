@@ -18,6 +18,7 @@ get:
             type: object
             required:
               - displacement
+              - text
             properties:
               displacement:
                 type: object
@@ -32,6 +33,8 @@ get:
                     $ref: '../../../specifications/components.yaml#/components/schemas/id'
                   targetCoordinates:
                     $ref: '../../../specifications/components.yaml#/components/schemas/coordinates'
+              text:
+                $ref: '../../../specifications/components.yaml#/components/schemas/text'
     400:
       $ref: '../../../specifications/components.yaml#/components/responses/400'
     500:
