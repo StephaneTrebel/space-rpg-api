@@ -12,6 +12,10 @@ export const ROOT_LINK: Link = {
 	rel: 'root',
 };
 
+type GetRootText = () => string;
+export const getRootText: GetRootText = () =>
+	`Hi and welcome to Space RPG API !, Please be aware of related links, the game will be way easier to understand if you pay attention to them. Have Fun !`;
+
 export const root = (): HandlerResponse => ({
 	json: {
 		links: [
@@ -20,11 +24,7 @@ export const root = (): HandlerResponse => ({
 			SWAGGER_UI_LINK,
 			VERSIONS_LINK,
 		],
-		message: [
-			'Hi and welcome to Space RPG API !',
-			'Please be aware of related links, the game will be way easier to understand if you pay attention to them.',
-			'Have Fun !',
-		].join(' '),
+		text: getRootText(),
 	},
 	status: 200,
 });

@@ -11,10 +11,10 @@ get:
           schema:
             type: object
             required:
-              - message
+              - text
             properties:
-              message:
-                $ref: '../../specifications/components.yaml#/components/schemas/message'
+              text:
+                $ref: '../../specifications/components.yaml#/components/schemas/text'
       links:
         Ping:
           $ref: '../../specifications/components.yaml#/components/links/Ping'

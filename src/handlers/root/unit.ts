@@ -8,8 +8,13 @@ import { SELF_HEALTH_LINK } from '../miscellaneous/self-health/handler';
 import * as testedModule from './handler';
 import { VERSIONS_LINK } from '../miscellaneous/versions/handler';
 
-tape('Root handler', (functions: tape.Test) => {
-	functions.test('root()', (test: tape.Test) => {
+const moduleName = 'Root handler';
+
+tape(
+	`${moduleName}
+	root()
+		WHEN called `,
+	(test: tape.Test) => {
 		const handlerResponse = testedModule.root();
 		test.plan(3);
 		test.equal(
@@ -18,9 +23,9 @@ tape('Root handler', (functions: tape.Test) => {
 			'SHOULD sucessfully return a 200 response',
 		);
 		test.equal(
-			typeof handlerResponse.json.message,
+			typeof handlerResponse.json.text,
 			'string',
-			'SHOULD sucessfully return a body having a message',
+			'SHOULD sucessfully return a body having a text',
 		);
 		test.deepEqual(
 			handlerResponse.json.links,
@@ -28,5 +33,5 @@ tape('Root handler', (functions: tape.Test) => {
 			'SHOULD sucessfully return a body having a link to various endpoints',
 		);
 		test.end();
-	});
-});
+	},
+);
