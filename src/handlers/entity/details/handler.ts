@@ -1,43 +1,51 @@
 import { LoggerService } from '../../../services/logger/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
-import { Handler } from '../../../services/openapi-backend/types';
+import { AsyncHandler } from '../../../services/openapi-backend/types';
 import { StateService } from '../../../services/state/types';
 
 import { getPropertyFromContextRequest } from '../../../utils/context/utils';
 import { Entity } from '../../../utils/entity/types';
 import { Id } from '../../../utils/id/types';
+import { getEntityDetailsText } from '../../../utils/entity/utils';
 
 type GetEntityFromStateService = (deps: {
-  loggerService: LoggerService;
-  stateService: StateService;
+	loggerService: LoggerService;
+	stateService: StateService;
 }) => (params: { id: Id }) => Entity;
 export const getEntityFromStateService: GetEntityFromStateService = ({
-  loggerService,
-  stateService,
+	loggerService,
+	stateService,
 }) => ({ id }) => {
-  loggerService.debug('Entering getEntityFromStateService…');
-  const action = stateService.findEntity({ id });
-  loggerService.debug(
-    `Entity retrieved for id '${id}': ${JSON.stringify(action)}`,
-  );
-  return action as Entity;
+	loggerService.debug('Entering getEntityFromStateService…');
+	const action = stateService.findEntityById({ id });
+	loggerService.debug(
+		`Entity retrieved for id '${id}': ${JSON.stringify(action)}`,
+	);
+	return action as Entity;
 };
 
-type GetEntityDetails = (deps: {
-  loggerService: LoggerService;
-  stateService: StateService;
-}) => Handler;
-export const getEntityDetails: GetEntityDetails = ({
-  loggerService,
-  stateService,
+type GetEntityDetailsHandler = (deps: {
+	loggerService: LoggerService;
+	stateService: StateService;
+}) => AsyncHandler;
+export const getEntityDetailsHandler: GetEntityDetailsHandler = ({
+	loggerService,
+	stateService,
 }) =>
-  wrapHandler({ loggerService })(context => {
-    loggerService.debug('Entering getEntity handler…');
-    const entity = getEntityFromStateService({
-      loggerService,
-      stateService,
-    })({
-      id: getPropertyFromContextRequest('id')(context) as Id,
-    });
-    return { json: { links: [], entity }, status: 200 };
-  });
+	wrapHandler({ loggerService })((context: any) => {
+		loggerService.debug('Entering getEntity handler…');
+		const entity = getEntityFromStateService({
+			loggerService,
+			stateService,
+		})({
+			id: getPropertyFromContextRequest('id')(context) as Id,
+		});
+		return {
+			json: {
+				entity,
+				links: [],
+				text: getEntityDetailsText({ entity }),
+			},
+			status: 200,
+		};
+	});

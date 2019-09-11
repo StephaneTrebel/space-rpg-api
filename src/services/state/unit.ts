@@ -1,89 +1,165 @@
 import tape from 'tape';
 
-import { MOCK_PLAYER, createPlayer } from '../../utils/player/utils';
+import { EntityType } from '../../utils/entity/types';
+import { createEntity } from '../../utils/entity/utils';
 import { Id } from '../../utils/id/types';
 
 import { loggerServiceFactory } from '../logger/service';
-
 import * as testedModule from './service';
+import { StateMutation } from './types';
 
 tape('State Service', (functionTest: tape.Test) => {
-  functionTest.test('findEntity()', (given: tape.Test) => {
-    given.test('GIVEN a State that has an entity', (when: tape.Test) => {
-      when.test(
-        'WHEN called with an entity id that does not exist in State',
-        (test: tape.Test) => {
-          test.plan(1);
-          const id: Id = 'bar';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
-            id,
-          });
-          const loggerService = loggerServiceFactory();
-          test.throws(
-            () =>
-              testedModule.findEntity({
-                loggerService,
-              })({
-                ...testedModule.EMPTY_STATE,
-                entityList: [entity],
-              })({
-                id: 'qux',
-              }),
-            'SHOULD throw an error',
-          );
-          test.end();
-        },
-      );
+	functionTest.test('findEntity()', (cases: tape.Test) => {
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with an entity id that does not exist in this State`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const id: Id = 'bar';
+				const entity = createEntity(EntityType.MOCK)({
+					id,
+				});
+				const loggerService = loggerServiceFactory();
+				test.throws(
+					() =>
+						testedModule.findEntityById({
+							loggerService,
+						})({
+							state: {
+								...testedModule.EMPTY_STATE,
+								entityList: [entity],
+							},
+						})({
+							id: 'qux',
+						}),
+					'SHOULD throw an error',
+				);
+				test.end();
+			},
+		);
 
-      when.test(
-        'WHEN called with an entity id that exists in State',
-        (test: tape.Test) => {
-          test.plan(1);
-          const id: Id = 'bar';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
-            currentPosition: { x: 0, y: 0, z: 0 },
-            id,
-          });
-          const loggerService = loggerServiceFactory();
-          test.equal(
-            testedModule.findEntity({
-              loggerService,
-            })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
-              id,
-            }),
-            entity,
-            'SHOULD return the entity',
-          );
-          test.end();
-        },
-      );
-    });
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with an entity id that exists in this State`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const id: Id = 'bar';
+				const entity = createEntity(EntityType.MOCK)({
+					currentPosition: { x: 0, y: 0, z: 0 },
+					id,
+				});
+				const loggerService = loggerServiceFactory();
+				test.equal(
+					testedModule.findEntityById({
+						loggerService,
+					})({
+						state: { ...testedModule.EMPTY_STATE, entityList: [entity] },
+					})({
+						id,
+					}),
+					entity,
+					'SHOULD return the entity',
+				);
+				test.end();
+			},
+		);
+	});
 
-    given.test('findEntity()', (when: tape.Test) => {
-      when.test(
-        'WHEN given an entity id and a State having this entity',
-        (test: tape.Test) => {
-          test.plan(1);
-          const id: Id = 'bar';
-          const entity = createPlayer({
-            ...MOCK_PLAYER,
-            id,
-          });
-          const loggerService = loggerServiceFactory();
-          test.equal(
-            testedModule.findEntity({
-              loggerService,
-            })({ ...testedModule.EMPTY_STATE, entityList: [entity] })({
-              id,
-            }),
-            entity,
-            'SHOULD return the entity',
-          );
-          test.end();
-        },
-      );
-    });
-  });
+	functionTest.test('getNearbyEntities()', (cases: tape.Test) => {
+		cases.test(
+			`GIVEN a State service internal that has entities
+	WHEN called with one of the entities Id`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const id: Id = 'myEntity';
+				const entity = createEntity(EntityType.MOCK)({
+					currentPosition: { x: 0, y: 0, z: 0 },
+					id,
+				});
+				const neighbourA = createEntity(EntityType.MOCK)({
+					currentPosition: { x: 1, y: 1, z: 1 },
+					id: 'neighbourA',
+				});
+				const neighbourB = createEntity(EntityType.MOCK)({
+					currentPosition: { x: -1, y: -1, z: -1 },
+					id: 'neighbourB',
+				});
+				const neighbourC = createEntity(EntityType.MOCK)({
+					currentPosition: { x: 6, y: 6, z: 6 },
+					id: 'neighbourC',
+				});
+				const neighbourD = createEntity(EntityType.MOCK)({
+					currentPosition: { x: -6, y: -6, z: -6 },
+					id: 'neighbourD',
+				});
+				const loggerService = loggerServiceFactory();
+				test.deepEqual(
+					testedModule.getNearbyEntities({
+						loggerService,
+					})({
+						state: {
+							...testedModule.EMPTY_STATE,
+							entityList: [
+								entity,
+								neighbourA,
+								neighbourB,
+								neighbourC,
+								neighbourD,
+							],
+						},
+					})({
+						id,
+					}),
+					[neighbourA, neighbourB],
+					'SHOULD return the entities that are near this entity',
+				);
+				test.end();
+			},
+		);
+	});
+
+	functionTest.test('mutate()', (cases: tape.Test) => {
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with a (mutation, payload) couple that throw an error`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const loggerService = loggerServiceFactory();
+				testedModule
+					.mutate({
+						loggerService,
+					})({
+						state: testedModule.EMPTY_STATE,
+					})({
+						mutation: 'this unknown mutation will make mutate() crash HARD',
+					} as any)
+					.catch(() => {
+						test.pass('SHOULD eventually throw an error');
+						test.end();
+					});
+			},
+		);
+
+		cases.test(
+			`GIVEN a State service internal
+	WHEN called with a (mutation, payload) couple that does not throw an error`,
+			(test: tape.Test) => {
+				test.plan(1);
+				const loggerService = loggerServiceFactory();
+				testedModule
+					.mutate({
+						loggerService,
+					})({
+						state: testedModule.EMPTY_STATE,
+					})({
+						mutation: StateMutation.CREATE_PLAYER,
+						payload: 'it does not really matter',
+					})
+					.then(() => {
+						test.pass('SHOULD eventually return nothing');
+						test.end();
+					});
+			},
+		);
+	});
 });

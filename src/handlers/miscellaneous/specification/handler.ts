@@ -5,13 +5,13 @@ import { HandlerResponse } from '../../../services/openapi-backend/types';
 import { Link } from '../../../services/webserver/types';
 
 export const SPECIFICATION_LINK: Link = {
-  href: '/specification',
-  rel: 'specification',
+	href: '/specification',
+	rel: 'specification',
 };
 
 export const getSpecification = (
-  backendEngine: OpenAPIBackend,
+	backendEngine: OpenAPIBackend,
 ) => (): HandlerResponse => ({
-  json: backendEngine.definition,
-  status: 200,
+	json: backendEngine.definition,
+	status: 200,
 });

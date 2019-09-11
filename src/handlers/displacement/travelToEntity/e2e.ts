@@ -5,82 +5,88 @@ import { runE2ETest, postPromisified } from '../../../e2e-utils';
 import { getURL, DEFAULT_CONFIG } from '../../../services/config/service';
 import { EMPTY_STATE } from '../../../services/state/service';
 
-import { createEntity, MOCK_ENTITY } from '../../../utils/entity/utils';
+import { createEntity } from '../../../utils/entity/utils';
 import { EntityType } from '../../../utils/entity/types';
 
 const ENDPOINT = '/displacement/travelToEntity';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
-tape(ENDPOINT, (subTest: tape.Test) => {
-  subTest.test('WHEN request has an invalid body', (caseTest: tape.Test) => {
-    return runE2ETest({})(caseTest)((test, assets) =>
-      postPromisified({
-        assets,
-        body: '',
-        url: URL,
-      }).then(response => {
-        test.plan(1);
-        const EXPECTED_RETURN_CODE = 400;
-        test.equals(
-          response.statusCode,
-          EXPECTED_RETURN_CODE,
-          `status code SHOULD be ${EXPECTED_RETURN_CODE}`,
-        );
-        test.end();
-      }),
-    );
-  });
+tape(
+	`${ENDPOINT}
+	GIVEN an invalid body`,
+	(test: tape.Test) => {
+		return runE2ETest({})(test)((t, assets) =>
+			postPromisified({
+				assets,
+				body: '',
+				url: URL,
+			}).then(response => {
+				t.plan(1);
+				const EXPECTED_RETURN_CODE = 400;
+				t.equals(
+					response.statusCode,
+					EXPECTED_RETURN_CODE,
+					`status code SHOULD be ${EXPECTED_RETURN_CODE}`,
+				);
+				t.end();
+			}),
+		);
+	},
+);
 
-  subTest.test('GIVEN two existing entities', (givenClause: tape.Test) => {
-    givenClause.test(
-      'WHEN request has a valid body referencing both entities as source and target',
-      (caseTest: tape.Test) => {
-        const source = createEntity(EntityType.MOCK)({
-          ...MOCK_ENTITY,
-          id: `${ENDPOINT} Success Source`,
-        });
-        const target = createEntity(EntityType.MOCK)({
-          ...MOCK_ENTITY,
-          id: `${ENDPOINT} Success Target`,
-        });
-        return runE2ETest({
-          initialState: {
-            ...EMPTY_STATE,
-            entityList: [source, target],
-          },
-        })(caseTest)((test, assets) =>
-          postPromisified({
-            assets,
-            body: { entityId: source.id, targetId: target.id },
-            json: true,
-            url: URL,
-          }).then(response => {
-            test.plan(3);
-            const EXPECTED_RETURN_CODE = 201;
-            test.equals(
-              response.statusCode,
-              EXPECTED_RETURN_CODE,
-              `SHOULD return a ${EXPECTED_RETURN_CODE} response`,
-            );
-            test.equals(
-              typeof response.body.displacementId,
-              'string',
-              'SHOULD return a JSON body having a string id property',
-            );
-            test.deepEqual(
-              response.body.links,
-              [
-                {
-                  href: `/displacement/${response.body.displacementId}`,
-                  rel: 'details',
-                },
-              ],
-              'SHOULD return a JSON body having a link to GET Displacement endpoint',
-            );
-            test.end();
-          }),
-        );
-      },
-    );
-  });
-});
+tape(
+	`${ENDPOINT}
+	GIVEN two existing entities
+	WHEN request has a valid body referencing both entities as source and target`,
+	(test: tape.Test) => {
+		test.plan(4);
+		const source = createEntity(EntityType.SPACESHIP)({
+			id: `${ENDPOINT} Success Source`,
+		});
+		const target = createEntity(EntityType.PLANET)({
+			id: `${ENDPOINT} Success Target`,
+		});
+		return runE2ETest({
+			initialState: {
+				...EMPTY_STATE,
+				entityList: [source, target],
+			},
+		})(test)((t, assets) =>
+			postPromisified({
+				assets,
+				body: { entityId: source.id, targetId: target.id },
+				json: true,
+				url: URL,
+			}).then(response => {
+				const EXPECTED_RETURN_CODE = 201;
+				t.equals(
+					response.statusCode,
+					EXPECTED_RETURN_CODE,
+					`SHOULD return a ${EXPECTED_RETURN_CODE} response`,
+				);
+				const body = response.body;
+				t.equals(
+					typeof body.displacementId,
+					'string',
+					'SHOULD return a JSON body having a string id property',
+				);
+				t.deepEqual(
+					body.links,
+					[
+						{
+							href: `/displacement/${response.body.displacementId}`,
+							rel: 'details',
+						},
+					],
+					'SHOULD return a JSON body having a link to GET Displacement endpoint',
+				);
+				t.equals(
+					typeof body.text,
+					'string',
+					'SHOULD return a JSON body having a string text property',
+				);
+				t.end();
+			}),
+		);
+	},
+);

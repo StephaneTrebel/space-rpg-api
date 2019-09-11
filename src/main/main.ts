@@ -18,88 +18,89 @@ import { SpawnWebServer } from '../services/webserver/service';
 import { MainDeps, MainParams, MainAssets } from './types';
 
 interface InstanciateApplicationParams {
-  configService: ConfigService;
-  loggerService: LoggerService;
-  spawnAPIBackend: SpawnAPIBackend;
-  spawnWebServer: SpawnWebServer;
-  stateService: StateService;
-  timeService: TimeService;
+	configService: ConfigService;
+	loggerService: LoggerService;
+	spawnAPIBackend: SpawnAPIBackend;
+	spawnWebServer: SpawnWebServer;
+	stateService: StateService;
+	timeService: TimeService;
 }
 
 export const instanciateApplication = ({
-  configService,
-  loggerService,
-  spawnAPIBackend,
-  spawnWebServer,
-  stateService,
-  timeService,
+	configService,
+	loggerService,
+	spawnAPIBackend,
+	spawnWebServer,
+	stateService,
+	timeService,
 }: InstanciateApplicationParams) =>
-  spawnAPIBackend({
-    backendEngine: OpenAPIBackend,
-    configService,
-    loggerService,
-    stateService,
-    timeService,
-  })
-    .then((api: OpenAPIBackend) =>
-      spawnWebServer({ configService, cors, loggerService, express })(api),
-    )
-    .then((server: http.Server) => {
-      loggerService.info('Service started');
-      const assets: MainAssets = {
-        loggerService,
-        server,
-        teardown: () => {
-          timeService.stop();
-          server.close();
-        },
-      };
-      return assets;
-    })
-    .catch(error => {
-      loggerService.error(
-        `Error while instanciating the application logic: ${error.message}`,
-      );
-      return Promise.reject(error);
-    });
+	spawnAPIBackend({
+		backendEngine: OpenAPIBackend,
+		configService,
+		loggerService,
+		stateService,
+		timeService,
+	})
+		.then((api: OpenAPIBackend) =>
+			spawnWebServer({ configService, cors, loggerService, express })(api),
+		)
+		.then((server: http.Server) => {
+			loggerService.info('Service started');
+			const assets: MainAssets = {
+				loggerService,
+				server,
+				stateService,
+				teardown: () => {
+					timeService.stop();
+					server.close();
+				},
+			};
+			return assets;
+		})
+		.catch(error => {
+			loggerService.error(
+				`Error while instanciating the application logic: ${error.message}`,
+			);
+			return Promise.reject(error);
+		});
 
 export type Main = (
-  deps: MainDeps,
+	deps: MainDeps,
 ) => (params: MainParams) => Promise<MainAssets>;
 export const main: Main = deps => params =>
-  // Since we're returning a promise, we might as well start as soon as
-  // possible to factor out error handling in the `catch`
-  new Promise<InstanciateApplicationParams>((resolve, reject) => {
-    try {
-      const configService = configServiceFactory(params.config);
-      const loggerService = loggerServiceFactory(
-        configService.getLoggerConfig(),
-      );
-      const stateService = stateServiceFactory({ loggerService })(
-        deps.initialState,
-      );
-      const timeService = timeServiceFactory({
-        configService,
-        loggerService,
-        stateService,
-      })(deps.initialActionQueue || []);
-      if (params.startTime) {
-        timeService.start();
-      }
-      return resolve({
-        configService,
-        loggerService,
-        spawnAPIBackend: deps.spawnAPIBackend,
-        spawnWebServer: deps.spawnWebServer,
-        stateService,
-        timeService,
-      });
-    } catch (error) {
-      return reject(error);
-    }
-  })
-    .then(instanciateApplication)
-    .catch(error => {
-      console.log(`FATAL error while starting the service: ${error.message}`);
-      return Promise.reject(error);
-    });
+	// Since we're returning a promise, we might as well start as soon as
+	// possible to factor out error handling in the `catch`
+	new Promise<InstanciateApplicationParams>((resolve, reject) => {
+		try {
+			const configService = configServiceFactory(params.config);
+			const loggerService = loggerServiceFactory(
+				configService.getLoggerConfig(),
+			);
+			const stateService = stateServiceFactory({ loggerService })(
+				deps.initialState,
+			);
+			const timeService = timeServiceFactory({
+				configService,
+				loggerService,
+				stateService,
+			})(deps.initialActionQueue || []);
+			if (params.startTime) {
+				timeService.start();
+			}
+			return resolve({
+				configService,
+				loggerService,
+				spawnAPIBackend: deps.spawnAPIBackend,
+				spawnWebServer: deps.spawnWebServer,
+				stateService,
+				timeService,
+			});
+		} catch (error) {
+			return reject(error);
+		}
+	})
+		.then(instanciateApplication)
+		.catch(error => {
+			console.log(`FATAL error while starting the service: ${error.message}`);
+			return Promise.reject(error);
+		});

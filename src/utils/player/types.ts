@@ -1,17 +1,15 @@
 import { EntityType } from '../../utils/entity/types';
 import { Id } from '../../utils/id/types';
 import { Position } from '../../utils/position/types';
+import { Spaceship } from '../spaceship/types';
 
-export interface PlayerCreationParams {
-  currentPosition: Position;
-  id?: Id;
-  username: string;
-}
+export type PlayerCarryingEntity = Spaceship;
 
 export interface Player {
-  currentPosition: Position;
-  id: Id;
-  username: string;
-  type: EntityType.PLAYER;
+	boardedIn: PlayerCarryingEntity | null;
+	currentPosition: Position;
+	id: Id;
+	name: string;
+	type: EntityType.PLAYER;
 }
 export type PlayerList = Array<Player>;

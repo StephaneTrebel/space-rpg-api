@@ -1,13 +1,14 @@
 openapi: '3.0.0'
 
 info:
-  version: 1.0.0
+  version: 1.2.0
   title: Space RPG API
   description: A Space RPG that can be experienced through a REST API
   license:
     name: GPL v3.0
 
 servers:
+  - url: https://space-rpg-api-develop.herokuapp.com
   - url: https://space-rpg-api-master.herokuapp.com
   - url: http://localhost:9000
 
