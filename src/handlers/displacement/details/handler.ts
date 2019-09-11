@@ -6,6 +6,7 @@ import { Displacement } from '../../../utils/displacememt/types';
 import { Id } from '../../../utils/id/types';
 import { wrapHandler } from '../../../services/openapi-backend/service';
 import { getPropertyFromContextRequest } from '../../../utils/context/utils';
+import { getDisplacementText } from '../../../utils/displacememt/utils';
 
 type GetDisplacementFromTimeService = (deps: {
 	loggerService: LoggerService;
@@ -42,5 +43,12 @@ export const getDisplacement: GetDisplacement = ({
 		})({
 			id: getPropertyFromContextRequest('id')(context) as Id,
 		});
-		return { json: { links: [], displacement }, status: 200 };
+		return {
+			json: {
+				displacement,
+				links: [],
+				text: getDisplacementText({ loggerService })({ displacement }),
+			},
+			status: 200,
+		};
 	});
