@@ -12,26 +12,28 @@ import { VERSIONS_LINK } from '../miscellaneous/versions/handler';
 const ENDPOINT = '/';
 const URL = getURL(DEFAULT_CONFIG)(ENDPOINT);
 
-tape(ENDPOINT, (cases: tape.Test) => {
-	cases.test(ENDPOINT, (t: tape.Test) => {
-		t.plan(3);
-		return runE2ETest({})(t)((test, assets) =>
+tape(
+	`${ENDPOINT}
+	GIVEN a request`,
+	(test: tape.Test) => {
+		test.plan(3);
+		return runE2ETest({})(test)((t, assets) =>
 			getPromisified({
 				assets,
 				request: { uri: URL },
 			}).then(response => {
 				const EXPECTED_RETURN_CODE = 200;
-				test.equals(
+				t.equals(
 					response.statusCode,
 					EXPECTED_RETURN_CODE,
 					`status code SHOULD be ${EXPECTED_RETURN_CODE}`,
 				);
-				test.equals(
-					typeof JSON.parse(response.body).message,
+				t.equals(
+					typeof JSON.parse(response.body).text,
 					'string',
-					'SHOULD return a JSON body having a string message property',
+					'SHOULD return a JSON body having a string text property',
 				);
-				test.deepEqual(
+				t.deepEqual(
 					JSON.parse(response.body).links,
 					[
 						SELF_HEALTH_LINK,
@@ -41,31 +43,34 @@ tape(ENDPOINT, (cases: tape.Test) => {
 					],
 					'SHOULD return a JSON body having a link to various endpoints',
 				);
-				test.end();
+				t.end();
 			}),
 		);
-	});
+	},
+);
 
-	cases.test('404 Error handling', (t: tape.Test) => {
-		t.plan(1);
-		return runE2ETest({})(t)((test, assets) =>
+tape(
+	`GIVEN a request to an unknown URL`,
+	(test: tape.Test) => {
+		test.plan(1);
+		return runE2ETest({})(test)((t, assets) =>
 			getPromisified({
 				assets,
 				request: { uri: getURL(DEFAULT_CONFIG)('/LOLNOPE') },
 			})
 				.then(response => {
 					const EXPECTED_RETURN_CODE = 404;
-					test.equals(
+					t.equals(
 						response.statusCode,
 						EXPECTED_RETURN_CODE,
 						`status code SHOULD be ${EXPECTED_RETURN_CODE}`,
 					);
-					test.end();
+					t.end();
 				})
 				.catch(error => {
-					console.log(error.message);
-					test.end();
+					console.log(error.text);
+					t.end();
 				}),
 		);
-	});
-});
+	},
+);
